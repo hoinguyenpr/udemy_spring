@@ -1,0 +1,388 @@
+<th:block th:fragment="navbar" xmlns:th="http://www.w3.org/1999/xhtml">
+    <nav class="navbar horizontal-layout col-lg-12 col-12 p-0">
+
+        <!-- Header of page -->
+        <div class="nav-top flex-grow-1">
+            <div class="container d-flex flex-row h-100 align-items-center">
+
+                <!-- Logo -->
+                <div class="text-center navbar-brand-wrapper d-flex align-items-center">
+                    <a class="navbar-brand brand-logo" th:href="@{/}"><img th:src="@{/images/logo.svg}" alt="logo" /></a>
+                    <a class="navbar-brand brand-logo-mini" th:href="@{/}"><img th:src="@{/images/logo-mini.svg}" alt="logo" /></a>
+                </div>
+                <!-- End Logo -->
+
+                <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between flex-grow-1">
+                    <!-- Menu search -->
+                    <form class="search-field d-none d-md-flex" action="#">
+                        <div class="form-group mb-0">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="icon-magnifier"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Tìm kiếm...">
+                            </div>
+                        </div>
+                    </form>
+                    <!-- End Menu search -->
+
+                    <ul class="navbar-nav navbar-nav-right mr-0 ml-auto">
+                        <!-- Dropdown Change language -->
+                        <li class="nav-item dropdown d-none d-lg-flex nav-language">
+                            <div class="nav-link">
+                                <span class="dropdown-toggle btn btn-sm" id="languageDropdown" data-toggle="dropdown">
+									Việt Nam <i class="flag-icon flag-icon-vn" title="vn" id="vn"></i>
+								</span>
+                                <div class="dropdown-menu navbar-dropdown" aria-labelledby="languageDropdown">
+                                    <a class="dropdown-item font-weight-medium" href="?lang=vi">
+										Việt Nam <i class="flag-icon flag-icon-vn" title="vn" id="vn"></i>
+									</a>
+                                    <div class="dropdown-divider"></div>
+                                    <!--
+										<a class="dropdown-item font-weight-medium"> English <i class="flag-icon flag-icon-es ml-2"></i></a>
+										<div class="dropdown-divider"></div>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item font-weight-medium"> Arabic <i class="flag-icon flag-icon-sa ml-2"></i></a>
+										-->
+                                </div>
+                            </div>
+                        </li>
+                        <!-- End Dropdown Change language -->
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
+                                <i class="icon-envelope mx-0"></i>
+                                <span class="count"></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
+                                <div class="dropdown-item">
+                                    <p class="mb-0 font-weight-normal float-left">You have 7 unread mails</p>
+                                    <span class="badge badge-info badge-pill float-right">
+										View all </span>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item preview-item">
+                                    <div class="preview-thumbnail">
+                                        <img src="https://via.placeholder.com/36x36" alt="image" class="profile-pic">
+                                    </div>
+                                    <div class="preview-item-content flex-grow">
+                                        <h6 class="preview-subject ellipsis font-weight-medium">
+                                            David Grey <span class="float-right font-weight-light small-text"> 1
+												Minutes ago </span>
+                                        </h6>
+                                        <p class="font-weight-light small-text">The meeting is cancelled
+                                        </p>
+                                    </div>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item preview-item">
+                                    <div class="preview-thumbnail">
+                                        <img src="https://via.placeholder.com/36x36" alt="image" class="profile-pic">
+                                    </div>
+                                    <div class="preview-item-content flex-grow">
+                                        <h6 class="preview-subject ellipsis font-weight-medium">
+                                            Tim Cook <span class="float-right font-weight-light small-text"> 15
+												Minutes ago </span>
+                                        </h6>
+                                        <p class="font-weight-light small-text">New product launch
+                                        </p>
+                                    </div>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item preview-item">
+                                    <div class="preview-thumbnail">
+                                        <img src="https://via.placeholder.com/36x36" alt="image" class="profile-pic">
+                                    </div>
+                                    <div class="preview-item-content flex-grow">
+                                        <h6 class="preview-subject ellipsis font-weight-medium">
+                                            Johnson <span class="float-right font-weight-light small-text"> 18
+												Minutes ago </span>
+                                        </h6>
+                                        <p class="font-weight-light small-text">Upcoming board meeting
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown"> <i class="icon-bell"></i>
+                                <span class="count"></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+                                <a class="dropdown-item py-3">
+                                    <p class="mb-0 font-weight-medium float-left">You have 4 new notifications</p> <span class="badge badge-pill badge-info float-right">
+										View
+										all </span>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item preview-item">
+                                    <div class="preview-thumbnail">
+                                        <div class="preview-icon bg-success">
+                                            <i class="icon-exclamation  mx-0"></i>
+                                        </div>
+                                    </div>
+                                    <div class="preview-item-content">
+                                        <h6 class="preview-subject font-weight-normal text-dark mb-1">
+                                            Application Error</h6>
+                                        <p class="font-weight-light small-text mb-0">Just now</p>
+                                    </div>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item preview-item">
+                                    <div class="preview-thumbnail">
+                                        <div class="preview-icon  bg-warning">
+                                            <i class="icon-bubble mx-0"></i>
+                                        </div>
+                                    </div>
+                                    <div class="preview-item-content">
+                                        <h6 class="preview-subject font-weight-normal text-dark  mb-1">
+                                            Settings</h6>
+                                        <p class="font-weight-light small-text mb-0">Private message
+                                        </p>
+                                    </div>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item preview-item">
+                                    <div class="preview-thumbnail">
+                                        <div class="preview-icon bg-info">
+                                            <i class="icon-user-following  mx-0"></i>
+                                        </div>
+                                    </div>
+                                    <div class="preview-item-content">
+                                        <h6 class="preview-subject font-weight-normal text-dark  mb-1">
+                                            New user registration</h6>
+                                        <p class="font-weight-light small-text mb-0">2 days ago</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </li>
+
+                        <!-- Setting and profile  -->
+                        <li class="nav-item nav-profile dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown"> <img src="https://via.placeholder.com/39x39" alt="profile" /> <span class="nav-profile-name"> Welcome
+									[[${#httpServletRequest.remoteUser}]] </span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+                                <a class="dropdown-item" th:href="@{/setting}">
+                                    <i class="icon-settings text-primary mr-2"></i> Settings
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" th:href="@{/logout}"> <i class="icon-logout text-primary mr-2"></i> Logout
+                                </a>
+                            </div>
+                        </li>
+                        <!-- End Setting and profile  -->
+
+                    </ul>
+
+                    <button class="navbar-toggler align-self-center" type="button" data-toggle="minimize">
+						<span class="icon-menu text-dark"></span>
+					</button>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu bar -->
+        <div class="nav-bottom">
+            <div class="container">
+                <ul class="nav page-navigation justify-content-start">
+
+                    <li class="nav-item">
+                        <a th:href="@{/}" class="nav-link"> <i class="link-icon icon-screen-desktop"></i> <span class="menu-title"> Trang chủ </span>
+                        </a>
+                    </li>
+
+
+                    <!-- Giam sát chat lương -->
+
+                    <li class="nav-item mega-menu">
+                        <a href="#" class="nav-link">
+                            <i class="link-icon icon-wallet"></i> <span class="menu-title">
+								Giám sát chất lượng </span> <i class="menu-arrow"></i>
+						</a>
+						<div class="submenu">
+							<!-- row menu -->
+							<div class="col-group-wrapper row">
+								<div class="col-group col-md-3">
+									<p class="category-heading">[[#{pressing-monitor.navbar}]]</p>
+									<ul class="submenu-item">
+										<li class="nav-item">
+                                            <a class="nav-link" th:href="@{/pressing-monitor}">
+                                                [[#{pressing-monitor.navbar.create}]]
+                                            </a>
+										</li>
+										<li class="nav-item"><a class="nav-link"
+												th:href="@{/pressing-monitor/rep-app}">[[#{pressing-monitor.navbar.rep-app}]]</a>
+										</li>
+									</ul>
+								</div>
+								<div class="col-group col-md-3">
+									<p class="category-heading">Giám sát PH Brix</p>
+									<ul class="submenu-item">
+										<li class="nav-item"><a class="nav-link" th:href="@{/Brix-pH-monitoring/}">PH
+												Brix</a></li>
+                                    </ul>
+                                </div>
+
+                                <div class="col-group col-md-3">
+                                    <p class="category-heading" th:text="#{mixing.menu.mixing}"></p>
+                                    <ul class="submenu-item">
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/mixing/create}" th:text="#{mixing.nav.create}"></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/mixing/list}" th:text="#{mixing.nav.list}"></a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Sấy sàn -->
+                                <div class="col-group col-md-3">
+                                    <p class="category-heading">[[#{sieveDrying.text.sieveDrying}]]</p>
+                                    <ul class="submenu-item">
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/sieve-drying/sieve-drying-input} ">
+												[[#{sieveDrying.text.inputRecord}]]
+											</a>
+                                        </li>
+                                        <th:block th:each="authority : ${#httpServletRequest.getUserPrincipal().getAuthorities()}" scope="col" class="text-center">
+                                            <li th:if="${authority.getAuthority().equals('ADMIN')}" class="nav-item">
+                                                <a class="nav-link" th:href="@{/sieve-drying/sieve-drying-report}">
+													[[#{sieveDrying.text.review}]]
+                                                </a>
+                                            </li>
+                                            <li th:if="${authority.getAuthority().equals('EMPLOYEE')}" class="nav-item">
+                                                <a class="nav-link" th:href="@{/sieve-drying/sieve-drying-report}">
+													[[#{sieveDrying.text.report}]]
+                                                </a>
+                                            </li>
+                                        </th:block>
+                                    </ul>
+                                </div>
+
+
+                            </div>
+                            <!-- END row menu -->
+
+                            <!-- Next row menu -->
+                            <div class="col-group-wrapper row">
+
+                                <div class="col-group col-md-3">
+                                    <p class="category-heading">Giám sát thành phẩm</p>
+                                    <ul class="submenu-item">
+                                        <li class="nav-item"><a class="nav-link" th:href="@{/product/}">Danh sách báo
+												cáo thành phẩm </a>
+                                        </li>
+                                        <li class="nav-item"><a class="nav-link" th:href="@{/product/product-approve}">Duyệt</a></li>
+                                        <li class="nav-item"><a class="nav-link" th:href="@{/product/all}">Quản lý thành
+												phẩm</a></li>
+                                        <!-- <li class="nav-item"><a class="nav-link" th:href="@{/TypeProduct}"> Tạo sản phẩm </a>
+                </li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/TypeProduct}"> Tạo loại sản phẩm
+                  </a></li> -->
+                                    </ul>
+                                </div>
+                                <div class="col-group col-md-3">
+                                    <p class="category-heading">Giám sát hiệu chỉnh cân</p>
+                                    <ul class="submenu-item">
+                                        <li class="nav-item"><a class="nav-link" th:href="@{/scale-calibration}">Cân</a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="col-group col-md-3">
+                                    <p class="category-heading">Giám sát biểu mẫu đóng gói</p>
+                                    <ul class="submenu-item">
+                                        <li class="nav-item"><a class="nav-link" th:href="@{/packing-form/list-packing-form} "> Danh sách
+											</a></li>
+                                        <li class="nav-item"><a class="nav-link" th:href="@{/packing-form/report-packing-form}"> Báo
+												cáo </a></li>
+                                    </ul>
+                                </div>
+
+
+
+                                <!-- DinhDN just change this block and don't change anything-->
+                                <div class="col-group col-md-3">
+                                    <p class="category-heading">Giám sát máy dò kim loại</p>
+                                    <ul class="submenu-item">
+                                        <li class="nav-item"><a class="nav-link" th:href="@{/metal-detector/}"> Tạo biểu
+												mẫu </a></li>
+                                        <li class="nav-item"><a class="nav-link" th:href="@{/metal-detector/report}">
+												Báo cáo và xuất file
+												excell </a></li>
+                                        <li class="nav-item"><a class="nav-link" th:href="@{/metal-detector/approve}">
+												Duyệt biểu mẫu </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="col-group col-md-3">
+                                    <p class="category-heading">[[#{checklist.management}]]</p>
+                                    <ul class="submenu-item">
+                                        <li class="nav-item"><a class="nav-link" th:href="@{/checklist/create-check-list}">[[#{checklist.management}]]</a></li>
+                                        <li class="nav-item"><a class="nav-link" th:href="@{/checklist/show-check-list}">[[#{checklist.view.title}]]</a></li>
+                                        <li class="nav-item"><a class="nav-link" th:href="@{/checklist/approval-check-list}">[[#{checklist.approval.title}]]</a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                            <!-- END Next row menu -->
+                        </div>
+                    </li>
+
+                    <li class="nav-item mega-menu">
+                        <a href="#" class="nav-link">
+                            <i class="link-icon icon-wallet"></i>
+                            <span class="menu-title">
+								Quản lý thiết bị
+							</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+
+                        <div class="submenu">
+                            <!-- row menu -->
+                            <div class="col-group-wrapper row">
+                                <div class="col-group col-md-3">
+                                    <p class="category-heading">
+                                        Quản lý máy
+                                    </p>
+                                    <ul class="submenu-item">
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/machine/list-machine}">
+												Thêm máy
+											</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" th:href="@{/#}">
+												Xuất báo cáo
+											</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <!-- end giam sat chat luong -->
+
+                    <li class="nav-item">
+                        <a href="#" class="nav-link"> <i class="link-icon icon-book-open"></i> <span class="menu-title">
+								Khác </span> <i class="menu-arrow"> </i>
+                        </a>
+                        <div class="submenu">
+                            <ul class="submenu-item">
+
+                                <li class="nav-item"><a class="nav-link" th:href="@{/lo-thanh-pham}"> Lô thành phẩm </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</th:block>

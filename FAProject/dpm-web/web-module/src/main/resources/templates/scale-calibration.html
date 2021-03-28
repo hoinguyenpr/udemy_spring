@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	th:replace="
+    ~{layouts/main-layout :: main-fragment(
+                                          ~{:: title},
+                                          ~{:: #css-page},
+                                          ~{:: #custom-css-page},
+                                          ~{:: #navbar},
+                                          ~{:: #main-content},  
+                                          ~{:: #footer},
+                                          ~{:: #custom-js}
+                                         )}">
+
+<head>
+
+<title>Sổ theo dõi hiệu chuẩn cân hằng ngày</title>
+
+<!-- partial:layouts/otherStaticResources.html -->
+<th:block id="css-page" th:replace="~{layouts/mainCss}"></th:block>
+
+<!-- Custom CSS for this page in here -->
+<th:block id="custom-css-page">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" 
+        integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+
+	<style>
+table, th, td {
+	border: 0.5px solid rgb(183, 214, 235);
+}
+
+tbody tr td input {
+	/* font-size:20pt; */
+	font-weight: 900 !important;
+	/* color: rgb(35, 92, 197) !important; */
+	color: rgb(245, 152, 30) !important;
+}
+
+#avg-result {
+	width: 100%;
+	margin: 0;
+	/* font-size:20pt; */
+	font-weight: bold !important;
+	/* color: rgb(35, 92, 197) !important; */
+	color: red !important;
+	text-align: center;
+}
+
+#avg-td {
+	background-color: burlywood;
+}
+</style>
+
+</th:block>
+<!-- End Custom CSS  -->
+
+
+</head>
+
+<body>
+	<div class="container-scroller">
+
+		<!-- partial:layouts/navbar.html -->
+		<th:block id="navbar" th:replace="layouts/navbar">
+		</th:block>
+
+		<th:block id="main-content">
+			<!-- Copy From start to here-->
+
+			<!-- Main Modal starts -->
+			<div class="modal fade" id="main-modal" role="dialog"
+				aria-labelledby="exampleModalLabel" aria-hidden="true"
+				style="display: none">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Tạo dữ liệu
+								theo dõi hiệu chuẩn cân hằng ngày</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
+						<h1>ahihihi</h1>
+						<form class="cmxform" id="scale-calibration-form" action=""
+							method="POST">
+							<div class="modal-body">
+								<input type="text" class="form-control" id="id" name="id" hidden />
+
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="firstname" class="col-sm-3 col-form-label">Ngày
+												giờ tạo</label>
+											<div class="col-sm-9">
+												<input type="datetime-local" class="form-control"
+													id="created-datetime" name="created-datetime" />
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="lastname" class="col-sm-3 col-form-label">Bộ
+												phận</label>
+											<div class="col-sm-9">
+												<select class="js-example-basic-single w-100"  id="department" >
+													<option th:each="department : ${departments}"
+														th:value="${department.departmentCode}"
+														th:text="${department.departmentName}"></option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Tên thiết bị</label>
+											<div class="col-sm-9">
+												
+												<select class="js-example-basic-single w-100" id="calibrated-device">
+													<option th:each="scale : ${scales}"
+														th:value="${scale.id}"
+														th:text="${scale.machineName}">
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Ký hiệu</label>
+											<div class="col-sm-9">
+													<!-- todo here -->
+													<select class="js-example-basic-single w-100" id="calibrated-device-symbol">
+													<option th:each="scaleSymbol : ${scaleSymbols}"
+														th:value="${scaleSymbol.id}"
+														th:text="${scaleSymbol.symbolString}">
+													</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Thiết bị chuẩn
+												sử dụng</label>
+											<div class="col-sm-9">
+												<select class="js-example-basic-single w-100" name="standardDeviceId" id="standard-device">
+													<option th:each="device: ${standardDevices}"
+														th:value="${device.id}"
+														th:text="${device.machineName}"></option>
+
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Phương pháp
+												hiệu chuẩn</label>
+											<div class="col-sm-5">
+												<input name="calibratingMethod" id="method-input" type="text" class="form-control"
+													disabled value="Thủ công" />
+											</div>
+											<div class="col-md-2">
+												<div class="form-check">
+													<label class="form-check-label"> <input
+														id="checkbox-other-method" type="checkbox"
+														class="form-check-input"> Khác <i
+														class="input-helper"></i></label>
+													
+												</div>
+											</div>
+										</div>
+									</div>
+
+
+
+								</div>
+
+								<div class="row">
+									<div class="col-md">Bảng kết quả hiệu chuẩn</div>
+									<div class="col-md">Nguời hiệu chuẩn</div>
+								</div>
+
+								<div class="row">
+
+									<div class="table-responsive col-md-4">
+										<table class="table">
+											<thead>
+												<tr>
+													<th scope="col" style="border-bottom: 1px solid;">Lần
+														1</th>
+													<th scope="col" style="border-bottom: 1px solid;">Lần
+														2</th>
+													<th scope="col" style="border-bottom: 1px solid;">Lần
+														3</th>
+													<th scope="col" style="border-bottom: 1px solid;">Trung
+														bình</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+
+													<td scope="row"><input class="result form-control" value="1"
+														step="0.1" type="number" id="result-1" name="firstResult"
+														min="0.1" max="5"></td>
+													<td scope="row"><input class="result form-control" value="1"
+														step="0.1" type="number" id="result-2" name="secondResult"
+														min="0.1" max="5"></td>
+													<td scope="row"><input class="result form-control" value="1"
+														step="0.1" type="number" id="result-3" name="thirdResult"
+														min="0.1" max="5"></td>
+													<td id="avg-td" scope="row"><label  id="avg-result"
+														class="col-form-label">1</label></td>
+
+
+
+												</tr>
+
+
+											</tbody>
+										</table>
+									</div>
+									<div class="offset-md-2 col-md-6">
+										<div class="form-group row">
+											<div class= "col-md-6">
+											
+												<select class="js-example-basic-single w-100" id="calibrator">
+													<option th:each="empl : ${employees}"
+														th:value="${empl.id}"
+														th:text="${empl.employeeName}">
+													
+												</select>
+											</div>
+
+										</div>
+
+
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-8">
+										<div class="form-group">
+											<label for="comment">Comment:</label>
+											<textarea class="form-control" rows="5" id="comment"></textarea>
+										</div>
+									</div>
+
+								</div>
+
+							</div>
+							<div class="modal-footer">
+								<input id="btn-add" class="btn btn-primary" type="submit" value="Thêm" />
+								
+								<button type="button" class="btn btn-light" data-dismiss="modal">
+									Hủy bỏ</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- Main Modal Ends -->
+
+			<!-- Default-setting Modal starts -->
+			<div class="modal fade" id="default-setting-modal" role="dialog"
+			aria-labelledby="exampleModalLabel" aria-hidden="true"
+			style="display: none">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" >Cài đặt dữ liệu mặc định</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<form class="cmxform" id="scale-calibration-form" action=""
+						method="POST">
+						<div class="modal-body">
+							<input type="text" class="form-control" id="id" name="id" hidden />
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label for="firstname" class="col-sm-3 col-form-label">Ngày
+											giờ tạo</label>
+										<div class="col-sm-9">
+											<input type="datetime-local" class="form-control"
+												id="created-datetime" name="created-datetime" />
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label for="lastname" class="col-sm-3 col-form-label">Bộ
+											phận</label>
+										<div class="col-sm-9">
+											<select class="js-example-basic-single w-100"  id="department" >
+												<option th:each="department : ${departments}"
+													th:value="${department.departmentCode}"
+													th:text="${department.departmentName}"></option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Tên thiết bị</label>
+										<div class="col-sm-9">
+											
+											<select class="js-example-basic-single w-100" id="calibrated-device">
+												<option th:each="scale : ${scales}"
+													th:value="${scale.id}"
+													th:text="${scale.machineName}">
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Ký hiệu</label>
+										<div class="col-sm-9">
+												<!-- todo here -->
+												<select class="js-example-basic-single w-100" id="calibrated-device-symbol">
+												<option th:each="scaleSymbol : ${scaleSymbols}"
+													th:value="${scaleSymbol.id}"
+													th:text="${scaleSymbol.symbolString}">
+												</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Thiết bị chuẩn
+											sử dụng</label>
+										<div class="col-sm-9">
+											<select class="js-example-basic-single w-100" name="standardDeviceId" id="standard-device">
+												<option th:each="device: ${standardDevices}"
+													th:value="${device.id}"
+													th:text="${device.machineName}"></option>
+
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Phương pháp
+											hiệu chuẩn</label>
+										<div class="col-sm-5">
+											<input name="calibratingMethod" id="method-input" type="text" class="form-control"
+												disabled value="Thủ công" />
+										</div>
+										<div class="col-md-2">
+											<div class="form-check">
+												<label class="form-check-label"> <input
+													id="checkbox-other-method" type="checkbox"
+													class="form-check-input"> Khác <i
+													class="input-helper"></i></label>
+												
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+
+							</div>
+
+							<div class="row">
+								<div class="col-md">Bảng kết quả hiệu chuẩn</div>
+								<div class="col-md">Nguời hiệu chuẩn</div>
+							</div>
+
+							<div class="row">
+
+								<div class="table-responsive col-md-4">
+									<table class="table">
+										<thead>
+											<tr>
+												<th scope="col" style="border-bottom: 1px solid;">Lần
+													1</th>
+												<th scope="col" style="border-bottom: 1px solid;">Lần
+													2</th>
+												<th scope="col" style="border-bottom: 1px solid;">Lần
+													3</th>
+												<th scope="col" style="border-bottom: 1px solid;">Trung
+													bình</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+
+												<td scope="row"><input class="result form-control" value="1"
+													step="0.1" type="number" id="result-1" name="firstResult"
+													min="0.1" max="5"></td>
+												<td scope="row"><input class="result form-control" value="1"
+													step="0.1" type="number" id="result-2" name="secondResult"
+													min="0.1" max="5"></td>
+												<td scope="row"><input class="result form-control" value="1"
+													step="0.1" type="number" id="result-3" name="thirdResult"
+													min="0.1" max="5"></td>
+												<td id="avg-td" scope="row"><label  id="avg-result"
+													class="col-form-label">1</label></td>
+
+											</tr>
+
+
+										</tbody>
+									</table>
+								</div>
+								<div class="offset-md-2 col-md-6">
+									<div class="form-group row">
+										<div class= "col-md-6">
+										
+											<select class="js-example-basic-single w-100" id="calibrator">
+												<option th:each="empl : ${employees}"
+													th:value="${empl.id}"
+													th:text="${empl.employeeName}">
+												
+											</select>
+										</div>
+
+									</div>
+
+
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-8">
+									<div class="form-group">
+										<label for="comment">Comment:</label>
+										<textarea class="form-control" rows="5" id="comment"></textarea>
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+						<div class="modal-footer">
+							<input id="btn-add" class="btn btn-primary" type="submit" value="Thêm" />
+							
+							<button type="button" class="btn btn-light" data-dismiss="modal">
+								Hủy bỏ</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+			<!-- Default-setting Modal ends -->
+
+			<div class="container-fluid page-body-wrapper">
+				<div class="main-panel">
+					<div class="content-wrapper">
+						<div class="row grid-margin">
+							<div class="col-12">
+								<div class="card">
+									<div class="card-body">
+										<h4 class="card-title text-center">SỔ THEO DÕI HIỆU CHUẨN
+											CÂN HÀNG NGÀY</h4>
+
+										<div class="template-demo">
+											<h4>Bộ lọc:</h4>
+
+											<div class="row">
+												<div class="col-md-4">
+													<div class="form-group row">
+														<label for="from-date" class="col-sm-4 col-form-label">Từ
+															ngày</label>
+														<div class="col-sm-8">
+															<input data-date-format="DD MMMM YYYY"
+																type="datetime-local" class="form-control"
+																id="from-date-filter" placeholder="" />
+														</div>
+													</div>
+													<div class="form-group row">
+														<label for="to-date" class="col-sm-4 col-form-label">Đến
+															ngày</label>
+														<div class="col-sm-8">
+															<input type="datetime-local" class="form-control"
+																id="to-date-filter" placeholder="" />
+														</div>
+													</div>
+												</div>
+												<div class="col-md-4">
+													<div class="form-group row"
+														style="display: table; width: 80%;">
+														<label
+															style="width: 50%; margin: 0; display: table-cell; vertical-align: middle;"
+															for="calibrator-dropdown">Người hiệu chuẩn</label> <select
+															style="display: table-cell; text-align: center; vertical-align: middle;"
+															class="form-control" id="calibrator-filter">
+															
+														</select>
+													</div>
+													<div class="form-group row"
+														style="display: table; width: 80%;">
+														<label
+															style="width: 50%; margin: 0; display: table-cell; vertical-align: middle;"
+															for="inspector-dropdown">Người kiểm tra</label> <select
+															style="display: table-cell; text-align: center; vertical-align: middle;"
+															class="form-control" id="inspector-filter">
+															
+														</select>
+													</div>
+												</div>
+
+												<div class="col-md-4">
+
+													<div class="col-md-8">
+														<div class="form-group">
+															<label>Trạng thái</label>
+
+															<div class="form-check">
+																<label class="form-check-label"> <input
+																	id="pending-filter"
+																	type="checkbox" class="form-check-input"> Đang
+																	chờ <i class="input-helper"></i></label>
+															</div>
+															<div class="form-check">
+																<label class="form-check-label"> <input
+																	id="approved-filter"
+																	type="checkbox" class="form-check-input">
+																	Đã duyệt <i class="input-helper"></i></label>
+															</div>
+															<div class="form-check">
+																<label class="form-check-label"> <input
+																	id="rejected-filter"
+																	type="checkbox" class="form-check-input" >
+																	Đã từ chối <i class="input-helper"></i></label>
+															</div>
+
+														</div>
+													</div>
+
+												</div>
+											</div>
+										</div>
+										<div class="template-demo">
+											<button id="btn-create" type="button" class="btn btn-primary btn-fw"
+												data-toggle="modal" data-target="#main-modal">
+												Tạo mẫu giám sát</button>
+
+											<select id="element" class="btn btn-outline-info">
+												<option class="dropdown-item" value="10" selected>
+													10 element</option>
+												<option class="dropdown-item" value="20">20 element
+												</option>
+												<option class="dropdown-item" value="50">50 element
+												</option>
+												<option class="dropdown-item" value="100">100
+													element</option>
+											</select>
+
+											<form id="form-search" class="form-inline form-inline-search">
+												<input id="search-text" type="text" class="form-control mb-2 mr-sm-2"
+													placeholder="Tìm kiếm" aria-label="Recipient's username" />
+
+												<button type="submit" class="btn btn-primary mb-2">
+													Tìm kiếm</button>
+												<button type="button" id="btn-export" class="btn btn-primary mb-2">
+												Xuất báo cáo
+													</button>
+											</form>
+											
+										</div>
+
+										<!-- view list-->
+										<div class="table-responsive">
+											<table id="my-data-table" class="table table-hover table-bordered text-center">
+												<thead>
+													<tr>
+														<th hidden="true">Id</th>
+														<th>STT</th>
+														<th>Ngày giờ</th>
+														<th>Tên thiết bị</th>
+														<th>Bộ phận</th>
+
+														<th>Ký hiệu</th>
+														<th>Người hiệu chuẩn</th>
+														<th>Người kiểm tra</th>
+														<th>Kết quả trung bình</th>
+														<th>Trạng thái</th>
+														<th>Thao tác</th>
+
+													</tr>
+												</thead>
+												<tbody>
+													
+												</tbody>
+											</table>
+										</div>
+										<!-- End view list-->
+
+										<!-- pagination -->
+										<nav class="pt-sm-2">
+											<ul class="pagination d-flex justify-content-end">
+												<li class="page-item"><a class="page-link" href="#"><i
+														class="icon-arrow-left"></i></a></li>
+												<li class="page-item active"><a class="page-link"
+													href="#">1</a></li>
+												<li class="page-item"><a class="page-link" href="#">2</a>
+												</li>
+												<li class="page-item"><a class="page-link" href="#">3</a>
+												</li>
+												<li class="page-item"><a class="page-link" href="#">4</a>
+												</li>
+												<li class="page-item"><a class="page-link" href="#"><i
+														class="icon-arrow-right"></i></a></li>
+											</ul>
+										</nav>
+										<!-- End pagination -->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- content-wrapper ends -->
+
+
+					<!-- partial -->
+				</div>
+				<!-- main-panel ends -->
+			</div>
+
+
+
+
+
+
+			<!-- Copy from here to end-->
+		</th:block>
+	</div>
+
+	<!-- partial:layouts/footer.html -->
+	<th:block id="footer" th:replace="layouts/footer">
+	</th:block>
+
+	<!-- Custom JavaScript for this page in here -->
+	<th:block id="custom-js">
+	<script th:src="@{/js/form-scale-calibration-async-task.js}"></script>
+	<script></script>
+
+	</th:block>
+	<!-- End Custom JavaScript  -->
+
+</body>
+
+</html>

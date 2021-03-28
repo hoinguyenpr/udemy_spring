@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layouts/main-layout :: main-fragment(
+                                          ~{::title},
+                                          ~{:: #other-static-resources},
+                                          ~{:: #navbar},
+                                          ~{:: #main-content},  
+                                          ~{:: #footer},
+                                          ('/QAMS/js/finished-product.js')
+                                         )}">
+
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Trang chủ</title>
+
+<th:block id="other-static-resources"
+	th:replace="~{layouts/otherStaticResources}"></th:block>
+
+
+
+
+</head>
+
+<body>
+	<div class="container-scroller">
+		<!-- partial:partials/_horizontal-navbar.html -->
+		<div id="navbar" th:replace="layouts/navbar"></div>
+
+		<!-- partial -->
+
+
+		<div id="main-content">
+			<!-- Copy here-->
+	
+
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalLabel" aria-hidden="true"
+				style="display: none;">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Tạo mới thành
+								phẩm</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
+
+						<!-- Form: Enter link here -->
+						<form class="cmxform" id="signupForm" action="#"
+							th:action="@{/addProduct}" th:object="${finishedProduct}"
+							method="POST">
+
+							<div class="modal-body">
+
+								<input type="hidden" id="id" th:field="*{id}" />
+
+
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="productCode" class="col-sm-3 col-form-label">Mã
+												Lô Thành Phẩm</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="productCode"
+													name="productCode" th:field="*{productCode}">
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="productName" class="col-sm-3 col-form-label">Tên
+												Thành Phẩm</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="productName"
+													name="productName" th:field="*{productName}">
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<p class="card-description">Khối Lượng</p>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="finishedProduct" class="col-sm-3 col-form-label">Thành
+												Phẩm Đạt</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="finishedProduct"
+													name="finishedProduct" th:field="*{finishedProduct}">
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="unsatisfiedProduct"
+												class="col-sm-3 col-form-label">Thành Phẩm Không Đạt</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control"
+													id="unsatisfiedProduct" name="unsatisfiedProduct"
+													th:field="*{unsatisfiedProduct}">
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="waterExtract" class="col-sm-3 col-form-label">Tách
+												Nước</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="waterExtract"
+													name="waterExtract" th:field="*{waterExtract}">
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="coconutSilk" class="col-sm-3 col-form-label">Da
+												Dừa</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="coconutSilk"
+													name="coconutSilk" th:field="*{coconutSilk}">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="scrap" class="col-sm-3 col-form-label">Phế</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="scrap"
+													name="scrap" th:field="*{scrap}">
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="crusted" class="col-sm-3 col-form-label">Cặn</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="crusted"
+													name="crusted" th:field="*{crusted}">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="residue" class="col-sm-3 col-form-label">Bã</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="residue"
+													name="residue" th:field="*{residue}">
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="total" class="col-sm-3 col-form-label">Tổng</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="total"
+													name="total" th:field="*{total}">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="note" class="col-sm-3 col-form-label">Ghi
+												Chú</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="note"
+													name="note" th:field="*{note}">
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- </div> -->
+							</div>
+							<div class="modal-footer">
+								<input class="btn btn-primary" type="submit" value="Lưu">
+								<button type="button" class="btn btn-light" data-dismiss="modal">Trở
+									Lại</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<!-- End create new additive button / Edit row -->
+			<!-- Form popup when delete -->
+			<div class="modal fade" id="exampleModal1" tabindex="-1"
+				role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+				style="display: none;">
+				<div class="modal-dialog modal-sm" role="document">
+					<div class="modal-content">
+						<form id="deleteForm" th:action="@{/delete}" method="POST"
+							class="">
+							<input type="hidden" id="deleteIda" th:name="deleteId" value="" />
+							<div class="modal-body">
+								<h4 style="text-align: center;">Bạn có muốn xóa?</h4>
+							</div>
+
+							<!-- Delete, cancel button-->
+							<div class="modal-footer">
+								<input style="width: 7rem;" class="btn btn-danger" type="submit"
+									value="Xóa">
+								<button style="width: 7rem;" type="button" class="btn btn-light"
+									data-dismiss="modal">Hủy</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- End form popup when delete -->
+
+
+			<div class="container-fluid page-body-wrapper">
+				<div class="main-panel">
+					<div class="content-wrapper">
+						<div class="row grid-margin">
+							<div class="col-12">
+								<div class="card">
+									<div class="card-body">
+										<h4 class="card-title text-center">LÔ THÀNH PHẨM</h4>
+
+										<div class="template-demo">
+											<button type="button"
+												class="btn btn-primary btn-fw #create-button"
+												data-toggle="modal" data-target="#exampleModal">TẠO
+												MÃ LÔ THÀNH PHẨM</button>
+
+											<select id="Ultra" class="btn btn-outline-info btn-fw"
+												name="order-listing_length" aria-controls="order-listing"
+												onchange="run()">
+												<option value="10" th:selected="${pageSize == 10}" selected>10
+													Lô Thành Phẩm</option>
+												<option value="20" th:selected="${pageSize == 20}">20
+													Lô Thành Phẩm</option>
+												<option value="50" th:selected="${pageSize == 50}">50
+													Lô Thành Phẩm</option>
+												<option value="100" th:selected="${pageSize == 100}">100
+													Lô Thành Phẩm</option>
+											</select>
+
+
+											<!-- Search -->
+											<form th:action="@{/}" class="form-inline form-inline-search">
+
+												<input type="text" name="search" id="search"
+													class="form-control mb-2 mr-sm-2" th:value="${search}"
+													placeholder="Tìm kiếm..." aria-label="Recipient's username">
+
+												<button type="submit" class="btn btn-primary mb-2">Tìm
+													Kiếm</button>
+											</form>
+											<!-- End Search -->
+
+										</div>
+										<!-- view list-->
+										<div class="table-responsive">
+											<table class="table table-hover table-bordered text-center">
+												<thead>
+													<tr>
+														<th rowspan="2" class="text-break " style="width: 5rem;">STT</th>
+														<th rowspan="2" colspan="1" class="text-break"
+															style="width: 5rem;">Mã lô TP</th>
+														<th rowspan="2" class="text-break " style="width: 5rem;">Tên
+															TP</th>
+														<th rowspan="2" class="text-break " style="width: 5rem;">TP
+															Đạt</th>
+														<th rowspan="2" class="text-break " style="width: 5rem;">TP
+															Không Đạt</th>
+														<th rowspan="2" class="text-break " style="width: 5rem;">Tách
+															Nước</th>
+														<th rowspan="2" class="text-break " style="width: 5rem;">Da
+															Dừa</th>
+														<th rowspan="2" class="text-break " style="width: 5rem;">Phế</th>
+														<th rowspan="2" class="text-break " style="width: 5rem;">Cặn</th>
+														<th rowspan="2" class="text-break " style="width: 5rem;">Bã</th>
+														<th rowspan="2" class="text-break " style="width: 5rem;">Tổng</th>
+														<th rowspan="2" class="text-break " style="width: 5rem;">Ghi
+															Chú</th>
+														<th rowspan="2" style="width: 18em;">Hành Động</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr
+														th:each="finishedProducts,productStat : ${finishedProducts}"
+														th:id="${productStat.count}">
+														<td class="deleteID" th:value="${finishedProducts.id}"
+															th:text="${productStat.count}" />
+														<th class="productCode"
+															th:text="${finishedProducts.productCode}" />
+														<th class="productName"
+															th:text="${finishedProducts.productName}" />
+														<th class="finishedProduct"
+															th:text="${finishedProducts.finishedProduct}" />
+														<th class="unsatisfiedProduct"
+															th:text="${finishedProducts.unsatisfiedProduct}" />
+														<th class="waterExtract"
+															th:text="${finishedProducts.waterExtract}" />
+														<th class="coconutSilk"
+															th:text="${finishedProducts.coconutSilk}" />
+														<th class="scrap" th:text="${finishedProducts.scrap}" />
+														<th class="crusted" th:text="${finishedProducts.crusted}" />
+														<th class="residue" th:text="${finishedProducts.residue}" />
+														<th class="total" th:text="${finishedProducts.total}" />
+														<th class="note" th:text="${finishedProducts.note}" />
+														<td>
+															<button style="width: 7rem;" type="button"
+																class="btn btn-outline-info btn-md edit-button"
+																data-toggle="modal" data-target="#exampleModal">
+																<i class="icon-pencil"></i>Sửa
+															</button>
+															<button style="width: 7rem;" type="button"
+																class="btn btn-outline-danger btn-md delete-button"
+																data-toggle="modal" data-target="#exampleModal1">
+																<i class="icon-trash"></i>Xóa
+															</button>
+
+
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<!-- End view list-->
+
+										<!-- pagination -->
+										<input hidden="" th:value="${currentPage}" id="pageNum">
+										<nav class="pt-sm-2">
+											<ul class="pagination d-flex justify-content-end ">
+
+												<!-- 0 -->
+
+												<li class="page-item"><a class="page-link"
+													th:href="@{/?page=0}"> <i class=" icon-control-start"></i>
+												</a></li>
+
+												<!-- prevous -->
+
+												<li class="page-item"><a class="page-link"
+													th:if="${currentPage >= 1}"
+													th:href="@{/(page=${currentPage - 1})}"> <i
+														class="icon-arrow-left"></i>
+												</a></li>
+
+												<!-- 1 -->
+
+												<li class="page-item"><a class="page-link"
+													th:if="${ totalPages > currentPage }"
+													th:href="@{/(page=${currentPage})}"> <i
+														th:text="${currentPage + 1}"></i>
+												</a></li>
+												<!-- 2 -->
+
+												<li class="page-item"><a class="page-link"
+													th:if="${ totalPages > currentPage + 1 }"
+													th:href="@{/(page=${currentPage + 1})}"> <i
+														th:text="${currentPage + 2 }"></i>
+												</a></li>
+
+
+												<!-- 3-->
+
+												<li class="page-item"><a class="page-link"
+													th:if="${ totalPages > currentPage + 1}"
+													th:href="@{/?(page=${currentPage + 2})}"> <i
+														th:text="${currentPage + 3}"></i>
+												</a></li>
+
+												<!-- 4 -->
+
+												<li class="page-item"><a class="page-link"
+													th:if="${ totalPages > currentPage + 1}"
+													th:href="@{/?(page=${currentPage + 3})}"> <i
+														th:text="${currentPage + 4}"></i>
+												</a></li>
+
+												<!-- 5 -->
+
+												<li class="page-item"><a class="page-link"
+													th:if="${ totalPages > currentPage + 1}"
+													th:href="@{/?(page=${currentPage + 4})}"> <i
+														th:text="${currentPage + 5}"></i>
+												</a></li>
+
+												<!-- next -->
+
+												<li class="page-item"><a class="page-link"
+													th:if="${ totalPages > currentPage + 2}"
+													th:href="@{/?(page=${currentPage + 1})}"> <i
+														class="icon-arrow-right"></i>
+												</a></li>
+
+
+												<!-- end -->
+
+												<li class="page-item"><a class="page-link"
+													th:href="@{/?(page=${totalPages - 1})}"> <i
+														class=" icon-control-end"></i>
+												</a></li>
+
+											</ul>
+										</nav>
+										<!-- End pagination -->
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+
+			<!-- Copy here-->
+		</div>
+	</div>
+
+	<div id="footer" th:replace="layouts/footer"></div>
+
+
+	<!-- Validate input JS-->
+	<!-- Custom-->
+	<!-- End Custom -->
+
+
+
+
+	<script th:src="@{/js/alerts.js}"></script>
+	<script th:src="@{/js/avgrund.js}"></script>
+
+
+
+</body>
+
+</html>
+

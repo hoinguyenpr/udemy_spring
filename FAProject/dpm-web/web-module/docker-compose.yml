@@ -1,0 +1,55 @@
+version: "3"
+
+           
+services:
+ 
+  qams-mariadb:
+  
+    image: mariadb:10.4.13
+    container_name: qams_mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: qams
+    volumes:
+      - qams-data:/var/lib/mysql
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    networks:
+      - internal
+
+  phpmyadmin:
+    depends_on:
+      - qams-mariadb
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - '8281:80'
+    environment:
+      PMA_HOST: qams-mariadb
+      MYSQL_ROOT_PASSWORD: 123
+    networks:
+      - internal
+  qams-web:
+  
+    build: .
+    image: qams_web
+    container_name: qams_web
+    ports:
+      - 8282:8080
+    depends_on:
+      - qams-mariadb
+    restart: unless-stopped
+
+    networks:
+      - internal
+    
+    volumes:
+      - qams-data:/config:rw  
+  
+networks:
+
+  internal:
+    driver: bridge
+
+volumes:
+  qams-data:
+  

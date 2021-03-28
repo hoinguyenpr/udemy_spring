@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	th:replace="
+                ~{layouts/main-layout :: main-fragment(
+                                                      ~{:: title},
+                                                      ~{:: #css-page},
+                                                      ~{:: #custom-css-page},
+                                                      ~{:: #navbar},
+                                                      ~{:: #main-content},  
+                                                      ~{:: #footer},
+                                                      ~{:: #custom-js}
+                                                     )}">
+
+<head>
+
+<title th:utext="#{pressing-monitor.title}"></title>
+<link rel="stylesheet"
+	th:href="@{https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.css}" />
+
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css"
+	rel="stylesheet" />
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
+
+
+<!-- partial:layouts/otherStaticResources.html -->
+<th:block id="css-page" th:replace="~{layouts/mainCss}"></th:block>
+
+<!-- Custom CSS for this page in here -->
+
+<th:block id="custom-css-page">
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+	<style>
+.content-wrapper {
+	max-width: 95%;
+}
+
+.badge {
+	width: 90px;
+}
+
+.table-responsive {
+	height: 500px;
+}
+</style>
+
+</th:block>
+<!-- End Custom CSS  -->
+
+</head>
+
+<body onload="setDate()">
+	<div class="container-scroller">
+
+		<!-- partial:layouts/navbar.html -->
+		<th:block id="navbar" th:replace="layouts/navbar">
+		</th:block>
+
+		<th:block id="main-content">
+			<!-- Copy From start to here-->
+
+
+			<!-- container start -->
+			<div class="container-fluid page-body-wrapper">
+				<div class="main-panel">
+					<div class="content-wrapper">
+
+						<!-- card start -->
+						<div class="card">
+							<div class="card-body">
+
+								<div class="row">
+									<div class="col-6">
+										<h4 class="card-title">
+											[[#{pressing-monitor.form.title}]]</h4>
+									</div>
+									<div class="col-6 text-right">
+										<button class="btn btn-info" data-toggle="modal"
+											data-target="#configModal">
+											<i class="icon-settings icons"></i> Thiết lập mặc định
+										</button>
+									</div>
+								</div>
+
+								<form action="#" class="" novalidate
+									th:attr="onsubmit=|event => validateData(event)|"
+									th:action="@{/pressing-monitor/create}" id="inputForm"
+									method="post" th:object=${pressingMonitor}>
+
+									<!-- Hidden input to id input -->
+									<input type="hidden" id="id" th:field="*{id}" value='0'>
+
+									<input type="hidden" id="createIdEmployee"
+										th:field="*{createIdEmployee}" /> <input type="hidden"
+										id="status" name="status" value="0" />
+									<fieldset class="border rounded p-3 my-2">
+										<legend th:utext="#{pressing-monitor.form.title.basic}"></legend>
+
+										<div class="form-row pb-2">
+											<div class="form-group col">
+												<label for="typeProduct"
+													th:utext="#{pressing-monitor.form.type-product}"></label> <select
+													class="form-control" id="typeProduct"
+													th:field="*{typeProductId}">
+													<!-- Show all product type through attribute listTypeProduct -->
+													<option th:if="${listTypeProduct.isEmpty()}" value="">
+														NO DATA</option>
+													<th:block th:unless="${listTypeProduct.isEmpty()}">
+														<option th:each="tp : ${listTypeProduct}"
+															th:value="${tp.id}" th:text="${tp.typeProductName}">
+														</option>
+													</th:block>
+												</select>
+											</div>
+
+											<div class="form-group col">
+												<label for="dateIn"
+													th:utext="#{pressing-monitor.form.input-date}"></label> <input
+													type="date" class="form-control" id="dateIn"
+													th:field="*{inputDate}" placeholder="" required>
+											</div>
+
+											<div class="form-group col">
+												<label for="machineId"
+													th:utext="#{pressing-monitor.form.machine}"></label> <select
+													data-live-search="true" class="form-control"
+													id="machineId selectMachine" th:field="*{machineId}">
+													<option th:if="${listMachines.isEmpty()}" value="">NO
+														DATA</option>
+													<th:block th:unless="${listMachines == null}">
+														<option th:each="mc : ${listMachines}" th:value="${mc.id}"
+															th:text="${mc.machineName}"></option>
+													</th:block>
+												</select>
+											</div>
+
+										</div>
+									</fieldset>
+
+									<fieldset class="border rounded p-3 my-2">
+										<legend th:utext="#{pressing-monitor.form.title.detail}"></legend>
+
+										<div class="row">
+											<div class="form-group col">
+												<label for="supplier-lot"
+													th:utext="#{pressing-monitor.form.ingredient-batch}"></label>
+												<select class="form-control" id="supplier-lot"
+													th:field="*{ingredientBatchId}">
+													<option th:each="ib : ${listIngerdientBatch}"
+														th:value="${ib.id}"
+														th:text="${ib.supplier.supplierName + ' / ' + ib.ingredientBatchCode}" />
+												</select>
+											</div>
+											<div class="col-1"></div>
+											<div class="form-group col">
+												<label for="inputTime"
+													th:utext="#{pressing-monitor.form.input-time}"></label> <input
+													type="time" class="form-control" id="inputTime"
+													th:field="*{inputTime}" required>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="form-group col">
+												<label for="weight"
+													th:utext="#{pressing-monitor.form.weight}"></label> <input
+													type="number" class="form-control" id="weight" min="100"
+													required th:field="*{weight}">
+											</div>
+											<div class="col-1"></div>
+											<div class="form-group col">
+												<label for="netStatus"
+													th:utext="#{pressing-monitor.form.net-status}"></label> <select
+													class="form-control" id="netStatus"
+													th:field="*{netStatusBeforePress}">
+													<option value="true">Đạt</option>
+													<option value="false" selected>Không đạt</option>
+												</select>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="form-group col">
+												<label for="timePressure"
+													th:utext="#{pressing-monitor.form.pressing-time}"></label>
+												<input type="number" class="form-control" id="timePressure"
+													th:field="*{pressingTime}" min="100" required>
+											</div>
+											<div class="col-1"></div>
+											<div class="form-group col">
+												<label for="pressure"
+													th:utext="#{pressing-monitor.form.pressure}"></label> <select
+													class="form-control" id="pressure"
+													th:field="*{pressureCondition}">
+													<option value="true">Đạt</option>
+													<option value="false" selected>Không đạt</option>
+												</select>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="form-group col">
+												<label for="weightCoconutMilk"
+													th:utext="#{pressing-monitor.form.weight-milk}"></label> <input
+													type="number" class="form-control" id="weightCoconutMilk"
+													th:field="*{weightCoconutMilk}" value="300" min="0"
+													required>
+
+											</div>
+											<div class="col-1"></div>
+											<div class="form-group col">
+												<label for="weightResidue"
+													th:utext="#{pressing-monitor.form.weight-residue}"></label>
+												<input type="number" class="form-control"
+													th:field="*{weightResidue}" id="weightResidue" value="300"
+													min="0" required>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="form-group col">
+												<label for="note" th:utext="#{pressing-monitor.form.note}"></label>
+												<textarea class="form-control" id="note" rows="5"
+													th:field="*{note}"></textarea>
+											</div>
+										</div>
+
+									</fieldset>
+
+									<div class="row p-3 float-right">
+										<button type="button" class="btn btn-primary ml-3"
+											th:attr="onclick=|resetData()|"
+											th:utext="#{pressing-monitor.form.button.refesh}">
+											<i class="icon-refresh"></i>
+										</button>
+										<button type="submit" id="submitButton"
+											class="btn btn-warning ml-3">Thêm mới</button>
+									</div>
+
+								</form>
+							</div>
+						</div>
+
+						<!-- start table card -->
+						<div class="card mt-3">
+							<div class="card-body">
+								<div class="card-title">
+									<div class="row">
+										<div class="col-md-6 text-left"
+											th:utext="#{pressing-monitor.table.label}"></div>
+										<div class="col-md-6">
+											<form th:action="@{/pressing-monitor}" method="GET"
+												name="filterForm" class="form-inline float-right">
+												<input type="hidden" name="page" id="currentPage">
+												<div class="form-group mx-sm-3 mb-2">
+													<select class="form-control" th:name="size"
+														id="currentSize">
+														<option value="5"
+															th:utext="#{pressing-monitor.table.5-item}"></option>
+														<option value="10"
+															th:utext="#{pressing-monitor.table.10-item}"></option>
+														<option value="20"
+															th:utext="#{pressing-monitor.table.20-item}"></option>
+													</select>
+												</div>
+												<div class="form-group mx-sm-3 mb-2">
+													<input type="date" class="form-control" name="date"
+														id="dateFilter">
+												</div>
+												<div class="form-group mx-sm-3 mb-2">
+													<button type="submit" class="btn btn-success"
+														th:utext="#{pressing-monitor.table.button.filter}"></button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="table-responsive">
+										<div class="row">
+											<div class="col-sm-12">
+												<table
+													class="table table-striped text-center table-bordered">
+													<thead>
+														<tr role="row">
+															<th scope="col"
+																th:utext="#{pressing-monitor.table.column.lot-code}">
+															</th>
+															<th scope="col"
+																th:utext="#{pressing-monitor.table.type-product}"></th>
+															<th scope="col"
+																th:utext="#{pressing-monitor.table.input-time}"></th>
+															<th scope="col"
+																th:utext="#{pressing-monitor.table.weight}"></th>
+															<th scope="col"
+																th:utext="#{pressing-monitor.table.net-status}"></th>
+															<th scope="col"
+																th:utext="#{pressing-monitor.table.pressure}"></th>
+															<th th:utext="#{pressing-monitor.table.weight-milk}"></th>
+															<th scope="col"
+																th:utext="#{pressing-monitor.table.residue}"></th>
+															<th scope="col" th:utext="#{pressing-monitor.table.note}">
+															</th>
+															<th scope="col">
+																[[#{pressing-monitor.table.create-person}]]</th>
+															<th scope="col">
+																[[#{pressing-monitor.table.status}]]</th>
+															<th scope="col"
+																th:utext="#{pressing-monitor.table.actions}"></th>
+														</tr>
+													</thead>
+													<tbody>
+
+														<tr
+															th:if="${pressingMornitors == null || pressingMornitors.isEmpty()}">
+															<td colspan="12">
+																[[#{pressing-monitor.table.no-data}]]</td>
+														</tr>
+
+														<th:block
+															th:unless="${pressingMornitors == null || pressingMornitors.isEmpty()}">
+
+															<tr th:each="pm : ${pressingMornitors}">
+																<td th:text="${pm.ingredientBatch.ingredientBatchCode}">
+																</td>
+																<td th:text="${pm.typeProduct.typeProductName}"></td>
+																<td th:text="${pm.inputTime.toLocalTime().toString()}">
+																</td>
+																<td th:text="${pm.weight}"></td>
+																<td>
+																	<div th:if="${pm.netStatusBeforePress}"
+																		class="badge badge-success"
+																		th:utext="#{pressing-monitor.table.label.ok}"></div>
+																	<div th:unless="${pm.netStatusBeforePress}"
+																		class="badge badge-danger"
+																		th:utext="#{pressing-monitor.table.lable.ng}"></div>
+																</td>
+																<td>
+																	<div th:if="${pm.pressureCondition}"
+																		class="badge badge-success"
+																		th:utext="#{pressing-monitor.table.label.ok}"></div>
+																	<div th:unless="${pm.pressureCondition}"
+																		class="badge badge-danger"
+																		th:utext="#{pressing-monitor.table.lable.ng}"></div>
+																</td>
+																<td th:text="${pm.weightCoconutMilk}"></td>
+																<td th:text="${pm.weightResidue}"></td>
+																<td th:text="${pm.note}"></td>
+																<td th:text="${pm.createEmployee.username}"></td>
+																<td th:switch="${pm.status}">
+																	<div th:case="0">
+																		<i class="fas fa-eye-slash" style="color: #ff922b;"
+																			title="Chờ duyệt"></i>
+																	</div>
+																	<div th:case="1">
+																		<i class="fas fa-eye" style="color: #51cf66;"
+																			title="Đã duyệt"></i>
+																	</div>
+																	<div th:case="2">
+																		<i class="far fa-times-circle" style="color: #ff6b6b;"
+																			title="Không duyệt"></i>
+																	</div>
+																</td>
+																<td>
+																	<div class="btn-group">
+																		<button type="button"
+																			class="btn btn-secondary dropdown-toggle"
+																			data-toggle="dropdown" aria-haspopup="true"
+																			aria-expanded="false">
+																			<i class="fas fa-sliders-h"></i>
+																		</button>
+																		<div class="dropdown-menu dropdown-menu-right">
+																			<th:block th:unless="${pm.status == 1}">
+																				<button class="dropdown-item"
+																				th:attr="onclick=|fetchApi('${pm.id}')|">
+																					[[#{pressing-monitor.table.button.update}]]</button>
+																				<button class="dropdown-item"
+																					th:attr="onclick=|deletePressingMonitor('${pm.id}')|">
+																					[[#{pressing-monitor.table.button.delete}]]</button>
+																			</th:block>
+																			
+																			<button class="dropdown-item"
+																				th:attr="onclick=|updateDefaultValueById('${pm.id}')|">
+																				[[#{pressing-monitor.table.button.set-default}]]</button>
+
+																		</div>
+																	</div>
+																</td>
+															</tr>
+
+														</th:block>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+									<div class="row mt-3">
+										<div class="col-8"></div>
+										<div class="col-4">
+											<ul class="pagination rounded float-right"
+												th:unless="${pressingMornitors.isEmpty()}">
+												<li class=""
+													th:attr="class = ${pressingMornitors.hasPrevious()} ? 'page-item' : 'page-item disabled'">
+													<a class="page-link"
+													th:href="@{/pressing-monitor(page=${currentPage - 1})}">
+														<i class="icon-arrow-left"></i>
+												</a>
+												</li>
+												<th:block
+													th:each="i: ${#numbers.sequence(0, totalPages - 1)}">
+													<li class=""
+														th:attr="class = ${currentPage == i} ? 'page-item active' : 'page-item' ">
+														<a class="page-link"
+														th:href="@{/pressing-monitor(page=${i})}"
+														th:text="${i + 1}"></a>
+													</li>
+												</th:block>
+												<li class=""
+													th:attr="class = ${pressingMornitors.hasNext()} ? 'page-item' : 'page-item disabled'">
+													<a class="page-link"
+													th:href="@{/pressing-monitor(page=${currentPage + 1})}">
+														<i class="icon-arrow-right"></i>
+												</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+						<!-- end table card -->
+					</div>
+				</div>
+				<!-- end input card -->
+
+			</div>
+			<!-- main-panel ends -->
+
+			<!-- Start configs modal -->
+			<div class="modal fade" id="configModal" tabindex="-1" role="dialog"
+				aria-labelledby="configModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="configModalLabel">Thiết lập giá
+								trị mặc định</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form action="#" class="" novalidate
+								th:action="@{/pressing-monitor/default-value}" id="configForm"
+								method="post" th:object=${pressingMonitor}>
+
+								<fieldset class="border rounded p-3 my-2">
+									<legend th:utext="#{pressing-monitor.form.title.basic}"></legend>
+
+									<div class="form-row pb-2">
+										<div class="form-group col">
+											<label for="typeProduct"
+												th:utext="#{pressing-monitor.form.type-product}"></label> <select
+												class="form-control" id="typeProduct"
+												th:field="*{typeProductId}">
+												<!-- Show all product type through attribute listTypeProduct -->
+												<option th:if="${listTypeProduct.isEmpty()}" value="">
+													NO DATA</option>
+												<th:block th:unless="${listTypeProduct.isEmpty()}">
+													<option th:each="tp : ${listTypeProduct}"
+														th:value="${tp.id}" th:text="${tp.typeProductName}"></option>
+												</th:block>
+											</select>
+										</div>
+
+										<div class="form-group col">
+											<label for="machineId"
+												th:utext="#{pressing-monitor.form.machine}"></label> <select
+												class="form-control" id="machineId" th:field="*{machineId}">
+												<option th:if="${listMachines.isEmpty()}" value="">
+													NO DATA</option>
+												<th:block th:unless="${listMachines == null}">
+													<option th:each="mc : ${listMachines}" th:value="${mc.id}"
+														th:text="${mc.machineName}"></option>
+												</th:block>
+											</select>
+										</div>
+
+									</div>
+								</fieldset>
+
+								<fieldset class="border rounded p-3 my-2">
+									<legend th:utext="#{pressing-monitor.form.title.detail}"></legend>
+
+									<!-- Hidden input to id input -->
+									<input type="hidden" id="id" th:field="*{id}" value='0'>
+
+									<div class="row">
+										<div class="form-group col">
+											<label for="supplier-lot"
+												th:utext="#{pressing-monitor.form.ingredient-batch}"></label>
+											<select class="form-control" id="supplier-lot"
+												th:field="*{ingredientBatchId}">
+												<option th:each="ib : ${listIngerdientBatch}"
+													th:value="${ib.id}"
+													th:text="${ib.supplier.supplierName + ' / ' + ib.ingredientBatchCode}" />
+											</select>
+										</div>
+										<div class="col-1"></div>
+										<div class="form-group col">
+											<label for="weightResidue"
+												th:utext="#{pressing-monitor.form.weight-residue}"></label>
+											<input type="number" class="form-control"
+												th:field="*{weightResidue}" id="weightResidue" value="300"
+												min="0" required>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col">
+											<label for="weight"
+												th:utext="#{pressing-monitor.form.weight}"></label> <input
+												type="number" class="form-control" id="weight" min="100"
+												required th:field="*{weight}">
+										</div>
+										<div class="col-1"></div>
+										<div class="form-group col">
+											<label for="netStatus"
+												th:utext="#{pressing-monitor.form.net-status}"></label> <select
+												class="form-control" id="netStatus"
+												th:field="*{netStatusBeforePress}">
+												<option value="true">Đạt</option>
+												<option value="false" selected>Không đạt</option>
+											</select>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col">
+											<label for="timePressure"
+												th:utext="#{pressing-monitor.form.pressing-time}"></label> <input
+												type="number" class="form-control" id="timePressure"
+												th:field="*{pressingTime}" min="100" required>
+										</div>
+										<div class="col-1"></div>
+										<div class="form-group col">
+											<label for="pressure"
+												th:utext="#{pressing-monitor.form.pressure}"></label> <select
+												class="form-control" id="pressure"
+												th:field="*{pressureCondition}">
+												<option value="true">Đạt</option>
+												<option value="false" selected>Không đạt</option>
+											</select>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="form-group col">
+											<label for="weightCoconutMilk"
+												th:utext="#{pressing-monitor.form.weight-milk}"></label> <input
+												type="number" class="form-control" id="weightCoconutMilk"
+												th:field="*{weightCoconutMilk}" value="300" min="0" required>
+
+										</div>
+										<div class="col-1"></div>
+										<div class="form-group col"></div>
+									</div>
+
+								</fieldset>
+
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary"
+								data-dismiss="modal">Close</button>
+							<button type="submit" class="btn btn-primary" form="configForm">Save
+								changes</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Copy from here to end-->
+		</th:block>
+	</div>
+
+	<!-- partial:layouts/footer.html -->
+	<th:block id="footer" th:replace="layouts/footer"></th:block>
+
+	<!-- Custom JavaScript for this page in here -->
+	<th:block id="custom-js">
+
+		<script
+			src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script
+			th:src="@{https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.js}"></script>
+
+		<!-- custom java script -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+		<script
+			src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+		<script
+			src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+		<script th:src="@{/custom-js/pressing-monitor.js}"></script>
+		<script th:inline="javascript">
+		
+		    /*<![CDATA[*/
+		
+		    let state = /*[[${state}]]*/
+		
+		    let entity = /*[[${pressingMonitor}]]*/
+		
+		    let pageSize = /*[[${pageSize}]]*/
+		
+			let pageCurrent = /*[[${currentPage}]]*/
+			
+			let date = /*[[${date}]]*/
+		
+		     $('#currentSize').val(pageSize);
+			  $('#currentPage').val(pageCurrent);
+			  $('#dateFilter').val(date);
+		
+		    /*]]>*/
+ 		 </script>
+
+	</th:block>
+	<!-- End Custom JavaScript  -->
+
+</body>
+
+</html>

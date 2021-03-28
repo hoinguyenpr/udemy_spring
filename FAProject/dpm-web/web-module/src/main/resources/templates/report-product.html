@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	th:replace="
+    ~{layouts/main-layout :: main-fragment(
+                                          ~{:: title},
+                                          ~{:: #css-page},
+                                          ~{:: #custom-css-page},
+                                          ~{:: #navbar},
+                                          ~{:: #main-content},  
+                                          ~{:: #footer},
+                                          ~{:: #custom-js}
+                                         )}">
+
+<head>
+
+<title>Sản phẩm</title>
+
+<!-- partial:layouts/otherStaticResources.html -->
+<th:block id="css-page" th:replace="~{layouts/mainCss}"></th:block>
+
+<!-- Custom CSS for this page in here -->
+<th:block id="custom-css-page">
+
+
+
+</th:block>
+<!-- End Custom CSS  -->
+
+</head>
+
+<body>
+	<div class="container-scroller">
+
+		<!-- partial:layouts/navbar.html -->
+		<th:block id="navbar" th:replace="layouts/navbar">
+		</th:block>
+
+		<th:block id="main-content">
+			<!-- Copy From start to here-->
+			<div class="container-fluid page-body-wrapper">
+				<div class="main-panel">
+					<div class="content-wrapper">
+						<div class="row grid-margin">
+							<div class="col-12">
+								<div class="card">
+									<div class="card-body">
+										<h4 class="card-title text-center">
+											[[#{reporpProduct.title.pageName}]]</h4>
+										<form th:action="@{/product/get-report}" method="get"
+											id="filterForm">
+											<input type="hidden" name="page" id="inputPage"> <input
+												type="hidden" name="size" id="inputSize">
+											<!-- ROW 1 -->
+											<div class="form-group  row">
+												<!-- ROW 1 - COL 1 -->
+												<div class="col-md-5 col-sm-12">
+													<div class="row">
+														<label for="createEmployee"
+															class="col-md-3 col-sm-3 col-form-label">[[#{reporpProduct.title.typeProduct}]]</label>
+														<select name="typeProductId" id="typeProductId"
+															class="form-control col-md-9 col-sm-9">
+															<option value="0" selected>Tất cả</option>
+															<option th:each="product : ${listTypeProducts}"
+																th:value="${product.id}"
+																th:text="${product.typeProductName}"></option>
+														</select>
+													</div>
+												</div>
+
+												<div class="col-md-2 col-sm-12"></div>
+												<div class="col-md-5 col-sm-12">
+													<div class="row">
+														<label for="createEmployee"
+															class="col-md-3 col-sm-3 col-form-label justify-content-end">[[#{reporpProduct.title.machineNo}]]</label>
+														<select name="machineId" id="machineId"
+															class="form-control col-md-9 col-sm-9">
+															<option value="0" selected>Tất cả</option>
+															<option th:each="machine : ${listMachines}"
+																th:value="${machine.id}"
+																th:text="${machine.machineName + ' - ' + machine.machineCode}">
+															</option>
+														</select>
+													</div>
+												</div>
+
+
+											</div>
+
+											<!-- ROW 2 -->
+											<div class="form-group row">
+												<div class="col-md-5 col-sm-12">
+													<div class="row">
+														<label class="col-md-3 col-sm-3 col-form-label ">Từ ngày</label>
+														<input type="date" name="fromDate" id="fromDate"
+															class="form-control col-md-9 col-sm-9 myCalendar">
+													</div>
+												</div>
+												<div class="col-md-2"></div>
+												<div class="col-md-5 col-sm-12">
+													<div class="row">
+														<label class="col-md-3 col-sm-3 col-form-label"
+															th:text="#{sieveDrying.label.toDate}"></label> <input
+															type="date" name="toDate" id="toDate"
+															class="form-control col-md-9 col-sm-9 myCalendar">
+													</div>
+												</div>
+											</div>
+
+											<!-- ROW 3 -->
+											<div class="form-group row">
+
+												<div class="col-md-2 col-sm-12"></div>
+												<div class="col-md-5 col-sm-12">
+													<div class="row justify-content-end">
+														<div class="col-md-4 col-sm-12">
+															<button type="submit"
+																class="btn btn-sm btn-info col-md-12">
+																<svg xmlns="http://www.w3.org/2000/svg" width="16"
+																	height="16" fill="currentColor"
+																	class="bi bi-binoculars" viewBox="0 0 16 16">
+																	<path
+																		d="M3 2.5A1.5 1.5 0 0 1 4.5 1h1A1.5 1.5 0 0 1 7 2.5V5h2V2.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5v2.382a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V14.5a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 14.5v-3a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5v3A1.5 1.5 0 0 1 5.5 16h-3A1.5 1.5 0 0 1 1 14.5V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V2.5zM4.5 2a.5.5 0 0 0-.5.5V3h2v-.5a.5.5 0 0 0-.5-.5h-1zM6 4H4v.882a1.5 1.5 0 0 1-.83 1.342l-.894.447A.5.5 0 0 0 2 7.118V13h4v-1.293l-.854-.853A.5.5 0 0 1 5 10.5v-1A1.5 1.5 0 0 1 6.5 8h3A1.5 1.5 0 0 1 11 9.5v1a.5.5 0 0 1-.146.354l-.854.853V13h4V7.118a.5.5 0 0 0-.276-.447l-.895-.447A1.5 1.5 0 0 1 12 4.882V4h-2v1.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V4zm4-1h2v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V3zm4 11h-4v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14zm-8 0H2v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14z" />
+																</svg>
+																[[#{reporpProduct.button.view}]]
+															</button>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- ROW 3 -->
+											<div class="form-group row"></div>
+
+
+										</form>
+
+
+										<!-- <div class="template-demo"> -->
+										<!--search-->
+										<!-- <form class="form-inline form-inline-search" th:action="@{/product/search}"
+												method="GET">
+
+												<input class="form-control mb-2 mr-sm-2" name="keyword"
+													th:value="${defaultValue}">
+												<button class="btn btn-primary mb-2" type="submit">Tìm
+													kiếm</button> -->
+										<!-- </form> -->
+										<!--end search-->
+										<!-- </div> -->
+										<!-- view list-->
+
+										<div class="row justify-content-end">
+											<div class="col-md-2 col-sm-12">
+												<form th:action="@{/product/export/excel}" method="get">
+													<input type="hidden" name="typeProductId" id="typeProductIdTemp">
+													<input type="hidden" name="machineId" id="machineIdTemp">
+													<input type="hidden" name="fromDate" id="fromDateTemp">
+													<input type="hidden" name="toDate" id="toDateTemp">
+													<button class="btn btn-sm btn-primary col-md-12">
+														[[#{reporpProduct.button.export}]]</button>
+												</form>
+											</div>
+										</div>
+
+
+
+
+										<div class="table-responsive">
+											<table class="table table-hover table-bordered text-center">
+												<thead>
+													<tr>
+														<th scope="col" class="text-center">#</th>
+														<th rowspan="2" colspan="1" class="text-break"
+															style="width: 10rem">
+															[[#{reporpProduct.table.header.productId}]]</th>
+
+														<th rowspan="1" class="text-break" style="width: 10rem">
+															[[#{reporpProduct.table.header.productName}]]</th>
+														<th rowspan="2" class="text-break" style="width: 10rem">
+															[[#{reporpProduct.table.header.date}]]</th>
+														<th rowspan="2" colspan="1" class="text-break"
+															style="width: 10rem">
+															[[#{reporpProduct.table.header.totalInput}]] (kg)</th>
+
+														<th rowspan="1" class="text-break" style="width: 10rem">
+															[[#{reporpProduct.table.header.residue}]] (kg)</th>
+														<th rowspan="2" class="text-break" style="width: 10rem">
+															[[#{reporpProduct.table.header.coconutMilk}]] (kg)</th>
+
+														<th rowspan="1" class="text-break" style="width: 10rem">
+															[[#{reporpProduct.table.header.machineNo}]]</th>
+														<th rowspan="2" class="text-break" style="width: 10rem">
+															[[#{reporpProduct.table.header.typeProduct}]]</th>
+														<th rowspan="2" style="width: 30em">
+															[[#{reporpProduct.table.header.details}]]</th>
+													</tr>
+												</thead>
+
+
+
+												<tbody>
+													<tr
+														th:if="${listProducts == null || listProducts.isEmpty()}">
+														<td colspan="10">[[#{reporpProduct.message.noData}]]</td>
+													</tr>
+
+													<th:block
+														th:unless="${listProducts == null || listProducts.isEmpty()}">
+														<tr th:each="product, proStat : ${listProducts}"
+															th:id="${proStat.index}" th:value="${product.productId}">
+															<th
+																th:utext="${(proStat.index+1 + (currentPage*pageSize))}"
+																scope="row" class="text-center"></th>
+
+															<td>
+																<p th:text="${product.productCode}"></p>
+															</td>
+															<td>
+																<p th:text="${product.productName}"></p>
+															</td>
+															<td>
+																<p th:text="${product.productEntryDate}"></p>
+															</td>
+
+															<td>
+																<p th:text="${product.totalWeightInput}"></p>
+															</td>
+															<td>
+																<p th:text="${product.residue}"></p>
+															</td>
+															<td>
+																<p th:text="${product.coconutMilk}"></p>
+															</td>
+															<td>
+																<p th:text="${product.machine.machineCode}"></p>
+															</td>
+															<td>
+																<p th:text="${product.typeProduct.typeProductName}"></p>
+															</td>
+
+															<td><a href="#" data-toggle="modal"
+																th:attr="data-target='#productDetailsModal'+${product.productId}"><i
+																	class="icon-info" title="Chi tiết"></i></a> <!-- Modal -->
+																<div class="modal fade"
+																	th:attr="id='productDetailsModal'+${product.productId}"
+																	tabindex="-1" role="dialog"
+																	aria-labelledby="recordDeleteModalLabel"
+																	aria-hidden="true">
+																	<div class="modal-dialog modal-lg" role="document">
+																		<div class="modal-content">
+
+																			<!-- Modal Header -->
+																			<div class="modal-header">
+																				<h4 class="modal-title">
+																					[[#{reporpProduct.modal.header}]]</h4>
+																				<button type="button" class="close"
+																					data-dismiss="modal">&times;</button>
+																			</div>
+
+																			<!-- Modal body -->
+																			<div class="modal-body">
+																				<table class="table table-striped">
+																					<thead>
+																						<tr>
+																							<th>[[#{reporpProduct.modal.body.table.header.finishedProduct}]] (kg)
+																							</th>
+																							<th>[[#{reporpProduct.modal.body.table.header.unsatisfiedProduct}]] (kg)
+																							</th>
+																							<th>[[#{reporpProduct.modal.body.table.header.waterExtract}]] (kg)
+																							</th>
+
+																							<th>[[#{reporpProduct.modal.body.table.header.blackPoint}]] (kg)
+																							</th>
+																							<th>[[#{reporpProduct.modal.body.table.header.lowPh}]] (kg)
+																							</th>
+																							<th>[[#{reporpProduct.modal.body.table.header.clotted}]] (kg)
+																							</th>
+
+																							<th>[[#{reporpProduct.modal.body.table.header.xylon}]] (kg)
+																							</th>
+																							<th>[[#{reporpProduct.modal.body.table.header.scrap}]] (kg)
+																							</th>
+																							<th>[[#{reporpProduct.modal.body.table.header.crusted}]] (kg)
+																							</th>
+
+																							<th>[[#{reporpProduct.modal.body.table.header.residue}]] (kg)
+																							</th>
+																							<th>[[#{reporpProduct.modal.body.table.header.total}]] (kg)
+																							</th>
+																						</tr>
+																					</thead>
+																					<tbody>
+																						<tr>
+																							<td>
+																								<p th:text="${product.finishedProductDetail}">
+																								</p>
+																							</td>
+
+																							<td>
+																								<p th:text="${product.unsatisfiedProduct}">
+																								</p>
+																							</td>
+
+																							<td>
+																								<p th:text="${product.waterExtract}"></p>
+																							</td>
+
+																							<td>
+																								<p th:text="${product.coconutSilk}"></p>
+																							</td>
+
+																							<td>
+																								<p th:text="${product.lowPh}"></p>
+																							</td>
+
+																							<td>
+																								<p th:text="${product.clotted}"></p>
+																							</td>
+
+																							<td>
+																								<p th:text="${product.xylon}"></p>
+																							</td>
+
+																							<td>
+																								<p th:text="${product.scrap}"></p>
+																							</td>
+
+																							<td>
+																								<p th:text="${product.crusted}"></p>
+																							</td>
+
+																							<td>
+																								<p th:text="${product.residueDetail}"></p>
+																							</td>
+
+																							<td>
+																								<p th:text="${product.total}"></p>
+																							</td>
+
+																						</tr>
+
+																					</tbody>
+																				</table>
+																			</div>
+
+
+
+																		</div>
+																	</div>
+																</div> <!-- Modal end --></td>
+														</tr>
+													</th:block>
+												</tbody>
+											</table>
+										</div>
+										<!-- End view list-->
+
+										<!-- Start paging -->
+										<div class="row mt-3">
+											<div class="col-8"></div>
+											<div class="col-4">
+												<ul class="pagination rounded float-right"
+													th:unless="${listProducts == null || listProducts.isEmpty()}">
+													<th:block th:if="${listProducts.hasPrevious()}">
+														<li class="page-item">
+															<button class="page-link"
+																th:attr="onclick=|submitFilter(${currentPage - 1})|">
+																<i class="icon-arrow-left"></i>
+															</button>
+														</li>
+													</th:block>
+													<th:block th:unless="${listProducts.hasPrevious()}">
+														<li class="page-item disabled"><a
+															class="page-link disabled" href="#"> <i
+																class="icon-arrow-left"></i>
+														</a></li>
+													</th:block>
+													<th:block
+														th:each="i: ${#numbers.sequence(0, totalPages - 1)}">
+														<li class="page-item">
+															<button class="page-link"
+																th:attr="onclick=|submitFilter(${i})|"
+																th:text="${i + 1}"></button>
+														</li>
+													</th:block>
+													<th:block th:if="${listProducts.hasNext()}">
+														<li class="page-item">
+															<button class="page-link"
+																th:attr="onclick=|submitFilter(${currentPage + 1})|">
+																<i class="icon-arrow-right"></i>
+															</button>
+														</li>
+													</th:block>
+													<th:block th:unless="${listProducts.hasNext()}">
+														<li class="page-item disabled"><a
+															class="page-link disabled" href="#"> <i
+																class="icon-arrow-right"></i>
+														</a></li>
+													</th:block>
+												</ul>
+											</div>
+										</div>
+										<!-- End paging -->
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+	</div>
+
+
+
+
+
+	<!-- partial:layouts/footer.html -->
+	<th:block id="footer" th:replace="layouts/footer">
+	</th:block>
+
+	<!-- Custom JavaScript for this page in here -->
+	<th:block id="custom-js">
+		<script>
+			$(document).ready(function () {
+				let today = new Date();
+				console.log(today);
+				let current_day = today.getFullYear() + "-"
+					+ ("0" + (today.getMonth() + 1)).slice(-2) + "-"
+					+ ("0" + today.getDate()).slice(-2);
+				/*  $('#typeProductId').val(0);
+					$('#machineId').val(0);
+					$('#calendar').val(current_day); */
+
+			});
+		</script>
+
+		<!-- Show/hide columns selected by modal -->
+		<script>
+			function showhidetable(val) {
+				var tb = document.getElementById("record-table");
+				var tbtr = tb.getElementsByTagName("tr");
+				$(tbtr[0].getElementsByTagName("th")[val]).toggle();
+
+				for (let i = 0; i < tbtr.length; i++) {
+					$(tbtr[i].getElementsByTagName("td")[val]).toggle();
+				}
+			}
+			
+			function submitFilter(page){
+				$('#inputPage').val(page);
+				$('#filterForm').submit();
+			}
+		</script>
+
+		<script th:inline="javascript">		
+			let today = new Date();
+			let current_day = today.getFullYear() + "-"
+			+ ("0" + (today.getMonth() + 1)).slice(-2) + "-"
+			+ ("0" + today.getDate()).slice(-2);
+
+			/*<![CDATA[*/
+			let typeProductId = /*[[${typeProductId}]]*/;
+			let machineId = /*[[${machineId}]]*/;
+			let fromDate = /*[[${fromDate}]]*/;
+			let toDate = /*[[${toDate}]]*/;
+			
+			if (typeProductId == null) typeProductId = 0
+			if (machineId == null) machineId = 0
+			if (fromDate == null) fromDate = "2000-01-01"
+			if (toDate == null) toDate = current_day
+			
+			console.log(fromDate)
+
+			/*]]>*/
+
+			$('#typeProductId').val(typeProductId);
+			$('#machineId').val(machineId);
+			$('#fromDate').val(fromDate);
+			$('#toDate').val(toDate);
+			
+			$('#typeProductIdTemp').val(typeProductId);
+			$('#machineIdTemp').val(machineId);
+			$('#fromDateTemp').val(fromDate);
+			$('#toDateTemp').val(toDate);
+		</script>
+
+	</th:block>
+	<!-- End Custom JavaScript  -->
+
+</body>
+
+</html>

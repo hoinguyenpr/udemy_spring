@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	th:replace="
+        ~{layouts/main-layout :: main-fragment(
+                                              ~{:: title},
+                                              ~{:: #css-page},
+                                              ~{:: #custom-css-page},
+                                              ~{:: #navbar},
+                                              ~{:: #main-content},  
+                                              ~{:: #footer},
+                                              ~{:: #custom-js}
+                                             )}">
+
+<head>
+
+<title>Tạo phiếu</title>
+
+<!-- partial:layouts/otherStaticResources.html -->
+<th:block id="css-page" th:replace="~{layouts/mainCss}"></th:block>
+
+<!-- Custom CSS for this page in here -->
+<th:block id="custom-css-page">
+	<link 
+		rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+		integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+		crossorigin="anonymous" />
+	
+    <link rel="stylesheet" th:href="@{/css/slider_time.css}">
+	<link rel="stylesheet" th:href="@{/css/toast.css}"  >
+
+	<style>
+		nav.pagination-nav {
+		    float: right;
+		    margin: 20px auto;
+		}
+	</style>
+	
+	
+</th:block>
+<!-- End Custom CSS  -->
+
+</head>
+
+<body>
+	
+	<div class="container-scroller">
+
+		<!-- partial:layouts/navbar.html -->
+		<th:block id="navbar" th:replace="layouts/navbar">
+		</th:block>
+
+		<th:block id="main-content">
+			<!-- Copy From start to here-->
+			<!-- State value  -->
+			<input type="hidden" id="stateValue" th:value="${state}">
+			<!-- State value -->
+			<!-- message -->
+			<div id="toast" class="toast-hide" >
+				<div class="toast ">
+					<div class="toast__icon">
+						<i class="fas fa-check-circle"></i>
+					</div>
+					<div class="toast__body">
+						<h3 class="toast__title">Thành công</h3>
+						<p class="toast__msg">Tạo phiếu thành công</p>
+					</div>
+					<div class="toast__close">
+						<i class="fas fa-times"></i>
+					</div>
+				</div>
+		
+			</div>	
+			<!-- message -->
+			<!-- partial -->
+			<div class="container-fluid page-body-wrapper">
+				<div class="main-panel">
+					<div class="content-wrapper">
+						<div class="row">
+							<div class="template-demo col-12 pl-0">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb">
+										<li class="breadcrumb-item"><a th:href="@{/}">Trang
+												chủ</a></li>
+										<li class="breadcrumb-item" aria-current="page">
+											<a> Phiếu kiểm hàng</a>
+										</li>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Tạo
+											phiếu</li>
+									</ol>
+								</nav>
+
+							</div>
+							<div class="col-12 grid-margin">
+								<div class="card hide" id="card-create">
+									<div class="card-header bg-white pt-4">
+										<a th:attr="onclick=|goBack()|" 
+											class="btn btn-light float-left" id="back-btn" th:text="#{checklist.button.back}"></a>
+										<button class="btn btn-primary float-right" id="Setting-btn"
+											data-toggle="modal" data-target="#modal-Setting" th:text="#{checklist.button.setting}"></button>
+										<p class="h3 text-center offset-md-1" th:text="#{checklist.new.title}"></p>
+									</div>
+									<!--open form  -->
+									<form th:action="@{/checklist/create}" method="post" th:object="${dto}"
+										id="saveCheckList" name="validateForm">
+										<div class="card-body">
+											<input id="id" name="id" type="hidden">
+											<!--Slide time  -->
+											<div class="slider-time">
+												<div class="slidecontainer">
+													<input type="range" min="0" max="660" value="" step="60"
+														class="slider" id="myRange">
+													<div class="ruler">
+														<div class='hh'></div>
+														<div class='hh'></div>
+														<div class='hh'></div>
+														<div class='hh'></div>
+														<div class='hh'></div>
+														<div class='hh'></div>
+														<div class='hh'></div>
+														<div class='hh'></div>
+														<div class='hh'></div>
+														<div class='hh'></div>
+														<div class='hh'></div>
+														<div class='hh'></div>
+													</div>
+												</div>
+												<div class="row justify-content-center mt-4">
+													<div class="form-group row">
+														<label for="timeLabel"
+															class="col-sm-2
+							                            col-form-label text-center" th:text="#{checklist.hourLabel}"></label>
+														<div class="col-sm-5">
+															<input 
+																type="text"
+																class="form-control text-danger mb-2 text-center font-weight-bold "
+																value="12:00 PM" 
+																id="hourCreate" 
+																name="time">
+																
+														</div>
+														
+														<button class="btn btn-light col-sm-4 mb-2" id="resetTime" th:text="#{checklist.hourButton}"></button>
+														<label id="errTime" class="label-err text-danger col-sm-10 col-form-label text-center ">
+															<span th:if="${#fields.hasErrors('time')}" th:errors="*{time}"></span>														
+														</label>
+													</div>
+												</div>
+												
+											
+											</div>
+											<!--Slide time  -->
+											<!--body form  -->
+											<div class="row justify-content-between">
+												<div class="col-sm-6">
+													<!-- participants -->
+													<div class="participants">
+														<fieldset class="border p-2">
+															<legend class="w-auto h6 text-muted" th:text="#{checklist.feildset.participant}"></legend>
+
+															<div class="form-group  row">
+
+																<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.participant.qcLabel}"></label>
+																<div class="col-md-7 col-sm-12 px-0">
+																	<div th:switch="${qcs!=null and !qcs.empty}"
+																	th:remove="tag">
+																	<th:block th:case="false">
+																		<input class="form-control col-md-7 col-sm-8 "
+																			disabled>
+																		<label class="col-md-4 col-sm-12 col-form-label"></label>
+																		<p class="text-danger col-md-7 col-sm-8 ">
+																			[[#{checklist.participant.qc.empty}]]																			
+																		</p>
+																	</th:block>
+																	<th:block th:case="true">
+																		<select class="js-example-basic-single w-100" id="qcs" name="qc">
+																			<option th:each="qc : ${qcs}" 
+																				th:value="${qc.username}"
+																				th:text="${qc.username}"
+																				th:selected="${qc.username == settingObject.qc }"></option>
+																		</select>
+																	</th:block>
+																	<label id="errQC" class="label-err text-danger offset-sm-4 mt-1 ">
+																			<span th:if="${#fields.hasErrors('qc')}" th:errors="*{qc}"></span>														
+																		
+																	</label>
+																</div>
+																</div>
+																
+															</div>
+														</fieldset>
+													</div>
+													<!-- participants -->
+
+													<!-- info -->
+
+													<fieldset class="border p-2">
+														<legend class="w-auto h6 text-muted" th:text="#{checklist.feildset.info}">Thông tin</legend>
+														<div class="form-group  row">
+															<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.info.lotCode}">Mã
+																lô hàng</label>
+														<div class="col-md-7 col-sm-12 px-0">
+															<div th:switch="${lots!=null and !lots.empty}"
+																th:remove="tag">
+																<th:block th:case="false">
+																	<input
+																		class="form-control col-md-7 col-sm-8 text-danger"
+																		disabled>
+																	<label class="col-md-4 col-sm-12 col-form-label"></label>
+																	<p class="text-danger col-md-7 col-sm-8 ">
+																		[[#{checklist.participant.lot.empty}]]
+																	</p>
+																</th:block>
+																<th:block th:case="true">
+																	
+
+																	<select id="lotCodes" name="lotCode" class="js-example-basic-single w-100">
+																		<option th:each="lot : ${lots}"
+																			th:value="${lot.lotCode}"
+																			th:selected="${lot.LotCode == settingObject.LotCode }">
+																			[[${lot.lotCode}]] - [[${lot.typeProduct.typeProductName}]]
+																			</option>
+																	</select>
+																</th:block>
+																<label id="errLotCode" class="label-err text-danger offset-sm-4 mt-1">
+																	<span th:if="${#fields.hasErrors('lotCode')}" th:errors="*{lotCode}"></span>		
+																</label>
+															</div>
+														</div>
+														</div>
+																	
+														<div class="form-group  row">
+															<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.info.dateCreate}">Ngày
+																lập phiếu</label> 
+																<input 
+																id="dateCreate" 
+																type="date"
+																class="form-control col-md-7 col-sm-8" 
+																name="date">
+																<label id="errDate" class="label-err text-danger offset-sm-4 mt-1">
+																	<span th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></span>
+																</label>
+														</div>
+
+														<div class="form-group  row">
+															<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.info.quantitySatisfied}">Số
+																lượng đạt</label> 
+																<input 
+																id="quantitySatisfied" 
+																type="number"
+																class="form-control col-md-7 col-sm-8" 
+																th:value="${settingObject.quantitySatisfied}"
+																name="quantitySatisfied">
+																<label id="errSatisfied" class="label-err text-danger offset-sm-4 mt-1">
+																	<span th:if="${#fields.hasErrors('quantitySatisfied')}" th:errors="*{quantitySatisfied}"></span>
+																</label>
+														</div>
+														<div class="form-group  row">
+															<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.info.quantityUnsatisfied}">Số
+																lượng không đạt</label> <input id="quantityUnsatisfied"
+																type="number" class="form-control col-md-7 col-sm-8"
+																 name="quantityUnsatisfied" th:value="${settingObject.quantityUnsatisfied}">
+																 <label id="errUnsatisfied" class="label-err text-danger offset-sm-4 mt-1">
+																 	<span th:if="${#fields.hasErrors('quantityUnsatisfied')}" th:errors="*{quantityUnsatisfied}"></span>
+																 </label>
+														</div>
+														<div class="form-group  row">
+															<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.info.quantityMix}">Số
+																lượng pha</label> <input id="quantityMix" type="number"
+																class="form-control col-md-7 col-sm-8" 
+																name="quantityMix" th:value="${settingObject.quantityMix}">
+																<label id="errMix" class="label-err text-danger offset-sm-4 mt-1">
+																	<span th:if="${#fields.hasErrors('quantityMix')}" th:errors="*{quantityMix}"></span>
+																</label>
+														</div>
+														<div class="form-group  row">
+															<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.info.remark}">Ghi
+																chú</label> <input id="remark" type="text"
+																class="form-control col-md-7 col-sm-8" name="remark" th:value="${settingObject.remark}">
+														</div>
+
+
+													</fieldset>
+
+													<!-- info -->
+												</div>
+												<div class="col-sm-6 col-md-5 row">
+													<!-- Measurement -->
+													<div class="measurement col-12">
+														<fieldset class="border p-2">
+															<legend class="w-auto h6 text-muted" th:text="#{checklist.feildset.measurement}">Thông số đo</legend>
+															<!-- moisture -->
+															<div class="form-group  row">
+																<label class="col-md-4 col-sm-12 col-form-label" th:value="#{checklist.measurement.mosture}">
+																	Độ ẩm </label> 
+																	<input
+																	id="moisture"
+																	type="number"
+																	class="form-control col-md-7 col-sm-8" 
+																	step="0.01" 
+																	name="moisture" 
+																	th:value="${settingObject.moisture}">
+																	<label id="errMoisture" class=" label-err text-danger offset-sm-4 mt-1">
+																		<span th:if="${#fields.hasErrors('moisture')}" th:errors="*{moisture}"></span>
+																	</label>
+															</div>
+															<!-- moisture -->
+															<!--pH  -->
+															<div class="form-group  row">
+																<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.measurement.ph}">pH</label>
+																<input 
+																	id="ph" 
+																	type="number"
+																	class="form-control col-md-7 col-sm-8" 
+																	step="1" 
+																	min="0" 
+																	max="7"
+																	name="ph" 
+																	th:value="${settingObject.ph}">
+																	<label id="errPh" class="label-err text-danger offset-sm-4 mt-1">
+																		<span th:if="${#fields.hasErrors('ph')}" th:errors="*{ph}"></span>
+																	</label>
+															</div>
+															<!--pH  -->
+															<!-- Brix -->
+															<div class="form-group  row">
+																<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.measurement.brix}">Brix</label>
+																<input 
+																	id="brix" 
+																	type="number"
+																	class="form-control col-md-7 col-sm-8" 
+																	step="1" 
+																	name="brix" 
+																	th:value="${settingObject.brix}">
+																	<label id="errBrix" class="label-err text-danger offset-sm-4 mt-1">
+																		<span th:if="${#fields.hasErrors('brix')}" th:errors="*{brix}"></span>
+																	</label>
+															</div>
+															<!-- Brix -->
+															<!-- color -->
+															<div class="form-group row">
+																<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.measurement.color}">Màu
+																	sắc</label>
+																<div class="form-group col row ">
+																	<div
+																		class="form-check form-check-flat form-check-primary mr-2">
+																		<label class="form-check-label"> <input
+																			id="colorTrue" type="radio" class="form-check-input"
+																			name="color" th:value="true" th:checked="${settingObject.color}" th:text="#{checklist.measurement.qualified}">
+																		</label>
+																	</div>
+																	<div
+																		class="form-check form-check-flat form-check-primary ">
+																		<label class="form-check-label"> <input
+																			id="colorFalse" type="radio" class="form-check-input"
+																			name="color" th:value="false" th:checked="${!settingObject.color}" th:text="#{checklist.measurement.unqualified}">  
+																		</label>
+																	</div>
+																</div>
+																<!-- color -->
+
+																<!-- tatse -->
+															</div>
+															<div class="form-group row">
+																<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.measurement.taste}">Mùi
+																	vị</label>
+																<div class="form-group col row ">
+																	<div
+																		class="form-check form-check-flat form-check-primary mr-2">
+																		<label class="form-check-label" > 
+																		<input
+																			id="tasteTrue" type="radio" class="form-check-input"
+																			name="taste" value="true" th:checked="${settingObject.taste}" th:text="#{checklist.measurement.qualified}"> 
+																		</label>
+																	</div>
+																	<div
+																		class="form-check form-check-flat form-check-primary">
+																		<label class="form-check-label"> <input	
+																			id="tasteFalse" type="radio" class="form-check-input"
+																			name="taste" value="false" th:checked="${!settingObject.taste}" th:text="#{checklist.measurement.unqualified}">   
+																		</label>
+																	</div>
+																</div>
+															</div>
+															<!-- tatse -->
+															<!-- impurity -->
+															<div class="form-group  row">
+																<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.measurement.impurity}">Tạp
+																	chất</label> 
+																	<input 
+																	id="impurity" 
+																	type="number"
+																	class="form-control col-md-7 col-sm-8" 
+																	step="0.01" 
+																	name="impurity" 
+																	th:value="${settingObject.impurity}">
+																	<label id="errImpurity" class="label-err text-danger offset-sm-4 mt-1">
+																		<span th:if="${#fields.hasErrors('impurity')}" th:errors="*{impurity}"></span>
+																	</label>
+															</div>
+															<!-- impurity -->
+
+
+														</fieldset>
+
+													</div>
+													<!-- Measurement -->
+
+													
+												</div>
+												<!-- button control -->
+												<div class="control-button mt-4 col-sm-12  align-self-end">
+													<div class="row justify-content-end">
+													
+														<button type="submit" class="btn btn-primary hide" th:text="#{checklist.button.setDefaultByRecord}" id="setDefaultByRecord"></button>
+													
+														<button type="reset" class="btn  mr-2 ml-2 mb-0" th:text="#{checklist.button.refresh}" id="resetButton">Làm mới</button>
+														<button type="submit" class="btn btn-primary  mb-0"
+															id="saveButton" th:text="#{checklist.button.add}">Thêm</button>
+													</div>
+												</div>
+												<!-- button control -->
+											</div>
+											
+											<!--body form  -->
+										</div>
+									</form>
+									<!--close form  -->
+								</div>
+								<!-- Table -->
+								<div class="card mt-5 result-after-created">
+									<div class="card">
+										<div class="card-body">
+											<form id="searchtForm" name="searchForm" method="get" th:action="@{/checklist/create-check-list}" class="row justify-content-start">		
+											
+											
+											
+											<div class="col-sm-6 col-md-2 float-left px-0 mx-0">
+												<div class="form-group row px-0 my-0 mr-1 ml-0">
+												<select name="size" class="form-control col-12" id="numberResultSelect" >
+						                                 <option  value="5"  th:selected="${page.size == 5}">5 [[#{checklist.select.item.label}]]</option>
+						                                 <option  value="10" th:selected="${page.size == 10}">10 [[#{checklist.select.item.label}]]</option>
+						                                 <option  value="20" th:selected="${page.size == 20}">20 [[#{checklist.select.item.label}]]</option>
+						                                 <option  value="50" th:selected="${page.size == 50}">50 [[#{checklist.select.item.label}]]</option>
+					                               </select>
+					                               <input type="hidden" name="page" th:value="${page.number}" id="pageResult">
+												</div>					                              
+				                             </div>
+				                             <div class="col-sm-6 col-md-2 float-left px-0 mx-0">
+												<div class="form-group row px-0 mx-0 my-0">
+													 <input type="date" class="form-control" id="dateResultSelect" name="date" th:value="${date}">
+												</div>					                              
+				                             </div>
+				                             <div class="col-sm-12 col-md-4 float-left px-0 mx-md-0 my-md-0 mt-sm-1">
+												<div class="form-group row px-0 mx-md-0 my-0  ml-md-1 mx-sm-0">
+													 <input type="text" class="form-control col-sm-10 col-md-9" id="keyword" name="keyword" th:value="${keyword}">
+					                              	 <button type="submit" class="btn btn-primary text-white px-3" style="height: calc(2.25rem + 2px);">					                              	 	
+					                              	 	<i class="fas fa-search"></i>
+					                              	 </button>
+												</div>					                              
+				                             </div>
+				                             <div class="col-sm-12 col-md-4 px-0 mx-0 my-md-0 mt-sm-1 align-self-end row justify-content-end">
+				                             	
+						        	    			<button type="button" class="btn btn-primary float-right col-sm-6 col-md-auto mr-md-1 mx-sm-0" id="showHide-btn" th:text="#{checklist.view.button.columnView}" data-toggle="modal" data-target="#hideShowModal"></button>
+				                             		<button type="button" class="btn btn-danger float-right  col-sm-6 col-md-auto " id="createChecklist" th:text="#{checklist.view.button.createCheckList}"></button>
+				                             	
+				                            	 
+				                             </div>
+				                           </form>
+											<div class="table-responsive">
+												<form id="approvalOrRejectForm" name="approvalOrRejectForm" method="post">
+												
+												<table class="table table-bordered" id="record-table">
+													<thead>
+														<tr>
+															<th th:text="#{checklist.table.index}">#</th>
+															<th th:text="#{checklist.table.hourLabel}">Giờ</th>
+															<th th:text="#{checklist.table.dateLabel}">Ngày</th>
+															<th th:text="#{checklist.table.typeOfProductLabel}">Loại sản phẩm</th>
+															<th style="min-width: 12rem;" th:text="#{checklist.table.measurementLabel}">Thông số đo</th>
+
+															<th th:text="#{checklist.table.quantitySatisfied}">SL TP đạt</th>
+															<th th:text="#{checklist.table.quantityUnsatisfied}">SL TP không</th>
+															<th th:text="#{checklist.table.quantityMix}">SL pha</th>
+															<th th:text="#{checklist.table.remarkLabel}">Ghi chú</th>
+															<th th:text="#{checklist.table.qcLabel}">QC</th>
+															<th th:text="#{checklist.table.statusLabel}">Tình trạng</th>
+															<th>
+																<input type="checkbox" class="mx-auto"  id="checkall">																
+															</th>
+															<th>
+																<div class="btn-group">
+																	<button type="button" class="btn btn-danger dropdown-toggle"
+																	  			data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																	    [[#{checklist.table.button.action}]]
+																	</button>
+																  	<div class="dropdown-menu dropdown-menu-right">	
+																	<th:block th:each="authority : ${#httpServletRequest.getUserPrincipal().getAuthorities()}">
+	                                									<div th:if="${authority.getAuthority().equals('ADMIN')}">	                                 								
+																	  		<button
+																		  		type="submit" 
+																		  		id="approval-selected"
+																		  		class="dropdown-item edit-checklist">
+																				[[#{checklist.table.button.approval.selected}]]
+																			</button>																	
+																			<button 
+																				type="submit"
+																				id="reject-selected"
+																				class="dropdown-item reject-checklist"
+																				data-toggle="modal" data-target="#modal-reject">
+																				[[#{checklist.table.button.reject.selected}]]
+																			</button>
+																			<button 
+																				type="submit"
+																				id="remove-selected"
+																				class="dropdown-item remove-checklist">
+																				[[#{checklist.table.button.delete.selected}]]
+																			</button>	
+																			<button 
+																				type="button" 
+																				class="dropdown-item" 
+																				data-toggle="modal" data-target="#modal-Setting" th:text="#{checklist.button.setting}">
+																			</button>																																	  	
+																		</div>																										
+	                                								
+	                                        									
+	                            										<div th:if="${authority.getAuthority().equals('EMPLOYEE')}">
+	                            																											
+																				<button 
+																					type="submit"
+																					id="reject-selected"
+																					class="dropdown-item remove-checklist">
+																					[[#{checklist.table.button.delete.selected}]]
+																				</button>
+																				<button
+																					type="button" 
+																					class="dropdown-item" 
+																					data-toggle="modal" data-target="#modal-Setting" th:text="#{checklist.button.setting}">
+																				</button>																			
+																		  	
+																		</div>	
+										
+	                             									</th:block>
+	                             									<button
+		                             									type="button"  
+		                             									class="dropdown-item"
+		                             									id="createChecklist2"
+		                             									>
+	                             										[[#{checklist.view.button.createCheckList}]]
+	                             									</button>
+	                             									<button 
+		                             									type="button" 
+		                             									class="dropdown-item "
+		                             									data-toggle="modal" data-target="#hideShowModal">
+	                             										[[#{checklist.view.button.columnView}]]
+	                             									</button>
+																	</div>
+																</div>
+															</th>
+														</tr>
+													</thead>
+													<tbody>
+														<th:block
+															th:switch="${!page.content.empty and page.content !=null}" th:remove="tag">
+															<th:block th:case="true">
+																<!--Element Of Checklist Loop  -->
+																<tr th:each="check,state: ${page.content}">
+																	<td th:utext="${state.index+1}"></td>
+																	<td th:utext="${check.time}"></td>
+																	<td th:utext="${check.date}"></td>
+																	<td th:utext="${check.lot.typeProduct.typeProductName}">
+																		</td>
+																	<td>
+																		<div class="row">
+																			<div class="col-md-6 col-sm-12">
+																				<p>
+																					<b th:text="#{checklist.measurement.mosture}"> </b>&nbsp;<span th:utext="${check.moisture}"></span>
+																				</p>
+																				<p>
+																					<b th:text="#{checklist.measurement.ph}"> </b> &nbsp;<span th:utext="${check.ph}"></span>
+																				</p>
+																				<p>
+																					<b th:text="#{checklist.measurement.brix}"> </b>&nbsp; <span th:utext="${check.brix}"></span>
+																				</p>
+																			</div>
+																			<div class="col-md-6 col-sm-12 row">
+																				<p class="col-12 row">
+																					<b th:text="#{checklist.measurement.color}">   </b>&nbsp;
+																					<th:block th:switch="${check.color}"
+																						th:remove="tag">
+																						<span th:case="true" th:text="#{checklist.measurement.qualified }"></span>
+																						<span th:case="*" th:text="#{checklist.measurement.unqualified}" class="text-danger"></span>
+																						<th:block>
+																				</p>
+																				<p class="col-12 row">
+																					<b th:text="#{checklist.measurement.taste}">  </b>&nbsp;
+																					<th:block th:switch="${check.taste}"
+																						th:remove="tag">
+																						<span th:case="true" th:text="#{checklist.measurement.qualified }"></span>
+																						<span th:case="*" th:text="#{checklist.measurement.unqualified}" class="text-danger"></span>
+																					</th:block>
+																				</p>
+																				<p>
+																					<b th:text="#{checklist.measurement.impurity}">: </b>&nbsp; <span
+																						th:utext="${check.impurity}"></span>
+																				</p>
+																			</div>
+																		</div>
+
+																	</td>
+																	<td><span th:utext="${check.quantitySatisfied}">1000</span>
+																	</td>
+																	<td><span th:utext="${check.quantityUnsatisfied}">12</span></td>
+																	<td><span th:utext="${check.quantityMix}">10</span></td>
+																	<td><span th:utext="${check.remark}"></span></td>
+																	<td><span th:utext="${check.qc.employeeName}">Nguyễn
+																			Văn B</span></td>
+																	<td>
+																		<div th:switch="${check.status}">
+																			<p th:case="${T(com.dpm.utility.Status).Pending}"
+																				class=" text-warning  text-center h4" data-toggle="tooltip" data-placement="top" title th:data-original-title="#{checklist.view.status.item.pending}">
+																				<i class="fas fa-eye-slash"></i>
+																				
+																			</p>
+																			<p th:case="${T(com.dpm.utility.Status).Approved}"
+																				class="text-primary text-center h4" data-toggle="tooltip" data-placement="top" title th:data-original-title="#{checklist.view.status.item.approved}">
+																				<i class="fas fa-eye"></i>
+																				
+																			</p>
+																			<p th:case="${T(com.dpm.utility.Status).Rejected}"
+																				class="text-danger text-center h4" data-toggle="tooltip" data-placement="top" title th:data-original-title="#{checklist.view.status.item.reject}">
+																				<i class="far fa-times-circle"></i>
+																		</div>
+
+																	</td>
+																	<td>
+																		<th:block th:each="authority : ${#httpServletRequest.getUserPrincipal().getAuthorities()}">
+                                            								<div th:if="${authority.getAuthority().equals('ADMIN')}">
+																				<input type="checkbox" class="mx-auto" name="ids" th:value="${check.id}" >
+																			</div>
+                                            								<div th:if="${authority.getAuthority().equals('EMPLOYEE')}">
+																				<input type="checkbox" class="mx-auto" name="ids" th:value="${check.id}" th:disabled="${check.status != T(com.dpm.utility.Status).Pending}">
+																			</div>
+																			
+																			
+																		</th:block>
+																	</td>
+																	<td>																		
+																		<!--block logic for action button  -->
+																		<th:block th:each="authority : ${#httpServletRequest.getUserPrincipal().getAuthorities()}" th:remove="tag">
+                                            								<!--admin role  -->
+                                            								<div th:if="${authority.getAuthority().equals('ADMIN')}" th:remove="tag">
+	                                            								<div class="btn-group">
+																					<button 
+																					  	type="button" 
+																					  	class="btn btn-primary dropdown-toggle"
+																					  	data-toggle="dropdown" 
+																					  	aria-haspopup="true" 
+																					  	aria-expanded="false">
+																				 			<i class="fas fa-sliders-h"></i>		
+																					</button>
+																				<div class="dropdown-menu dropdown-menu-right">
+																				
+		                                            								<div th:switch="${check.status}">
+																						<div th:case="${T(com.dpm.utility.Status).Pending}" th:remove="tag">																						
+																					  		<button 
+																						  		class="dropdown-item approval-checklist"
+																								th:data-approval="${check.id}">
+																								[[#{checklist.table.button.approval}]]
+																							</button>
+																							<button 
+																						  		class="dropdown-item reject-checklist"
+																								th:data-reject="${check.id}"
+																								data-toggle="modal" data-target="#modal-reject" >
+																								[[#{checklist.table.button.reject}]]
+																							</button>
+																						  	<button 
+																						  		class="dropdown-item edit-checklist"
+																								th:data-edit="${check.id}">
+																								[[#{checklist.table.button.edit}]]
+																							</button>
+																							<button 
+																								class="dropdown-item remove-checklist"
+																								data-toggle="modal" data-target="#modal-remove"
+																								th:data-remove="${check.id}">
+																								[[#{checklist.table.button.delete}]]
+																							</button>
+																																												 
+																						</div>
+																																													
+																						<div th:case="${T(com.dpm.utility.Status).Rejected}" th:remove="tag">																					
+																						  	<button 
+																						  		class="dropdown-item approval-checklist"
+																								th:data-approval="${check.id}">
+																								[[#{checklist.table.button.approval}]]
+																							</button>
+																							<button 
+																						  		class="dropdown-item edit-checklist"
+																								th:data-edit="${check.id}">
+																								[[#{checklist.table.button.edit}]]
+																							</button>
+																							<button 
+																								class="dropdown-item remove-checklist"
+																								data-toggle="modal" data-target="#modal-remove"
+																								th:data-remove="${check.id}">
+																								[[#{checklist.table.button.delete}]]
+																							</button>
+																																												  
+																						</div>
+																						<div th:case="${T(com.dpm.utility.Status).Approved}" th:remove="tag">																						
+																						  	<button 
+																						  		class="dropdown-item reject-checklist"
+																								th:data-reject="${check.id}"
+																								data-toggle="modal" data-target="#modal-reject">
+																								[[#{checklist.table.button.reject}]]
+																							</button>																									
+																							
+																						</div> 
+																					</div>
+																					
+																					<button 
+																						type="button" 
+																						class="dropdown-item setting-checklist"
+																						th:data-setting="${check.id}">
+																						[[#{pressing-monitor.table.button.set-default}]]
+																					</button>
+																				</div>
+																				</div>                                           									                                            							
+                                        									</div>
+                                        									<!--admin role  -->
+                                        									
+                                        									<!--employee role  -->
+                                        									<div th:if="${authority.getAuthority().equals('EMPLOYEE')}" th:remove="tag">
+                                        										<div class="btn-group">
+																					<button 
+																					  	type="button" 
+																					  	th:class="${check.status == T(com.dpm.utility.Status).Approved } ? 'btn dropdown-toggle'  : 'btn dropdown-toggle  btn-primary'"																					  	
+																					  	th:disabled="${check.status == T(com.dpm.utility.Status).Approved}"
+																					  	data-toggle="dropdown" 
+																					  	aria-haspopup="true" 
+																					  	aria-expanded="false">
+																				 			<i class="fas fa-sliders-h"></i>		
+																					</button>
+																				<div class="dropdown-menu dropdown-menu-right">
+                                        										
+	                                        										<div th:switch="${check.status}" th:remove="tag">
+	                                        											<div th:case="${T(com.dpm.utility.Status).Approved}" th:remove="tag">
+																							
+																						</div>
+																						<div th:case="*" th:remove="tag">																						
+																						  	<button 
+																						  		class="dropdown-item edit-checklist"
+																								th:data-edit="${check.id}">
+																								[[#{checklist.table.button.edit}]]
+																							</button>
+																							<button 
+																								class="dropdown-item remove-checklist"
+																								data-toggle="modal" data-target="#modal-remove"
+																								th:data-remove="${check.id}">
+																								[[#{checklist.table.button.delete}]]
+																							</button>																																														 
+																						</div>
+																																																															
+																					</div>
+																					<button 
+																						type="button" class="dropdown-item setting-checklist"
+																						th:data-setting="${check.id}">
+																						[[#{pressing-monitor.table.button.set-default}]]
+																					</button>
+																				</div>
+																				</div>
+                                        									</div>
+                                        									<!--employee role  -->		                                        									
+                                        								</th:block>
+                                        								<!--block logic for action button  -->
+		                                        								                      																										
+																	</td>
+																</tr>
+																<!-- End Element Of Checklist Loop  -->
+															</th:block>
+															<th:block th:case="false">
+																<tr>
+																	<td colspan="13" class="text-center" th:text="#{checklist.message.noRecord}">Chưa có bản ghi
+																		nào được tạo</td>
+																</tr>
+															</th:block>
+														</th:block>
+
+													</tbody>
+												</table>
+												</form>
+												<!--pagination-div  -->
+												<nav class="pagination-nav">
+												  <ul class="pagination" th:if="${page.totalPages<=6}">
+												  
+												  	<th:block th:if="${page.hasPrevious()}">
+												    	<li class="page-item" >
+												    		<a class="page-link" th:href="@{/checklist/create-check-list/(page=${page.number-1})}">Previous</a>
+												   	 	</li>
+												    </th:block>
+												   
+												    <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}" th:if="${page.content!=null and !page.content.empty}">
+												    	<li class="page-item active" th:if="${page.number == i}" >
+												    		<button class="page-link" href="#">[[${i}+1]]</button>
+												    	</li>
+												   		 <li class="page-item" th:unless="${page.number == i}">
+												   		 	<a class="page-link" th:href="@{/checklist/create-check-list/(page=${i})}">[[${i}+1]]</a>
+												   		 </li>
+												   		 
+												   		 
+												    </th:block>
+												    
+												    <th:block th:if="${page.hasNext()}">
+													    <li class="page-item" >
+													   		 <a class="page-link" th:href="@{/checklist/create-check-list/(page=${page.number+1})}">Next</a>
+													    </li>
+												    </th:block>
+												  </ul>
+												   <ul class="pagination" th:if="${page.totalPages >6}">
+												   	<th:block th:if="${page.hasPrevious()}">
+												    	<li class="page-item" >
+												    		<a class="page-link" th:href="@{/checklist/create-check-list/(page=${page.number-1})}">Previous</a>
+												   	 	</li>
+												    </th:block>
+												    <th:block th:if="${page.number <=3 && page.totalPages >=3}">
+											    		<th:block th:each="i: ${#numbers.sequence(0, 2)}" >
+													    	<li class="page-item active" th:if="${page.number == i}" >
+													    		<button class="page-link" href="#">[[${i}+1]]</button>
+													    	</li>
+													   		 <li class="page-item" th:unless="${page.number == i}">
+													   		 	<a class="page-link" th:href="@{/checklist/create-check-list/(page=${i})}">[[${i}+1]]</a>
+													   		 </li>
+													   		 
+													   		 
+													    </th:block>
+													    
+													    
+												    </th:block>
+												    <th:block th:if="${page.number > 3 && page.totalPages >=3}">
+												    	<li th:class="${page.number > 3 } ? 'page-item' : 'hide'" >
+													   		<a class="page-link" th:href="@{/checklist/create-check-list/(page=${0})}">1</a>
+														</li>
+													    <li th:class="${page.number > 3  } ? 'page-item disabled' : 'hide'" >
+														   	<a class="page-link" >...</a>
+														</li>
+														
+													    <li th:class="${page.number >= 3} ? 'page-item' : 'hide'" >
+														   	<a class="page-link" th:href="@{/checklist/create-check-list/(page=${page.number-1})}">[[${page.number-1}]]</a>
+														</li>
+													 	<li th:class="${page.number >=3} ? 'page-item active' : 'hide'" >
+														   	<a class="page-link" th:href="@{/checklist/create-check-list/(page=${page.number})}">[[${page.number}]]</a>
+														</li>
+														<li th:class="${page.number >=3} ? 'page-item' : 'hide'" >
+														   	<a class="page-link" th:href="@{/checklist/create-check-list/(page=${page.number+1})}">[[${page.number+1}]]</a>
+														</li>
+													 	<li th:class="${(page.number >= 3) && (page.number < page.totalPages-1)} ? 'page-item' : 'hide'" >
+														   	<a class="page-link" >...</a>
+													 	</li>
+												 		
+												    </th:block>
+												    
+												    
+												    
+                                                                                                                                                                                                      
+												    <th:block th:if="${page.hasNext()}">
+													    <li class="page-item" >
+													   		 <a class="page-link" th:href="@{/checklist/create-check-list/(page=${page.number+1})}">Next</a>
+													    </li>
+												    </th:block>
+												   </ul>
+												  
+												  
+												  
+												</nav>
+												<!--pagination-div  -->
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- Table -->
+							</div>
+
+							<!-- delete -->
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<form id="approvalForm" name="approvalForm" method="post" th:action=" @{/checklist/approval}">
+				<input type="hidden" name="ids" id="inputApproval">
+				
+			</form>
+			
+			
+			
+		
+
+			<!--Modal for setting  -->
+			<div class="modal" tabindex="-1" role="dialog" id="modal-Setting">
+				<div class="modal-dialog modal-lg w-md-50 w-sm-50 w-xs-100"
+					role="document">
+					<form th:action="@{/checklist/setting}" method="post" th:object="${settingObject}" 
+					name="validateFormSetting" id="settingForm">
+					<div class="modal-content bg-white">
+						<div class="modal-header bg-info">
+							<h5 class="modal-title text-white text-center" th:text="#{checklist.new.setting.title}">Cài đặt</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							
+							<!--setting form  -->
+							
+							
+							<!-- reset -->
+							<div class="reset row justify-content-end mt-0">
+								<button type="reset" class="btn btn-danger" th:text="#{checklist.button.default }" id="resetSetingButton">Mặc định</button>
+							</div>
+							<!-- reset -->
+							<!-- participants -->
+							<div class="participants">
+								<fieldset class="border p-2">
+									<legend class="w-auto h6 text-muted" th:text="#{checklist.feildset.participant }">Thành phần tham
+										gia</legend>
+									<div class="row justify-content-between">
+											
+												
+										<div class="col-sm-12 col-md-6">
+											<div class="form-group  row">
+												<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.participant.qcLabel}"></label> 
+												<div class="col-md-7 col-sm-12">
+												<select class="js-example-basic-single w-100" id="qcsSetting" th:field="*{qc}">
+														<option th:each="qc : ${qcs}" 
+															th:value="${qc.username}"
+															th:text="${qc.username}"
+															th:selected="${qc.username == settingObject.qc }">
+														</option>
+												</select>
+												<label id="errQCSetting" class="label-err text-danger offset-sm-4 mt-1"></label>
+												</div>
+											</div>
+										</div>
+									
+									</div>
+								</fieldset>
+							</div>
+							<!-- participants -->
+
+							<div class="info mt-4">
+								<div class="row justify-content-between">
+									<div class="col-md-6">
+										<!-- Information -->
+										<fieldset class="border p-2">
+											<legend class="w-auto h6 text-muted" th:text="#{checklist.feildset.info}">Thông tin</legend>
+											<div class="form-group  row">
+												<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.info.lotCode}">
+												Mã lô hàng</label>
+												<div class="col-md-7 col-sm-12"> 
+												<select id="lotCodes" name="lotCode" class="js-example-basic-single w-100">
+													<option th:each="lot : ${lots}"
+														th:value="${lot.lotCode}"
+														th:selected="${lot.LotCode == settingObject.LotCode }">
+														[[${lot.lotCode}]] - [[${lot.typeProduct.typeProductName}]]
+														</option>
+												</select>
+												
+												<label id="errLotCodeSetting" class="label-err text-danger offset-sm-4 mt-1"></label>
+												</div>
+											</div>
+											
+											<div class="form-group  row">
+												<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.info.quantitySatisfied}">Số
+													lượng đạt</label> 
+													<input
+														id="quantitySatisfiedSetting" 
+														th:field="*{quantitySatisfied}"
+														type="number"
+														class="form-control col-md-7 col-sm-8">
+												<label id="errSatisfiedSetting" class="label-err text-danger offset-sm-4 mt-1"></label>											
+											</div>
+											<div class="form-group  row">
+												<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.info.quantityUnsatisfied }">Số
+													lượng không đạt</label> 
+													<input 
+														id="quantityUnsatisfiedSetting" 
+														th:field="*{quantityUnsatisfied}"
+														type="number"
+														class="form-control col-md-7 col-sm-8" 
+														>
+												<label id="errUnsatisfiedSetting" class="label-err text-danger offset-sm-4 mt-1"></label>											
+											</div>
+											<div class="form-group  row">
+												<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.info.quantityMix }">Số
+													lượng pha</label> 
+													<input 
+														id="quantityMixSetting" 
+														th:field="*{quantityMix}"
+														type="number"
+														class="form-control col-md-7 col-sm-8" 
+														>
+												<label id="errMixSetting" class="label-err text-danger offset-sm-4 mt-1"></label>											
+											</div>
+											<div class="form-group  row">
+												<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.info.remark}">Ghi
+													chú</label> 
+													<input
+														id="remarkSetting"  
+														th:field="*{remark}"
+														type="text"
+														class="form-control col-md-7 col-sm-8">
+																						
+											</div>
+
+
+										</fieldset>
+										<!-- Information -->
+									</div>
+									<div class="col-md-5">
+										<!-- Measurement -->
+										<fieldset class="border p-2">
+											<legend class="w-auto h6 text-muted" th:text="#{checklist.feildset.measurement}">Thông số đo</legend>
+											<!-- moisture -->
+											<div class="form-group  row">
+												<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.measurement.mosture}">Độ
+													ẩm</label> 
+													<input
+														id="moistureSetting"
+														th:field="*{moisture}"
+														type="number"
+														class="form-control col-md-7 col-sm-8" 														
+														step="0.01" >
+												<label id="errMoistureSetting" class="label-err text-danger offset-sm-4 mt-1"></label>											
+											</div>
+											<!-- moisture -->
+											<!--pH  -->
+											<div class="form-group  row">
+												<label class="col-md-4 col-sm-12 col-form-label"  th:text="#{checklist.measurement.ph}">pH</label>
+												<input
+													id="phSetting" 
+													th:field="*{ph}"
+													type="number" 
+													class="form-control col-md-7 col-sm-8"													
+													step="1" 
+													min="0" 
+													max="14">
+												<label id="errPhSetting" class="label-err text-danger offset-sm-4 mt-1"></label>											
+											</div>
+											<!--pH  -->
+											<!-- Briz -->
+											<div class="form-group  row">
+												<label class="col-md-4 col-sm-12 col-form-label"  th:text="#{checklist.measurement.brix}">Brix</label>
+												<input 
+													id="brixSetting"
+													th:field="*{brix}"
+													type="number" 
+													class="form-control col-md-7 col-sm-8"											
+													step="1" >
+												<label id="errBrixSetting" class="label-err text-danger offset-sm-4 mt-1"></label>											
+											</div>
+											<!-- Briz -->
+											<!-- color -->
+											<div class="form-group row">
+												<label class="col-md-4 col-sm-12 col-form-label"  th:text="#{checklist.measurement.color}">Màu
+													sắc</label>
+												<div class="col row ">
+													<div
+														class="form-check form-check-flat form-check-primary mr-1">
+														<label class="form-check-label"> 
+														<input
+															th:field="*{color}"
+															type="radio" 
+															class="form-check-input"
+															th:value="true" 
+															th:checked="${settingObject.color}"
+															th:text="#{checklist.measurement.qualified}">
+														</label>
+																									
+													</div>
+													<div class="form-check form-check-flat form-check-primary ">
+														<label class="form-check-label"> 
+														<input
+															th:field="*{color}"
+															type="radio" 
+															class="form-check-input"
+															th:value="false"
+															th:checked="${!settingObject.color}"
+															th:text="#{checklist.measurement.unqualified}">
+														</label>
+																												
+													</div>
+												</div>
+												<!-- color -->
+
+												<!-- tatse -->
+											</div>
+											<div class="form-group row">
+												<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.measurement.taste}">Mùi
+													vị</label>
+												<div class="col row ">
+													<div
+														class="form-check form-check-flat form-check-primary mr-1">
+														<label class="form-check-label"> 
+														<input
+															th:field="*{taste}"
+															type="radio" 
+															class="form-check-input" 
+															th:value="true"
+															th:checked="${settingObject.taste == true}" 
+															th:text="#{checklist.measurement.qualified}">
+														</label>
+																										
+													</div>
+													<div class="form-check form-check-flat form-check-primary ">
+														<label class="form-check-label"> 
+														<input
+															th:field="*{taste}"
+															type="radio" 
+															class="form-check-input" 
+															th:value="false"
+															th:checked="${settingObject.taste == false}"
+															th:text="#{checklist.measurement.unqualified}">
+														</label>
+																				
+													</div>
+												</div>
+											</div>
+											<!-- tatse -->
+											<!-- impurity -->
+											<div class="form-group  row">
+												<label class="col-md-4 col-sm-12 col-form-label" th:text="#{checklist.measurement.impurity}">Tạp
+													chất</label> 
+													<input
+														id="impuritySetting"
+														th:field="*{impurity}" 
+														type="number"
+														class="form-control col-md-7 col-sm-8" 
+														value="0.01"
+														step="0.01" >
+												
+													<label id="errImpuritySetting" class="label-err text-danger offset-sm-4 mt-1"></label>											
+											</div>
+											<!-- impurity -->
+
+
+										</fieldset>
+										<!-- Measurement -->
+									</div>
+								</div>
+
+							</div>
+						</div>
+						<div class="modal-footer">
+							<!-- <input type="hidden" th:value="*{id}" th:field="*{id}"> -->
+							<!-- <input type="hidden" th:field="*{time}" id="timeSetting"> -->
+							
+							<button type="submit" class="btn btn-primary" th:text="#{checklist.button.save}" id="saveSettingButton"></button>
+							<button type="button" class="btn btn-light" data-dismiss="modal" th:text="#{checklist.button.cancel}"></button>
+						</div>
+						
+					</div>
+					</form>
+							<!--end setting form  -->
+				</div>
+			</div>
+
+			<!--Modal for setting  -->
+
+			<!-- modal remove -->
+			<div class="modal" tabindex="-1" role="dialog" id="modal-remove">
+				<div class="modal-dialog" role="document">
+
+					<form th:action="@{/checklist/delete}" method="post">
+						<div class="modal-content bg-white">
+							<div class="modal-body">
+								<p class="h4">Bạn có chắc xóa</p>
+								<input type="hidden" name="deleteId" id="deleteId">
+							</div>
+							<div class="modal-footer">
+								<div class="row justify-content-center">
+									<button type="submit" class="btn btn-danger">Có</button>
+									<button type="button" class="btn btn-light"
+										data-dismiss="modal">Hủy</button>
+								</div>
+
+							</div>
+						</div>
+					</form>
+
+				</div>
+			</div>
+			<!-- modal remove -->
+			
+			<!-- modal reject -->
+			<div class="modal" tabindex="-1" role="dialog" id="modal-reject">
+				<div class="modal-dialog" role="document">
+
+					<form th:action="@{/checklist/reject}" method="post" id="rejectForm" name="rejectForm" >
+						<div class="modal-content bg-white">
+							<div class="modal-body">
+								<p class="h4">Bạn có chắc Hủy Phiếu</p>
+								<input type="hidden" name="ids" id="inputReject">
+								<!-- <input type="hidden" name="size" th:value="${page.size}">
+								<input type="hidden" name="page" th:value="${page.number}">
+								<input type="hidden" name="keyword" th:value="${keyword}"> -->
+							</div>
+							<div class="modal-footer">
+								<div class="row justify-content-center">
+									<button type="submit" class="btn btn-danger">Có</button>
+									<button type="button" class="btn btn-light"
+										data-dismiss="modal">Hủy</button>
+								</div>
+
+							</div>
+						</div>
+					</form>
+
+				</div>
+			</div>
+			<!-- modal reject -->
+			
+			
+			<!--modal hide show column table  -->
+			<div class="modal fade" id="hideShowModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:none">
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel" th:text="#{sieveDrying.text.viewConfig}"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">X</span>
+                            </button>
+                        </div>
+                        <form class="cmxform" id="signupForm" action="" method="POST">
+                            <div class="modal-body">
+                               
+                                <div class="form-group row">
+                                  
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input name="chk-date" type="checkbox" class="form-check-input"
+                                                        onclick="showhidetable(1)" checked th:utext="#{checklist.table.hourLabel}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>                           
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(2)" checked  th:text="#{checklist.table.dateLabel}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(3)" checked  th:text="#{checklist.table.typeOfProductLabel}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(4)" checked th:text="#{checklist.table.measurementLabel}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+									
+									
+									<div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(5)" checked th:text="#{checklist.table.quantitySatisfied}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input"
+                                                        onclick="showhidetable(6)" checked th:text="#{checklist.table.quantityUnsatisfied}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(7)" checked th:text="#{checklist.table.quantityMix}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                               		<div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(8)" checked th:text="#{checklist.table.remarkLabel}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                                                       
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(9)" checked th:text="#{checklist.table.qcLabel}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                	<div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(10)" checked th:text="#{checklist.table.statusLabel}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                           
+                            </div>
+                            <div class="modal-footer">
+                                <input id="toggle-state" type="checkbox" data-toggle="toggle" data-on="Hiện hết" data-off="Ẩn hết" data-width="100" onchange="toggle()" checked>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" th:text="#{checklist.button.save}"></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+			<!--modal hide show column table  -->
+			
+
+
+
+			<!-- Copy from here to end-->
+		</th:block>
+
+
+	</div>
+
+	
+
+	<!-- partial:layouts/footer.html -->
+	<th:block id="footer" th:replace="layouts/footer">
+	</th:block>
+
+	<!-- Custom JavaScript for this page in here -->
+	<th:block id="custom-js">
+		
+		<!-- <script src="https://code.jquery.com/jquery-3.5.1.js"
+			integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+			crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+			integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+			crossorigin="anonymous"></script> -->
+
+
+
+		<script th:src="@{/custom-js/toast.js}"></script>
+		<script th:src="@{/custom-js/create-check-list.js}"></script>
+		<script th:src="@{/custom-js/approval-check-list.js}"></script>
+		
+		<!-- implement show hide column of TruongDD by LamPQT  -->
+		<!-- Show/hide columns selected by modal -->
+        <script>
+            function showhidetable(val) {
+                var tb = document.getElementById("record-table");
+                var tbtr = tb.getElementsByTagName("tr");
+                $(tbtr[0].getElementsByTagName("th")[val]).toggle();
+
+                for (let i = 0; i < tbtr.length; i++) {
+                    $(tbtr[i].getElementsByTagName("td")[val]).toggle();
+                }
+            }
+        </script>
+		<!-- Show all columns -->
+        <script>
+            function showAllCol() {
+                $(":checkbox:not(:checked)").prop("checked", true);
+                $("th").show();
+                $("td").show();
+            }
+        </script>
+        <script>
+            function hideAllCol() {
+                $(":checkbox").prop("checked", false);
+                $("th").hide();
+                $("td").hide();
+            }
+        </script>
+        <script>
+            function toggle() {
+                var status = document.getElementById('toggle-state').checked
+                if (status) {
+                    showAllCol();
+                } else {
+                    hideAllCol();
+                }
+            }
+        </script>
+		<script>
+			function goBack() {
+		       window.history.back();
+		    }
+		
+		</script>
+		 <script th:inline="javascript">
+		 	
+		    
+    	</script>	
+
+	</th:block>
+	<!-- End Custom JavaScript  -->
+
+</body>
+
+</html>

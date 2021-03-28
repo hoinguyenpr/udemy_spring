@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="
+    ~{layouts/main-layout :: main-fragment(
+                                          ~{:: title},
+                                          ~{:: #css-page},
+                                          ~{:: #custom-css-page},
+                                          ~{:: #navbar},
+                                          ~{:: #main-content},  
+                                          ~{:: #footer},
+                                          ~{:: #custom-js}
+                                         )}">
+
+<head>
+
+    <title>Báo cáo Đóng gói</title>
+
+    <!-- partial:layouts/otherStaticResources.html -->
+    <th:block id="css-page" th:replace="~{layouts/mainCss}"></th:block>
+
+
+
+    <!-- Custom CSS for this page in here -->
+    <th:block id="custom-css-page">
+        <script src="https://code.jquery.com/jquery-3.5.1.js"
+            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" type="text/css" th:href="@{/dist/bootstrap-clockpicker.min.css}">
+        <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+            rel="stylesheet">
+        <link rel="stylesheet" th:href="@{/css/slider_time.css}">
+        <script type="text/javascript" th:href="@{/dist/bootstrap-clockpicker.min.js}"></script>
+        <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
+
+    </th:block>
+    <!-- End Custom CSS  -->
+
+</head>
+
+<body>
+    <div class="container-scroller">
+
+        <!-- partial:layouts/navbar.html -->
+        <th:block id="navbar" th:replace="layouts/navbar">
+        </th:block>
+
+        <th:block id="main-content">
+            <!-- Copy From start to here-->
+
+            <!-- Modal starts -->
+
+            <div class="modal fade" id="configModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Cài đặt hiển thị</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">X</span>
+                            </button>
+                        </div>
+                        <form class="cmxform" id="signupForm" action="" method="POST">
+                            <div class="modal-body">
+
+                                <!-- ROW 1 -->
+                                <div class="form-group row">
+                                    <!-- ROW 1 - COL 1 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input name="chk-date" type="checkbox" class="form-check-input"
+                                                        onclick="showhidetable(1)" checked>Ngày
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ROW 1 - COL 2 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(2)" checked>Giờ
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ROW 1 - COL 3 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(3)" checked>Mã lô bán thành phẩm
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </div>
+
+                                <!-- ROW 2 -->
+                                <div class="form-group row">
+                                    <!-- ROW 2 - COL 1 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(4)" checked>Mã lô thành phẩm
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ROW 2 - COL 2 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(5)" checked>Số lượng
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ROW 2 - COL 3 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(6)" checked>Quy cách
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ROW 3 -->
+                                <div class="form-group row">
+                                    <!-- ROW 3 - COL 1 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(7)" checked>Loại bao bì
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ROW 3 - COL 2 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(8)" checked>Số lượng bao bì
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ROW 3 - COL 3 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(9)" checked>Ca sản xuất
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- ROW 4 -->
+                                <div class="form-group row">
+                                    <!-- ROW 4 - COL 1 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(10)" checked>Quản đốc
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ROW 4 - COL 2 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(11)" checked>Thời gian
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ROW 4 - COL 3 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(12)" checked>Người đóng gói
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ROW 5 -->
+                                <div class="form-group row">
+                                    <!-- ROW 5 - COL 1 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(13)" checked>STT No. Thùng
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ROW 5 - COL 2 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(14)" checked>Loại sản phẩm
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ROW 5 - COL 3 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(15)" checked>Máy SP
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                             <!-- ROW 6 -->
+                            <div class="form-group row">
+                                    <!-- ROW 6 - COL 1 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                                    <!-- ROW 6 - COL 2 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input" value=""
+                                                        onclick="showhidetable(16)" checked>Trạng thái
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- ROW 6 - COL 3 -->
+                                    <div class="col-md-4 col-sm-6">
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                            </div>
+
+
+                            <div class="modal-footer">
+                                <input id="toggle-state" type="checkbox" data-toggle="toggle" data-on="Hiện hết"
+                                    data-off="Ẩn hết" data-width="100" onchange="toggle()" checked>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Xong</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Ends -->
+
+            <!-- Main form start -->
+            <div class="container-fluid page-body-wrapper">
+                <div class="main-panel">
+                    <div class="content-wrapper">
+                        <div class="row">
+                            <div class="template-demo col-12 pl-0">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                                        <li class="breadcrumb-item" aria-current="page">Đóng gói</li>
+                                        <li class="breadcrumb-item" aria-current="page">Xem báo cáo đóng gói</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="col-12 grid-margin">
+                                <div class="card">
+                                    <div class="card-header bg-white pt-4">
+                                        <p class="h3 text-center offset-md-1">XEM BÁO CÁO ĐÓNG GÓI</p>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="info mt-4">
+                                            <div class="row justify-content-between">
+                                                <div class="col-md-12">
+                                                    <!-- Start of FIELDSET 3-->
+                                                    <fieldset class="border p-2">
+                                                        <legend class="w-auto h6 text-muted p-2">THÔNG TIN ĐÓNG GÓI
+                                                        </legend>
+                                                        <!-- ROW 1 Loai san pham - Ma lo hang-->
+                                                        <div class="form-group  row">
+                                                            <!-- ROW 1 - COL 1 -->
+                                                            <div class="col-md-5 col-sm-12">
+                                                                <div class="row">
+                                                                    <label for="createEmployee"
+                                                                        class="col-md-4 col-sm-4 col-form-label">Loại
+                                                                        sản phẩm</label> <select name="productType"
+                                                                        class="form-control col-md-8 col-sm-8">
+                                                                        <option value="">Bột sữa dừa</option>
+                                                                        <option value="">Bột nước dừa</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <!-- ROW 1 - COL 2 -->
+                                                            <div class="col-md-2 col-sm-12"></div>
+                                                            <!-- ROW 1 - COL 3 -->
+                                                            <div class="col-md-5 col-sm-12">
+                                                                <div class="row">
+                                                                    <label for="createEmployee"
+                                                                        class="col-md-4 col-sm-4 col-form-label">Mã lô
+                                                                        hàng</label> <select name="productType"
+                                                                        class="form-control col-md-8 col-sm-8">
+                                                                        <option value="">123456</option>
+                                                                        <option value="">123457</option>
+                                                                        <option value="">123458</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- ROW 2  Tu ngay - Toi ngay-->
+                                                        <form class="form-group row">
+                                                            <div class="col-md-5 col-sm-12">
+                                                                <div class="row">
+                                                                    <label for="createEmployee"
+                                                                        class="col-md-4 col-sm-4 col-form-label">Từ
+                                                                        ngày</label> <input type="date"
+                                                                        class="form-control col-md-8 col-sm-8 myCalendar">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2 col-sm-12">
+                                                                <div class="row"></div>
+                                                            </div>
+                                                            <div class="col-md-5 col-sm-12">
+                                                                <div class="row">
+                                                                    <label for="createEmployee"
+                                                                        class="col-md-4 col-sm-4 col-form-label">Tới
+                                                                        ngày</label> <input type="date"
+                                                                        class="form-control col-md-8 col-sm-8 myCalendar">
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                        <!-- ROW 3  Ca - Trang thai-->
+                                                        <div class="form-group row">
+                                                            <div class="col-md-5 col-sm-12">
+                                                                <div class="row">
+                                                                    <label for="createEmployee"
+                                                                        class="col-md-4 col-sm-4 col-form-label">Ca</label> <select name="productType"
+                                                                        class="form-control col-md-8 col-sm-8">
+                                                                        <option value="">1</option>
+                                                                        <option value="">3</option>
+                                                                       
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2"></div>
+                                                            <div class="col-md-5 col-sm-12">
+                                                                <div class="row">
+                                                                    <label for="createEmployee"
+                                                                        class="col-md-4 col-sm-4 col-form-label">Trạng thái</label>
+                                                                    <select name="productType"
+                                                                        class="form-control col-md-8 col-sm-8">
+                                                                        <option value="">Đã duyệt</option>
+                                                                        <option value="">Chờ duyệt</option>
+                            
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </fieldset>
+                                                    <!-- End of FIELDSET 3-->
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-end">
+                                            <div class="col-md-2 col-sm-12">
+                                                <button class="btn btn-sm btn-info col-md-12">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        fill="currentColor" class="bi bi-binoculars"
+                                                        viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M3 2.5A1.5 1.5 0 0 1 4.5 1h1A1.5 1.5 0 0 1 7 2.5V5h2V2.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5v2.382a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V14.5a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 14.5v-3a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5v3A1.5 1.5 0 0 1 5.5 16h-3A1.5 1.5 0 0 1 1 14.5V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V2.5zM4.5 2a.5.5 0 0 0-.5.5V3h2v-.5a.5.5 0 0 0-.5-.5h-1zM6 4H4v.882a1.5 1.5 0 0 1-.83 1.342l-.894.447A.5.5 0 0 0 2 7.118V13h4v-1.293l-.854-.853A.5.5 0 0 1 5 10.5v-1A1.5 1.5 0 0 1 6.5 8h3A1.5 1.5 0 0 1 11 9.5v1a.5.5 0 0 1-.146.354l-.854.853V13h4V7.118a.5.5 0 0 0-.276-.447l-.895-.447A1.5 1.5 0 0 1 12 4.882V4h-2v1.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V4zm4-1h2v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V3zm4 11h-4v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14zm-8 0H2v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14z" />
+                                                    </svg>
+                                                    Xem
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card mt-5 result-after-created">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row justify-content-end">
+                                                <div class="col-md-2 col-sm-12">
+                                                    <button class="btn btn-sm btn-primary col-md-12" data-toggle="modal"
+                                                        data-target="#configModal">Cài đặt hiển thị</button>
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-2 col-sm-12">
+                                                    <button class="btn btn-sm btn-primary col-md-12">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            fill="currentColor" class="bi bi-file-earmark-excel"
+                                                            viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z" />
+                                                            <path
+                                                                d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
+                                                        </svg>
+                                                        Xuất file
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row"></div>
+                                            <div class="table-responsive ">
+                                                <table class="table table-bordered table-hover" id="record-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col" class="text-center">#</th>
+                                                            <th scope="col" class="text-center chk-date">Ngày</th>
+                                                            <th scope="col" class="text-center">Giờ</th>
+                                                            <th scope="col" class="text-center">Mã lô bán thành phẩm</th>
+                                                            <th scope="col" class="text-center">Mã lô thành phẩm</th>
+                                                            <th scope="col" class="text-center">Số lượng (&#8451;)
+                                                            </th>
+                                                            <th scope="col" class="text-center">Quy cách</th>
+                                                            <th scope="col" class="text-center">Loại bao bì(&#8451;)
+                                                            </th>
+                                                            <th scope="col" class="text-center">Số lượng bao bì</th>
+                                                            <th scope="col" class="text-center">Ca sản xuất</th>
+                                                            <th scope="col" class="text-center">Quản đốc</th>
+                                                            <th scope="col" class="text-center">Thời gian</th>
+                                                            <th scope="col" class="text-center">Người đóng gói</th>
+                                                            <th scope="col" class="text-center">STT No.Thùng</th>
+                                                            <th scope="col" class="text-center">Loại sản phẩm</th>
+                                                            <th scope="col" class="text-center">Máy SP</th>
+                                                            <th scope="col" class="text-center">Trạng thái</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tr>
+                                                        <td scope="row" class="text-center">1</td>
+                                                        <td class="text-center">12/29/2020</td>
+                                                        <td class="text-center">08:00 AM</td>
+                                                        <td class="text-center">12345</td>
+                                                        <td class="text-center">1.1</td>
+                                                        <td class="text-center">180</td>
+                                                        <td class="text-center">100</td>
+                                                        <td class="text-center">90</td>
+                                                        <td class="text-center">7.5</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">98765</td>
+                                                        <td class="text-center">Chờ duyệt</td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row" class="text-center">2</td>
+                                                        <td class="text-center">12/29/2020</td>
+                                                        <td class="text-center">09:00 AM</td>
+                                                        <td class="text-center">12345</td>
+                                                        <td class="text-center">1.1</td>
+                                                        <td class="text-center">180</td>
+                                                        <td class="text-center">100</td>
+                                                        <td class="text-center">90</td>
+                                                        <td class="text-center">7.5</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">98765</td>
+                                                        <td class="text-center">Chờ duyệt</td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td scope="row" class="text-center">3</td>
+                                                        <td class="text-center">12/29/2020</td>
+                                                        <td class="text-center">10:00 AM</td>
+                                                        <td class="text-center">12345</td>
+                                                        <td class="text-center">1.1</td>
+                                                        <td class="text-center">180</td>
+                                                        <td class="text-center">100</td>
+                                                        <td class="text-center">90</td>
+                                                        <td class="text-center">7.5</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">Đạt</td>
+                                                        <td class="text-center">98765</td>
+                                                        <td class="text-center">Chờ duyệt</td>
+
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Main form end -->
+            <!-- content-wrapper ends -->
+            <!-- partial:partials/_footer.html -->
+
+            <!-- partial -->
+    </div>
+
+
+
+
+
+    <!-- Copy from here to end-->
+    </th:block>
+    </div>
+
+    <!-- partial:layouts/footer.html -->
+    <th:block id="footer" th:replace="layouts/footer">
+    </th:block>
+
+    <!-- Custom JavaScript for this page in here -->
+    <th:block id="custom-js">
+
+        <script th:src="@{/js/todolist.js}"></script>
+        <script th:src="@{/js/slider_timer.js}"></script>
+
+        <!-- Script for auto day-time fill -->
+        <script>
+            function clockUpdate() {
+                let today = new Date();
+                let current_time = ("0" + today.getHours()).slice(-2) + ":" +
+                    ("0" + today.getMinutes()).slice(-2) + ":" +
+                    ("0" + today.getSeconds()).slice(-2);
+                //document.getElementById("myTime").value = current_time;
+
+                let myTimes = document.getElementsByClassName("myTime");
+
+                for (let index = 0; index < myTimes.length; index++) {
+                    const element = myTimes[index];
+                    element.value = current_time;
+                }
+
+            }
+
+            function calendarUpdate() {
+                let today = new Date();
+                let current_day = today.getFullYear() + "-" +
+                    ("0" + today.getMonth()).slice(-2) + "-" +
+                    ("0" + today.getDate()).slice(-2);
+                //document.getElementById("myCalendar").value = current_day;
+                let myDates = document.getElementsByClassName("myCalendar");
+                for (let index = 0; index < myDates.length; index++) {
+                    const element = myDates[index];
+                    element.value = current_day
+                }
+            }
+        </script>
+
+        <!-- Show/hide columns selected by modal -->
+        <script>
+            function showhidetable(val) {
+                var tb = document.getElementById("record-table");
+                var tbtr = tb.getElementsByTagName("tr");
+                $(tbtr[0].getElementsByTagName("th")[val]).toggle();
+
+                for (let i = 0; i < tbtr.length; i++) {
+                    $(tbtr[i].getElementsByTagName("td")[val]).toggle();
+                }
+            }
+        </script>
+
+        <!-- Show all columns -->
+        <script>
+            function showAllCol() {
+                $(":checkbox:not(:checked)").prop("checked", true);
+                $("th").show();
+                $("td").show();
+            }
+
+        </script>
+        <script>
+            function hideAllCol() {
+                $(":checkbox").prop("checked", false);
+                $("th").hide();
+                $("td").hide();
+            }</script>
+        <script>
+            function toggle() {
+                var status = document.getElementById('toggle-state').checked
+                if (status) {
+                    showAllCol();
+                } else {
+                    hideAllCol();
+                }
+            }
+        </script>
+
+        <!-- End custom js for this page-->
+
+    </th:block>
+    <!-- End Custom JavaScript  -->
+
+</body>
+
+</html>

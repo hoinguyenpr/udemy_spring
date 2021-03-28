@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/main-layout :: main-fragment(
+                                          ~{::title},
+                                          ~{:: #other-static-resources},
+                                          ~{:: #navbar},
+                                          ~{:: #main-content},  
+                                          ~{:: #footer},
+                                          ('/QAMS/js/form-typeproduct.js')
+                                         )}">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Trang chủ</title>
+
+  <th:block id="other-static-resources" th:replace="~{layouts/otherStaticResources}"></th:block>
+
+
+
+
+</head>
+
+<body>
+  <div class="container-scroller">
+    <!-- partial:partials/_horizontal-navbar.html -->
+    <div id="navbar" th:replace="layouts/navbar"> </div>
+
+    <!-- partial -->
+
+
+    <div id="main-content">
+      <!-- Copy here-->
+
+	
+
+		<!-- Modal create new starts -->
+
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+			aria-labelledby="exampleModalLabel" aria-hidden="true"
+			style="display: none;">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Thêm Loại Sản
+							Phẩm</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<form class="cmxform" id="signupForm"
+						th:action="@{/TypeProduct/save}" method="POST"
+						th:object="${typeproduct}">
+						<div class="modal-body">
+
+						
+							<!-- Additive Id (from DB), hiden field -->
+							<input type="hidden" id="id" th:field="*{id}" value="-1" />
+							
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label for="firstname" class="col-sm-3 col-form-label">Tên
+											Loại Sản Phẩm</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" id="typeProductName"
+												name="typeProductName" th:field="*{typeProductName}" />
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Mã Loại Sản
+											Phẩm</label>
+										<div class="col-sm-9">
+											<input type="text" class="form-control" id="typeProductCode"
+												name="typeProductCode" th:field="*{typeProductCode}" />
+
+											<!-- 	<select class="form-control" th:field="*{maLoaiSanPham}"
+												id="typeProductCode" name="typeProductCode">
+														<option 
+												th:each="typeproduct : ${typeproducts}" 
+												th:value="${typeproduct.maLoaiSanPham}" 
+												th:text="${typeproduct.tenLoaiSanPham}"></option> 
+									 <option th:each="i : ${#numbers.sequence(0, 100)}" th:value="${i}" th:text="${i}">
+    </option>  
+												<!-- <option value="volvo">Volvo</option>
+												<option value="saab">Saab</option>
+												<option value="vw">VW</option>
+												<option value="audi" selected>Audi</option> 
+											</select> -->
+										</div>
+									</div>
+								</div>
+
+
+								<div class="col-md-12">
+									<div class="form-group row">
+										<label for="firstname" class="col-sm-3 col-form-label">Ghi
+											Chú</label>
+										<div class="col-sm-12">
+
+											<textarea class="form-control" id="typeProductNote"
+												name="typeProductNote" th:field="*{note}" rows="5"></textarea>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-12">
+									<div class="modal-footer">
+										<input class="btn btn-primary" type="submit" value="Lưu">
+										<button type="button" class="btn btn-light"
+											data-dismiss="modal">Cancel</button>
+									</div>
+
+								</div>
+							</div>
+
+
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- Modal create new Ends -->
+
+
+
+		<div class="container-fluid page-body-wrapper">
+			<div class="main-panel">
+				<div class="content-wrapper">
+					<div class="row grid-margin">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-body">
+									<h4 class="card-title text-center ">Loại Sản Phẩm</h4>
+
+									<div class="template-demo">
+										<button class="btn btn-primary btn-fw create-button"
+											data-toggle="modal" data-target="#exampleModal">Tạo
+											Loại Sản Phẩm</button>
+										<select id="Ultra" class="btn btn-outline-info btn-fw"
+											name="order-listing_length" aria-controls="order-listing"
+											onchange="run()">
+											<option value="10" th:selected="${pageSize == 10}" selected>10
+												Sản Phẩm</option>
+											<option value="20" th:selected="${pageSize == 20}">20
+												Sản Phẩm</option>
+											<option value="50" th:selected="${pageSize == 50}">50
+												Sản Phẩm</option>
+											<option value="100" th:selected="${pageSize == 100}">100
+												Sản Phẩm</option>
+
+										</select>
+
+										<!-- Form popup when delete -->
+										<div class="modal fade" id="exampleModal1" tabindex="-1"
+											role="dialog" aria-labelledby="exampleModalLabel"
+											aria-hidden="true" style="display: none;">
+											<div class="modal-dialog modal-sm" role="document">
+												<div class="modal-content">
+													<form id="deleteForm" th:action="@{/TypeProduct/delete}"
+														method="POST" class="">
+														<input type="hidden" id="deleteIda" th:name="deleteId"
+															value="" />
+														<div class="modal-body">
+															<h4 style="text-align: center;">Bạn có muốn xóa loại
+																sản phẩm này?</h4>
+														</div>
+
+														<!-- Delete, cancel button-->
+														<div class="modal-footer">
+															<input style="width: 7rem;" class="btn btn-danger"
+																type="submit" value="Xóa">
+															<button style="width: 7rem;" type="button"
+																class="btn btn-light" data-dismiss="modal">Hủy</button>
+														</div>
+													</form>
+												</div>
+											</div>
+										</div>
+										<!-- End form popup when delete -->
+
+
+
+										<!--search-->
+										<form th:action="@{/TypeProduct/search}"
+											class="form-inline form-inline-search">
+
+											<input type="text" name="search" id="search"
+												class="form-control mb-2 mr-sm-2" th:value="${search}"
+												placeholder="Search..." aria-label="Recipient's username">
+
+											<button type="submit" class="btn btn-primary mb-2">Tìm
+												Kiếm</button>
+
+										</form>
+										<!--end search-->
+
+									</div>
+									<!-- view list-->
+									<div class="table-responsive">
+										<table class="table table-hover table-bordered text-center">
+											<thead>
+												<tr>
+													<th rowspan="2" colspan="1" class="text-break "
+														style="width: 10rem;">Số Thứ Tự</th>
+
+													<th rowspan="1" class="text-break " style="width: 10rem;">Mã
+														Loại Sản Phẩm</th>
+													<th rowspan="2" class="text-break " style="width: 10rem;">Tên
+														Loại Sản Phẩm</th>
+													<th rowspan="2" class="text-break " style="width: 5rem;">Ghi
+														Chú</th>
+
+													<th rowspan="2" style="width: 9em;">Thao Tác</th>
+												</tr>
+											<tbody>
+												<tr th:each="typeproduct, iterator : ${typeproducts}"
+													th:id="${iterator.count}">
+													<td class="typeProductID" th:value="${typeproduct.id}"
+														th:text="${iterator.count}">1</td>
+													<td class="typeProductCode"
+														th:text="${typeproduct.typeProductCode}" />
+													<td class="typeProductName"
+														th:text="${typeproduct.typeProductName}" />
+													<td class="typeProductNote" th:text="${typeproduct.note}" />
+													<td>
+														<button type="button"
+															class="btn btn-outline-info btn-fw edit-button"
+															data-toggle="modal" data-target="#exampleModal">
+															<i class="icon-pencil"></i>Chỉnh Sửa
+														</button> <!--  	<form th:action="@{/TypeProduct/delete/{id}(id=${typeproduct.id})}"
+															style="display: inline-block; margin: 0; border: 0;"
+															onSubmit="if(!(confirm('Ban co muon xoa loai san pham nay khong?'))) return false">
+															<button type="submit"
+																class="btn btn-outline-danger btn-fw">
+																<i class="icon-trash"></i>Xóa
+															</button>
+														</form>-->
+
+														<button style="width: 7rem;" type="button"
+															class="btn btn-outline-danger btn-md delete-button"
+															data-toggle="modal" data-target="#exampleModal1">
+															<i class="icon-trash"></i>Xóa
+														</button>
+
+
+													</td>
+												</tr>
+
+											</tbody>
+										</table>
+
+
+
+									</div>
+									<!-- End view list-->
+
+
+									<!-- pagination -->
+									<input hidden="" th:value="${currentPage}" id="pageNum">
+									<nav class="pt-sm-2">
+										<ul class="pagination d-flex justify-content-end ">
+
+											<!-- 0 -->
+
+											<li class="page-item"><a class="page-link"
+												th:href="@{/TypeProduct/?page=0}"> <i
+													class=" icon-control-start"></i>
+											</a></li>
+
+											<!-- prevous -->
+
+											<li class="page-item"><a class="page-link"
+												th:if="${currentPage >= 1}"
+												th:href="@{/TypeProduct/(page=${currentPage - 1})}"> <i
+													class="icon-arrow-left"></i>
+											</a></li>
+
+											<!-- 1 -->
+
+											<li class="page-item"><a class="page-link"
+												th:if="${ totalPages > currentPage }"
+												th:href="@{/TypeProduct/(page=${currentPage})}"> <i
+													th:text="${currentPage + 1}"></i>
+											</a></li>
+											<!-- 2 -->
+
+											<li class="page-item"><a class="page-link"
+												th:if="${ totalPages > currentPage + 1 }"
+												th:href="@{/TypeProduct/(page=${currentPage + 1})}"> <i
+													th:text="${currentPage + 2 }"></i>
+											</a></li>
+
+
+											<!-- 3-->
+
+											<li class="page-item"><a class="page-link"
+												th:if="${ totalPages > currentPage + 1}"
+												th:href="@{/TypeProduct/?(page=${currentPage + 2})}"> <i
+													th:text="${currentPage + 3}"></i>
+											</a></li>
+
+											<!-- 4 -->
+
+											<li class="page-item"><a class="page-link"
+												th:if="${ totalPages > currentPage + 1}"
+												th:href="@{/TypeProduct/?(page=${currentPage + 3})}"> <i
+													th:text="${currentPage + 4}"></i>
+											</a></li>
+
+
+
+											<!-- next -->
+
+											<li class="page-item"><a class="page-link"
+												th:if="${ totalPages > currentPage + 2}"
+												th:href="@{/TypeProduct/?(page=${currentPage + 1})}"> <i
+													class="icon-arrow-right"></i>
+											</a></li>
+
+
+											<!-- end -->
+
+											<li class="page-item"><a class="page-link"
+												th:href="@{/TypeProduct/?(page=${totalPages - 1})}"> <i
+													class=" icon-control-end"></i>
+											</a></li>
+
+										</ul>
+									</nav>
+									<!-- End pagination -->
+
+
+
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+				</div>
+				<!-- content-wrapper ends -->
+
+
+				<!-- partial -->
+			</div>
+			<!-- main-panel ends -->
+		</div>
+
+
+		<!-- page-body-wrapper ends -->
+	</div>
+	<!-- container-scroller -->
+
+
+
+      <!-- Copy here-->
+    </div>
+  </div>
+
+  <div id="footer" th:replace="layouts/footer"> </div>
+
+</body>
+
+</html>

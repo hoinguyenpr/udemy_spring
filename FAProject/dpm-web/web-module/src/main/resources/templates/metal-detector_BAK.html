@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="
+        ~{layouts/main-layout :: main-fragment(
+                                              ~{:: title},
+                                              ~{:: #css-page},
+                                              ~{:: #custom-css-page},
+                                              ~{:: #navbar},
+                                              ~{:: #main-content},  
+                                              ~{:: #footer},
+                                              ~{:: #custom-js}
+                                             )}">
+
+<head>
+    <title>Biểu mẫu máy dò kim loại</title>
+    <!-- partial:layouts/otherStaticResources.html -->
+    <th:block id="css-page" th:replace="~{layouts/mainCss}"></th:block>
+    <!-- Custom CSS for this page in here -->
+    <th:block id="custom-css-page">
+        <link rel="stylesheet" th:href="@{/vendors/iconfonts/font-awesome/css/font-awesome.min.css}">
+    </th:block>
+    <!-- End Custom CSS  -->
+</head>
+
+<body>
+    <div class="container-scroller">
+        <!-- partial:layouts/navbar.html -->
+        <th:block id="navbar" th:replace="layouts/navbar"> </th:block>
+
+        <th:block id="main-content">
+
+            <!-- Modal starts add metal detector, update metal detector -->
+            <div class="modal fade" id="add-modal" role="dialog" aria-labelledby="add-modal-label" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog  modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="add-modal-label">Tạo biểu mẫu kiểm tra máy rà kim loại</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <form class="cmxform" id="metalDetectorForm" name="metalDetectorForm">
+                            <div class="modal-body">
+                                <h2 id="metalDetectorFormTitle" class="text-center pb-4">Biểu mẫu kiểm tra máy dò kim loại</h2>
+                                <input type="text" class="form-control" id="id" name="id" hidden>
+                                <input type="text" class="form-control" id="status" name="status" value="Pending" hidden>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="typeProductCode" class="col-sm-3 col-form-label"> Bộ phận(<span class="error mt-2 text-danger">*</span>) : </label>
+                                            <div class="col-sm-9">
+                                                <select class="js-example-basic-single w-100" id="departmentCode" name="departmentCode">
+                                                    <option th:each="itemDepartment : ${departments}" th:value="${itemDepartment.departmentCode}" th:text="${itemDepartment.departmentName}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="typeProductCode" class="col-sm-3 col-form-label"> Loại sản phẩm(<span class="error mt-2 text-danger">*</span>) : </label>
+                                            <div class="col-sm-9">
+                                                <select class="js-example-basic-single w-100" id="typeProductCode" name="typeProductCode">
+                                                    <option th:each="itemTypeproduct : ${typeProducts}" th:value="${itemTypeproduct.typeProductCode}" th:text="${itemTypeproduct.typeProductName}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="lotNo" class="col-sm-3 col-form-label"> Mã lô(<span class="error mt-2 text-danger">*</span>) : </label>
+                                            <div class="col-sm-9">
+                                                <select class="js-example-basic-single w-100" id="lotNo" name="lotNo">
+                                                    <option th:each="itemProductLot : ${productLots}" th:value="${itemProductLot.lotCode}" th:text="${itemProductLot.lotCode}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="dateCheck" class="col-sm-3 col-form-label"> Ngày kiểm tra(<span class="error mt-2 text-danger">*</span>) : </label>
+                                            <div id="datepicker-popup" class="input-group date datepicker col-sm-9">
+                                                <input type="text" class="form-control" placeholder="VD: 31/12/2020" id="dateCheck" name="dateCheck">
+                                                <span class="input-group-addon input-group-append border-left">
+                                                    <span class="icon-calendar input-group-text"></span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="timeCheck" class="col-sm-3 col-form-label"> Giờ kiểm tra(<span class="error mt-2 text-danger">*</span>) : </label>
+                                            <div class="input-group date col-sm-9" id="timepicker-example" data-target-input="nearest">
+                                                <div class="input-group" data-target="#timepicker-example" data-toggle="datetimepicker">
+                                                    <input type="text" class="form-control datetimepicker-input" data-target="#timepicker-example" id="timeCheck" name="timeCheck">
+                                                    <div class="input-group-addon input-group-append"><i class="icon-clock input-group-text"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="frequency" class="col-sm-3 col-form-label"> Tuần xuất kiểm tra(<span class="error mt-2 text-danger">*</span>) : </label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" id="frequency" name="frequency" value="1 giờ/lần">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="lot_no" class="col-sm-3 col-form-label">Mẫu kiểm tra : </label>
+                                            <div class="col-sm-9">
+                                                <table class="table table-hover table-bordered text-center">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Fe(<span class="error mt-2 text-danger">*</span>) : <br> (3.0mm)</th>
+                                                            <th>Non-Fe(<span class="error mt-2 text-danger">*</span>) : <br> ( 3.5mm)</th>
+                                                            <th>Sus(<span class="error mt-2 text-danger">*</span>) : <br> (3.5 mm)</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <div class="col-3 ">
+                                                                    <div class="form-group">
+                                                                        <div class="form-check-fe">
+                                                                            <label class="form-check-label">
+                                                                                <input type="radio" class="form-check-input" name="optionsRadiosFe" id="optionsRadios_fe1" value="true" checked> Pass <i class="input-helper"></i></label>
+                                                                        </div>
+                                                                        <div class="form-check-fe">
+                                                                            <label class="form-check-label">
+                                                                                <input type="radio" class="form-check-input" name="optionsRadiosFe" id="optionsRadios_fe2" value="false"> Fail <i class="input-helper"></i></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="col-3 ">
+                                                                    <div class="form-group">
+                                                                        <div class="form-check-nonfe">
+                                                                            <label class="form-check-label">
+                                                                                <input type="radio" class="form-check-input" name="optionsRadiosNonfe" id="optionsRadios_nonfe1" value="true" checked> Pass <i class="input-helper"></i></label>
+                                                                        </div>
+                                                                        <div class="form-check-nonfe">
+                                                                            <label class="form-check-label">
+                                                                                <input type="radio" class="form-check-input" name="optionsRadiosNonfe" id="optionsRadios_nonfe2" value="false"> Fail <i class="input-helper"></i></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="col-3 ">
+                                                                    <div class="form-group">
+                                                                        <div class="form-check-sus">
+                                                                            <label class="form-check-label">
+                                                                                <input type="radio" class="form-check-input" name="optionsRadiosSus" id="optionsRadios_sus1" value="true" checked> Pass <i class="input-helper"></i></label>
+                                                                        </div>
+                                                                        <div class="form-check-sus">
+                                                                            <label class="form-check-label">
+                                                                                <input type="radio" class="form-check-input" name="optionsRadiosSus" id="optionsRadios_sus2" value="false"> Fail <i class="input-helper"></i></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="correctiveAction" class="col-sm-3 col-form-label">Hành động sửa chữa:</label>
+                                            <div class="col-sm-9">
+                                                <textarea rows="7" class="form-control" id="correctiveAction" name="correctiveAction"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="userName" class="col-sm-3 col-form-label"> Người kiểm tra(<span class="error mt-2 text-danger">*</span>) : </label>
+                                            <div class="col-sm-9">
+                                                <select class="js-example-basic-single w-100" id="userName" name="userName">
+                                                    <option th:each="itemEmployee : ${employees}" th:value="${itemEmployee.username}" th:text="${itemEmployee.employeeName}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input class="btn btn-primary" type="submit" value="Lưu biểu mẫu">
+                                <button type="button" class="btn btn-light" data-dismiss="modal">Hủy</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- End Modal starts add metal detector, update metal detector-->
+
+            <!-- Modal start for default value configuration -->
+            <div class="modal fade" id="config-modal" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="defaultModalLabel">Thiết lập thông số mặc định</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">x</span>
+                            </button>
+                        </div>
+                        <form class="cmxform" id="configDefault" name="configDefault">
+                            <div class="modal-body">
+                                <h2 id="configDefaultTitle" class="text-center pb-4">Thiết lập thông số mặc định </h2>
+
+                                <input type="text" id="defaultDateCheck" name="dateCheck" value="31/12/2020" readonly hidden>
+                                <input type="text" id="defaultTimeCheck" name="timeCheck" value="12:00" readonly hidden>
+                                <input type="text" class="form-control" id="status" name="status" value="Pending" readonly hidden>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="typeProductCode" class="col-sm-3 col-form-label"> Bộ phận(<span class="error mt-2 text-danger">*</span>)</label>
+                                            <div class="col-sm-9">
+                                                <select class="js-example-basic-single w-100" id="defaultDepartmentCode" name="departmentCode">
+                                                    <option th:each="itemDepartment : ${departments}" th:value="${itemDepartment.departmentCode}" th:text="${itemDepartment.departmentName}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="typeProductCode" class="col-sm-3 col-form-label"> Loại sản phẩm(<span class="error mt-2 text-danger">*</span>)</label>
+                                            <div class="col-sm-9">
+                                                <select class="js-example-basic-single w-100" id="defaultTypeProductCode" name="typeProductCode">
+                                                    <option th:each="itemTypeproduct : ${typeProducts}" th:value="${itemTypeproduct.typeProductCode}" th:text="${itemTypeproduct.typeProductName}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="lotNo" class="col-sm-3 col-form-label"> Mã lô(<span class="error mt-2 text-danger">*</span>)</label>
+                                            <div class="col-sm-9">
+                                                <select class="js-example-basic-single w-100" id="defaultLotNo" name="lotNo">
+                                                    <option th:each="itemProductLot : ${productLots}" th:value="${itemProductLot.lotCode}" th:text="${itemProductLot.lotCode}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="frequency" class="col-sm-3 col-form-label"> Tuần xuất kiểm tra(<span class="error mt-2 text-danger">*</span>)</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" id="defaultFrequency" name="frequency" value="1 giờ/lần">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="lot_no" class="col-sm-3 col-form-label">Mẫu kiểm tra</label>
+                                            <div class="col-sm-9">
+                                                <table class="table table-hover table-bordered text-center">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Fe(<span class="error mt-2 text-danger">*</span>)<br> (3.0mm)</th>
+                                                            <th>Non-Fe(<span class="error mt-2 text-danger">*</span>)<br> ( 3.5mm)</th>
+                                                            <th>Sus(<span class="error mt-2 text-danger">*</span>)<br> (3.5 mm)</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <div class="col-3 ">
+                                                                    <div class="form-group">
+                                                                        <div class="form-check-fe">
+                                                                            <label class="form-check-label">
+                                                                                <input type="radio" class="form-check-input" name="optionsRadiosFe" id="defaultOptionsRadios_fe1" value="true" checked> Pass <i class="input-helper"></i></label>
+                                                                        </div>
+                                                                        <div class="form-check-fe">
+                                                                            <label class="form-check-label">
+                                                                                <input type="radio" class="form-check-input" name="optionsRadiosFe" id="defaultOptionsRadios_fe2" value="false"> Fail <i class="input-helper"></i></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="col-3 ">
+                                                                    <div class="form-group">
+                                                                        <div class="form-check-nonfe">
+                                                                            <label class="form-check-label">
+                                                                                <input type="radio" class="form-check-input" name="optionsRadiosNonfe" id="defaultOptionsRadios_nonfe1" value="true" checked> Pass <i class="input-helper"></i></label>
+                                                                        </div>
+                                                                        <div class="form-check-nonfe">
+                                                                            <label class="form-check-label">
+                                                                                <input type="radio" class="form-check-input" name="optionsRadiosNonfe" id="defaultOptionsRadios_nonfe2" value="false"> Fail <i class="input-helper"></i></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="col-3 ">
+                                                                    <div class="form-group">
+                                                                        <div class="form-check-sus">
+                                                                            <label class="form-check-label">
+                                                                                <input type="radio" class="form-check-input" name="optionsRadiosSus" id="defaultOptionsRadios_sus1" value="true" checked> Pass <i class="input-helper"></i></label>
+                                                                        </div>
+                                                                        <div class="form-check-sus">
+                                                                            <label class="form-check-label">
+                                                                                <input type="radio" class="form-check-input" name="optionsRadiosSus" id="defaultOptionsRadios_sus2" value="false"> Fail <i class="input-helper"></i></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label for="defaultUserName" class="col-sm-3 col-form-label"> Người kiểm tra(<span class="error mt-2 text-danger">*</span>)</label>
+                                            <div class="col-sm-9">
+                                                <select class="js-example-basic-single w-100" id="defaultUserName" name="userName">
+                                                    <option th:each="itemEmployee : ${employees}" th:value="${itemEmployee.username}" th:text="${itemEmployee.employeeName}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input class="btn btn-primary" type="submit" value="Lưu cài đặt">
+                                <button type="button" class="btn btn-light" data-dismiss="modal">Hủy</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- config-modal END: modal for default value configuration -->
+
+            <!-- Content of page -->
+            <div class="container-fluid page-body-wrapper">
+                <div class="main-panel">
+                    <div class="content-wrapper">
+                        <div class="row grid-margin">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="template-demo">
+                                            <div class="pb-4 pt-2 row">
+                                                <div class="col-11">
+                                                    <p class="h4 text-center" th:text="#{metalDetector.title}"></p>
+                                                </div>
+                                                <div class="col-1">
+                                                    <button id="defaultSettingButton" class="btn btn-primary float-right " data-toggle="modal" data-target="#config-modal">Thiết lập</button>
+                                                </div>
+                                            </div>
+                                            <button type="button" id="addMetalDetector" class="btn btn-primary btn-fw" data-toggle="modal" data-target="#add-modal" th:text="#{metalDetector.addMetalDetector}"></button>
+                                            <select id="element_size" name="element_size" class="btn btn-outline-info ">
+                                                <option class="dropdown-item" th:value="#{metalDetector.select.10Item.value}" th:text="#{metalDetector.select.10Item.text}" th:attr="selected=${(size >= 10) ? true : false}"></option>
+                                                <option class="dropdown-item" th:value="#{metalDetector.select.20Item.value}" th:text="#{metalDetector.select.20Item.text}" th:attr="selected=${(size >= 20) ? true : false}"></option>
+                                                <option class="dropdown-item" th:value="#{metalDetector.select.50Item.value}" th:text="#{metalDetector.select.50Item.text}" th:attr="selected=${(size >= 50) ? true : false}"></option>
+                                                <option class="dropdown-item" th:value="#{metalDetector.select.100Item.value}" th:text="#{metalDetector.select.100Item.text}" th:attr="selected=${(size >= 100) ? true : false}"></option>
+                                            </select>
+                                            <form th:action="@{search}" class="form-inline form-inline-search" method="GET">
+                                                <input type="text" class="form-control mb-2 mr-sm-2" th:attr="placeholder=#{metalDetector.search.placeHolder}" th:value="${search}" id="search" name="search" aria-label="Recipient's username">
+                                                <button type="submit" class="btn btn-primary mb-2" th:text="#{metalDetector.search.button}"></button>
+                                            </form>
+                                        </div>
+                                        <!-- view list-->
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-bordered text-center">
+                                                <thead>
+                                                    <tr>
+                                                        <th rowspan="2" colspan="1" class="text-break " style=" width: 5rem; " th:text="#{metalDetector.table.header.1}"></th>
+                                                        <th rowspan="2" class="text-break " style=" width: 5rem; " th:text="#{metalDetector.table.header.2}"></th>
+                                                        <th rowspan="2" class="text-break " style=" width: 3rem; " th:text="#{metalDetector.table.header.3}"></th>
+                                                        <th colspan="3" th:text="#{metalDetector.table.header.4}"></th>
+                                                        <th rowspan="2" th:text="#{metalDetector.table.header.5}"></th>
+                                                        <th rowspan="2" th:text="#{metalDetector.table.header.6}"></th>
+                                                        <th rowspan="2" th:text="#{metalDetector.table.header.7}"></th>
+                                                        <th rowspan="2" th:text="#{metalDetector.table.header.8}"></th>
+                                                        <th rowspan="2" style=" width: 18em; " th:text="#{metalDetector.table.header.9}"></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>
+                                                            <p>Fe</p>
+                                                            <p>(3.0mm)</p>
+                                                        </th>
+                                                        <th>
+                                                            <p>Non-Fe</p>
+                                                            <p>(3.5mm)</p>
+                                                        </th>
+                                                        <th>
+                                                            <p>Sus</p>
+                                                            <p>(3.5mm)</p>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Check if list metal detector empty then print out message -->
+                                                    <tr th:if="${pageMetalDetectors.isEmpty()}" class="btn-default text-center">
+                                                        <td colspan="11"><span th:text="#{metalDetector.table.listEmpty}"></span> </td>
+                                                    </tr>
+                                                    <!-- If list metal detector not empty then print it  -->
+                                                    <tr th:each="detector , itemStat : ${pageMetalDetectors}">
+                                                        <td th:text="${detector.checkingDate}"></td>
+                                                        <td th:text="${detector.productLot.lotCode}"></td>
+                                                        <td th:text="${detector.checkingTime}"></td>
+                                                        <td th:text="${detector.checkingSampleFe} ? 'Đạt' : 'Không đạt' "></td>
+                                                        <td th:text="${detector.checkingSampleNonFe} ? 'Đạt' : 'Không đạt' "></td>
+                                                        <td th:text="${detector.checkingSampleSus} ? 'Đạt' : 'Không đạt' "></td>
+                                                        <td th:text="${detector.frequency}"></td>
+                                                        <td th:text="${detector.correctiveAction != null} ? *{detector.correctiveAction} : '-' "></td>
+                                                        <td th:text="${detector.inspector.employeeName}"></td>
+                                                        <td>
+                                                            <div th:switch="${detector.status}">
+                                                                <div th:case="Pending">
+                                                                    <i class="fa fa-eye icon-md text-warning" title="Chờ duyệt"></i>
+                                                                </div>
+                                                                <div th:case="Rejected">
+                                                                    <i class="fa fa-times-circle icon-md text-danger" title="Không duyệt"></i>
+                                                                </div>
+                                                                <div th:case="Approved">
+                                                                    <i class="fa fa-check-circle icon-md text-success" title="Đã duyệt"></i>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" th:onclick="|updateMetalDetectorById(${detector.id})|" class="btn btn-outline-info btn-fw" data-toggle="modal" data-target="#add-modal">
+                                                                <i class="icon-pencil"></i>Cập nhật
+                                                            </button>
+                                                            <button type="button" th:onclick="|deleteMetalDetectorById(${detector.id})|" class="btn btn-outline-danger btn-fw">
+                                                                <i class="icon-trash"></i>Xóa
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- End view list-->
+                                        <!-- pagination -->
+                                        <nav class="pt-sm-2">
+                                            <ul class="pagination d-flex justify-content-end ">
+                                                <li class="page-item">
+                                                    <a class="page-link" th:onclick="|changePage('previous',${pageMetalDetectors.getNumber()},${pageMetalDetectors.getTotalPages()})|">
+                                                        <i class="icon-arrow-left"></i>
+                                                    </a>
+                                                </li>
+
+                                                <li class="page-item" th:if="${pageMetalDetectors.getNumber()-2} >= 0 ">
+                                                    <a class=" page-link" th:onclick="|changePage('current',${pageMetalDetectors.getNumber()-2},${pageMetalDetectors.getTotalPages()})|" th:text="${pageMetalDetectors.getNumber()}-1"></a>
+                                                </li>
+                                                <li class="page-item" th:if="${pageMetalDetectors.getNumber()-1} >= 0 ">
+                                                    <a class=" page-link" th:onclick="|changePage('current',${pageMetalDetectors.getNumber()-1},${pageMetalDetectors.getTotalPages()})|" th:text="${pageMetalDetectors.getNumber()}"></a>
+                                                </li>
+                                                <li class="page-item active">
+                                                    <a class=" page-link" th:onclick="|changePage('current',${pageMetalDetectors.getNumber()},${pageMetalDetectors.getTotalPages()})|" th:text="${pageMetalDetectors.getNumber()+1}"></a>
+                                                </li>
+                                                <li class="page-item" th:if="${pageMetalDetectors.getNumber()+1} <= ${pageMetalDetectors.getTotalPages()-1}">
+                                                    <a class=" page-link" th:onclick="|changePage('current',${pageMetalDetectors.getNumber()+1},${pageMetalDetectors.getTotalPages()})|" th:text="${pageMetalDetectors.getNumber()+2}"></a>
+                                                </li>
+                                                <li class="page-item" th:if="${pageMetalDetectors.getNumber()+2} <= ${pageMetalDetectors.getTotalPages()-1}">
+                                                    <a class=" page-link" th:onclick="|changePage('current',${pageMetalDetectors.getNumber()+2},${pageMetalDetectors.getTotalPages()})|" th:text="${pageMetalDetectors.getNumber()}+3"></a>
+                                                </li>
+
+                                                <li class="page-item" th:if="${pageMetalDetectors.getNumber()} <= 0">
+                                                    <a class="page-link" th:onclick="|changePage('next',${pageMetalDetectors.getNumber()},${pageMetalDetectors.getTotalPages()})|">
+                                                        <i class="icon-arrow-right"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                        <!-- End pagination -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- content-wrapper ends -->
+
+                </div>
+                <!-- main-panel ends -->
+            </div>
+            <!-- End content of page-->
+        </th:block>
+    </div>
+    <!-- partial:layouts/footer.html -->
+    <th:block id="footer" th:replace="layouts/footer"> </th:block>
+    <!-- Custom JavaScript for this page in here -->
+    <th:block id="custom-js">
+        <script th:src="@{/js/form-metal-detector-home-page.js}"></script>
+        <script th:src="@{/js/formpickers.js}"></script>
+    </th:block>
+    <!-- End Custom JavaScript  -->
+</body>
+
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{layouts/main-layout :: main-fragment(
+                                          ~{::title},
+                                          ~{:: #other-static-resources},
+                                          ~{:: #navbar},
+                                          ~{:: #main-content},  
+                                          ~{:: #footer},
+                                          ('/QAMS/js/form-supplier.js')
+                                         )}">
+
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Trang chủ</title>
+
+<th:block id="other-static-resources"
+	th:replace="~{layouts/otherStaticResources}"></th:block>
+
+
+
+
+</head>
+
+
+<body>
+	<div class="container-scroller">
+		<!-- partial:partials/_horizontal-navbar.html -->
+		<div id="navbar" th:replace="layouts/navbar"></div>
+
+		<!-- partial -->
+
+
+		<div id="main-content">
+			<!-- Copy here-->
+		
+	
+			<div class="container-fluid page-body-wrapper">
+				<div class="main-panel">
+					<div class="content-wrapper">
+						<div class="row grid-margin">
+							<div class="col-12">
+								<div class="card">
+									<div class="card-body">
+										<h4 class="card-title text-center">NHÀ CUNG CẤP</h4>
+
+										<div class="template-demo">
+											<button type="button" class="btn btn-primary btn-fw"
+												data-toggle="modal" data-target="#exampleModal"
+												id="create-button">Thêm nhà cung cấp</button>
+
+											<select id="Ultra" class="btn btn-outline-info btn-fw"
+												name="order-listing_length" aria-controls="order-listing"
+												onchange="run()">
+												<option value="10" th:selected="${pageSize == 10}" selected>10
+													Nhà Cung Cấp</option>
+												<option value="20" th:selected="${pageSize == 20}">20
+													Nhà Cung Cấp</option>
+												<option value="50" th:selected="${pageSize == 50}">50
+													Nhà Cung Cấp</option>
+												<option value="100" th:selected="${pageSize == 100}">100
+													Nhà Cung Cấp</option>
+
+											</select>
+
+
+											<!-- Search -->
+											<form th:action="@{/supplier/}"
+												class="form-inline form-inline-search">
+
+												<input type="text" name="search" id="search"
+													class="form-control mb-2 mr-sm-2" th:value="${search}"
+													placeholder="Tìm..." aria-label="Recipient's username">
+
+												<button type="submit" class="btn btn-primary mb-2">Tìm
+													Kiếm</button>
+											</form>
+
+											<!-- End Search -->
+
+										</div>
+
+										<!-- view list-->
+										<div class="table-responsive">
+											<table class="table table-hover table-bordered text-center">
+												<thead>
+													<tr>
+														<th>STT</th>
+														<th>Mã nhà cung cấp</th>
+														<th>Tên nhà cung cấp</th>
+														<th>Số điện thoại</th>
+														<th>Địa chỉ</th>
+
+														<th style="width: 16em">Tùy chọn</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr th:each="suppliers, supStat: ${suppliers}"
+														th:id="${supStat.index}">
+														<td class="supId" th:text="${supStat.count}"
+															th:value="${suppliers.id}" />
+														<td class="supplierCode"
+															th:text="${suppliers.supplierCode}" />
+														<td class="supplierName"
+															th:text="${suppliers.supplierName}" />
+														<td class="phoneNumber" th:text="${suppliers.phoneNumber}" />
+														<td class="address" th:text="${suppliers.address}" />
+
+														<td>
+															<button type="button"
+																class="btn btn-outline-info btn-fw edit-button"
+																data-toggle="modal" data-target="#exampleModal">
+																<i class="icon-pencil"></i>Sửa
+															</button>
+															<button type="button"
+																class="btn btn-outline-danger btn-fw delete-button"
+																data-toggle="modal" data-target="#exampleModal1">
+																<i class="icon-trash"></i>Xóa
+															</button>
+
+														</td>
+													</tr>
+
+
+												</tbody>
+											</table>
+										</div>
+										<!-- End view list-->
+
+										<!-- pagination -->
+										<input hidden="" th:value="${currentPage}" id="pageNum">
+										<nav class="pt-sm-2">
+											<ul class="pagination d-flex justify-content-end ">
+
+												<!-- 0 -->
+
+												<li class="page-item"><a class="page-link"
+													th:href="@{/supplier/?page=0}"> <i
+														class=" icon-control-start"></i>
+												</a></li>
+
+												<!-- prevous -->
+
+												<li class="page-item"><a class="page-link"
+													th:if="${currentPage >= 1}"
+													th:href="@{/supplier/(page=${currentPage - 1})}"> <i
+														class="icon-arrow-left"></i>
+												</a></li>
+
+												<!-- 1 -->
+
+												<li class="page-item"><a class="page-link"
+													th:if="${ totalPages > currentPage }"
+													th:href="@{/supplier/(page=${currentPage})}"> <i
+														th:text="${currentPage + 1}"></i>
+												</a></li>
+												<!-- 2 -->
+
+												<li class="page-item"><a class="page-link"
+													th:if="${ totalPages > currentPage + 1 }"
+													th:href="@{/supplier/(page=${currentPage + 1})}"> <i
+														th:text="${currentPage + 2 }"></i>
+												</a></li>
+
+
+												<!-- 3-->
+
+												<li class="page-item"><a class="page-link"
+													th:if="${ totalPages > currentPage + 1}"
+													th:href="@{/supplier/?(page=${currentPage + 2})}"> <i
+														th:text="${currentPage + 3}"></i>
+												</a></li>
+
+												<!-- 4 -->
+
+												<li class="page-item"><a class="page-link"
+													th:if="${ totalPages > currentPage + 1}"
+													th:href="@{/supplier/?(page=${currentPage + 3})}"> <i
+														th:text="${currentPage + 4}"></i>
+												</a></li>
+
+
+
+												<!-- next -->
+
+												<li class="page-item"><a class="page-link"
+													th:if="${ totalPages > currentPage + 2}"
+													th:href="@{/supplier/?(page=${currentPage + 1})}"> <i
+														class="icon-arrow-right"></i>
+												</a></li>
+
+
+												<!-- end -->
+
+												<li class="page-item"><a class="page-link"
+													th:href="@{/supplier/?(page=${totalPages - 1})}"> <i
+														class=" icon-control-end"></i>
+												</a></li>
+
+											</ul>
+										</nav>
+										<!-- End pagination -->
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- content-wrapper ends -->
+
+					<footer class="footer">
+						<div class="w-100 clearfix">
+							<span
+								class="text-muted d-block text-center text-sm-left d-sm-inline-block"></span>
+							<span
+								class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"></span>
+						</div>
+					</footer>
+					<!-- partial -->
+				</div>
+				<!-- main-panel ends -->
+			</div>
+
+			<!-- Modal starts -->
+			<!--///////////////////////////////////////////////////////////////////////////////////////////////-->
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalLabel" aria-hidden="true"
+				style="display: none">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Thêm Nhà Cung
+								Cấp</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
+
+						<form class="cmxform" id="signupForm" action="#"
+							th:action="@{/supplier/addSupplier}" th:object="${supplier}"
+							method="POST">
+							<div class="modal-body">
+								<input type="hidden" id="id" th:field="*{id}" value="-1"/>
+
+
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Mã nhà cung
+												cấp</label>
+											<div class="col-sm-9">
+												<input id="supplierCode" name="supplierCode" type="text"
+													th:field="*{supplierCode}" class="form-control" />
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Tên nhà cung
+												cấp</label>
+											<div class="col-sm-9">
+												<input id="supplierName" name="supplierName"
+													th:field="*{supplierName}" type="text" class="form-control" />
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Số điện thoại</label>
+											<div class="col-sm-9">
+												<input id="phoneNumber" name="phoneNumber"
+													th:field="*{phoneNumber}" type="text" class="form-control" />
+											</div>
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Địa chỉ</label>
+											<div class="col-sm-9">
+												<input id="address" name="address" th:field="*{address}"
+													type="text" class="form-control" />
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+
+							<div class="modal-footer">
+								<input class="btn btn-primary" type="submit" value="Lưu" />
+								<button type="button" class="btn btn-light" data-dismiss="modal">
+									Hủy</button>
+							</div>
+
+						</form>
+					</div>
+				</div>
+				<!--class="modal-dialog modal-lg"-->
+			</div>
+			<!--class="modal fade"-->
+
+
+			<!--class="container-scroller"-->
+			<!--///////////////////////////////////////////////////////////////////////////////////////////////-->
+			<!-- Modal Ends -->
+
+			<!-- Form popup when delete -->
+			<div class="modal fade" id="exampleModal1" tabindex="-1"
+				role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+				style="display: none;">
+				<div class="modal-dialog modal-sm" role="document">
+					<div class="modal-content">
+						<form id="deleteForm" th:action="@{/supplier/delete}"
+							method="POST" class="">
+							<input type="hidden" id="deleteId" th:name="deleteId" value="" />
+							<div class="modal-body">
+								<h4 style="text-align: center;">Bạn có muốn xóa nhà cung
+									cấp này không?</h4>
+							</div>
+
+							<!-- Delete, cancel button-->
+							<div class="modal-footer">
+								<input style="width: 7rem;" class="btn btn-danger" type="submit"
+									value="Xóa">
+								<button style="width: 7rem;" type="button" class="btn btn-light"
+									data-dismiss="modal">Hủy</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- End form popup when delete -->
+
+
+
+
+		</div>
+
+		<!-- page-body-wrapper ends -->
+	</div>
+
+
+	<!-- container-scroller -->
+
+	<!-- plugins:js -->
+	<div id="footer" th:replace="layouts/footer"></div>
+
+
+</body>
+</html>

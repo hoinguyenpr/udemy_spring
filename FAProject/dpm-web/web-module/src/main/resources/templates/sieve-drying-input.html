@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="
+        ~{layouts/main-layout :: main-fragment(
+                                              ~{:: title},
+                                              ~{:: #css-page},
+                                              ~{:: #custom-css-page},
+                                              ~{:: #navbar},
+                                              ~{:: #main-content},  
+                                              ~{:: #footer},
+                                              ~{:: #custom-js}
+                                             )}">
+
+<head>
+
+    <title th:text="#{sieveDrying.title}"></title>
+
+    <!-- partial:layouts/otherStaticResources.html -->
+    <th:block id="css-page" th:replace="~{layouts/mainCss}"></th:block>
+
+
+    <!-- Custom CSS for this page in here -->
+    <th:block id="custom-css-page">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+
+    </th:block>
+    <!-- End Custom CSS  -->
+
+</head>
+
+<body>
+    <div class="container-scroller">
+
+        <!-- partial:layouts/navbar.html -->
+        <th:block id="navbar" th:replace="layouts/navbar">
+        </th:block>
+
+        <th:block id="main-content">
+            <!-- Copy From start to here-->
+            <!-- MODAL SECTION starts -->
+            <!-- record-update-modal BEGIN: modal for update record -->
+            <div class="modal fade" id="update-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel" th:text="#{sieveDrying.text.updateRecord}">
+                            </h5>
+                            <input type="hidden" name="id" class="updateId">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">x</span>
+                            </button>
+                        </div>
+                        <form th:action="@{/sieve-drying/update}" method="post" id="updateRecord" class="form-need-validate">
+                            <div class="modal-body">
+                                <input type="hidden" name="id" class="deleteId" id="updateRecordId">
+                                <h6 class="card-description" th:text="#{sieveDrying.text.personelInfo}"></h6>
+                                <!-- ROW 1 -->
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="form-group  row">
+                                            <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.inputBy}"></label> <select name="workerId" class="form-control col-md-8 col-sm-8" id="update-worker">
+                                                <option th:each="worker : ${listWorkers}" th:value="${worker.id}"
+                                                    th:text="${worker.employeeName}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12 ">
+                                        <div class="form-group  row">
+                                            <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.QCcheck}"></label> <select name="QCId" class="form-control col-md-8 col-sm-8" id="update-QC">
+                                                <option th:each="qc : ${listQC}" th:value="${qc.id}"
+                                                    th:text="${qc.employeeName}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12 ">
+                                        <div class="form-group  row">
+                                            <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.verifiedBy}"></label> <select name="verifierId" class="form-control col-md-8 col-sm-8" id="update-verifier">
+                                                <option th:each="verifier : ${listVerifiers}" th:value="${verifier.id}"
+                                                    th:text="${verifier.employeeName}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h6 class="card-description" th:text="#{sieveDrying.text.ProdInfo}"></h6>
+                                <!-- ROW 1 -->
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.productType}"></label> <select name="typeProductId" class="form-control col-md-8 col-sm-8" id="update-product-type">
+                                                <option th:each="productType : ${listTypeProduct}"
+                                                    th:value="${productType.id}"
+                                                    th:text="${productType.typeProductName}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- ROW 1 - COL 2 -->
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.inputDate}"></label> <input type="date" class="form-control col-md-8 col-sm-8 myCalendar" id="update-inputDate" name="inputDate" onclick="calendarUpdate()">
+                                        </div>
+                                    </div>
+                                    <!-- ROW 1 - COL 3 -->
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.inputTime}"></label> <input type="time" class="form-control col-md-8 col-sm-8 myTime" id="update-inputTime" name="inputTime" onclick="clockUpdate()">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ROW 2 -->
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.lotCode}"></label> <select name="lotId" class="form-control col-md-8 col-sm-8" id="update-productLot">
+                                                <option th:each="lot : ${listLots}" th:value="${lot.id}"
+                                                    th:text="${lot.lotCode}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.ingrCode}"></label> <select name="ingredientBatchCode" class="form-control col-md-8 col-sm-8" id="update-MaterialLot">
+                                                <option th:each="matLot : ${listIngerdientBatch}"
+                                                    th:value="${matLot.id}" th:text="${matLot.ingredientBatchCode}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.machine}"></label> <select name="machineId" class="form-control col-md-8 col-sm-8" id="update-machine">
+                                                <option th:each="machine : ${listMachines}" th:value="${machine.id}"
+                                                    th:text="${machine.machineName + ' - '+ machine.machineCode}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <h6 class="card-description" th:text="#{sieveDrying.text.processParam}"></h6>
+                                <!-- ROW 1 -->
+                                <div class="row">
+                                    <!-- ROW 2 - COL 1 -->
+                                    <!-- ROW 1 - COL 1 -->
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.moisture}"></label> <input type="number" class="form-control col-md-8 col-sm-8" value="0.06" id="update-moisture" name="moisture"
+                                                step="0.01">
+                                        </div>
+                                    </div>
+                                    <!-- ROW 1 - COL 2 -->
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.pressure}"></label> <input type="number" class="form-control col-md-8 col-sm-8" value="0.06" id="update-pressure" name="pressure"
+                                                step="0.01">
+                                        </div>
+                                    </div>
+                                    <!-- ROW 1 - COL 3 -->
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.inputTemp}"></label> <input type="number" class="form-control col-md-8 col-sm-8" value="0.06" id="update-inputTemp" name="inputTemp"
+                                                step="0.01">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- ROW 2 - COL 1 -->
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-4 col-form-label">pH</label> <input type="number" class="form-control col-md-8 col-sm-8" value="0.06" id="update-pH" name="pH" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.outputTemp}"></label> <input type="number" class="form-control col-md-8 col-sm-8" value="0.06" id="update-outputTemp" name="outputTemp"
+                                                step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row form-group">
+                                    <!-- COL 1 -->
+                                    <div class="col-md-2 col-6">
+                                        <div class="row">
+                                            <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.impurities}"></label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" id="update-impurities-true"
+                                                        name="impurities" value="true"
+                                                        th:text="#{sieveDrying.label.ok}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" id="update-impurities-false"
+                                                        name="impurities" value="false"
+                                                        th:text="#{sieveDrying.label.ng}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- COL 2 -->
+                                    <div class="col-md-2 col-6">
+                                        <div class="row">
+                                            <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.size}"></label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" name="size" id="update-size-true"
+                                                        value="true" th:text="#{sieveDrying.label.ok}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" name="size" id="update-size-false"
+                                                        value="false" th:text="#{sieveDrying.label.ng}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- COL 3 -->
+                                    <div class="col-md-2 col-6">
+                                        <div class="row">
+                                            <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.color}"></label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" name="color" id="update-color-true"
+                                                        value="true" th:text="#{sieveDrying.label.ok}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" id="update-color-false" name="color"
+                                                        value="false" th:text="#{sieveDrying.label.ng}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- COL 4 -->
+                                    <div class="col-md-2 col-6">
+                                        <div class="row">
+                                            <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.odor}"></label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" name="odor" id="update-odor-true"
+                                                        value="true" th:text="#{sieveDrying.label.ok}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" name="odor" id="update-odor-false"
+                                                        value="false" th:text="#{sieveDrying.label.ng}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- COL 5 -->
+                                    <div class="col-md-2 col-6">
+                                        <div class="row">
+                                            <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.taste}"></label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" name="taste" id="update-taste-true"
+                                                        value="true" th:text="#{sieveDrying.label.ok}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" id="update-taste-false" name="taste"
+                                                        value="false" th:text="#{sieveDrying.label.ng}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- COL 6 -->
+                                    <div class="col-md-2 col-6">
+                                        <div class="row">
+                                            <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.netStat}"></label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" id="update-netStat-true" name="netStat"
+                                                        value="true" th:text="#{sieveDrying.label.ok}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" id="update-netStat-false"
+                                                        name="netStat" value="false" th:text="#{sieveDrying.label.ng}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h6 class="card-description" th:text="#{sieveDrying.text.correctiveAction}"></h6>
+                                <div class="row form-group">
+
+                                    <textarea name="correctiveAction" rows="3" id="update-correctiveAction" class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input class="btn btn-primary" type="submit" th:value="#{sieveDrying.btn.save}">
+                                <button type="button" class="btn btn-light" data-dismiss="modal" th:text="#{sieveDrying.btn.cancel}"></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- record-update-modal END: modal for update record -->
+            <!-- config-modal BEGIN: modal for default value configuration -->
+            <div class="modal fade" id="config-modal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel" th:text="#{sieveDrying.text.setDefault}">
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">x</span>
+                            </button>
+                        </div>
+                        <form th:action="@{/sieve-drying/set-default}" method="post" id="setDefault">
+                            <input type="hidden" name="id" id="defaultRecordId">
+                            <div class="card-body">
+
+                                <h6 class="card-description" th:text="#{sieveDrying.text.personelInfo}"></h6>
+                                <!-- ROW 1 -->
+                                <div class="row justify-content-between">
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="form-group  row">
+                                            <label class="col-md-4 col-sm-12 col-form-label col" th:text="#{sieveDrying.label.inputBy}">
+                                            </label>
+                                            <select name="workerId" class="form-control col-md-8 col-sm-8 col" id="default-worker">
+                                                <option th:each="worker : ${listWorkers}" th:value="${worker.id}"
+                                                    th:text="${worker.employeeName}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12 ">
+                                        <div class="form-group  row">
+                                            <label class="col-md-4 col-sm-12 col-form-label" th:text="#{sieveDrying.label.QCcheck}">
+                                            </label> <select name="QCId" class="form-control col-md-8 col-sm-8" id="default-QC">
+                                                <option th:each="QC : ${listQC}" th:value="${QC.id}"
+                                                    th:text="${QC.employeeName}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12 ">
+                                        <div class="form-group  row">
+                                            <label class="col-md-4 col-sm-12 col-form-label" th:text="#{sieveDrying.label.verifiedBy}"></label> <select name="verifierId" class="form-control col-md-8 col-sm-8" id="default-verifier">
+                                                <option th:each="verifier : ${listVerifiers}" th:value="${verifier.id}"
+                                                    th:text="${verifier.employeeName}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h6 class="card-description" th:text="#{sieveDrying.text.ProdInfo}"></h6>
+                                <!-- ROW 1 -->
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-12 col-form-label" th:text="#{sieveDrying.label.productType}">
+                                            </label>
+                                            <select name="typeProductId" class="form-control col-md-8 col-sm-8" id="default-productType">
+                                                <option th:each="prdType : ${listTypeProduct}" th:value="${prdType.id}"
+                                                    th:text="${prdType.typeProductName}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!-- ROW 1 - COL 2 -->
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-12 col-form-label" th:text="#{sieveDrying.label.inputDate}"></label> <input type="date" class="form-control col-md-8 col-sm-12 myCalendar" id="default-inputDate" name="inputDate"
+                                                onclick="calendarUpdate()">
+                                        </div>
+                                    </div>
+                                    <!-- ROW 1 - COL 3 -->
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ROW 2 -->
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-12 col-form-label" th:text="#{sieveDrying.label.lotCode}">
+                                            </label>
+                                            <select name="lotId" class="form-control col-md-8 col-sm-12" id="default-lotId">
+                                                <option th:each="lot : ${lots}" th:value="${lot.id}"
+                                                    th:text="${lot.lotCode}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-12 col-form-label" th:text="#{sieveDrying.label.ingrCode}"></label> <select name="ingredientBatchCode" class="form-control col-md-8 col-sm-12" id="default-ingredientBatch">
+                                                <option th:each="igr : ${igrBatch}" th:value="${igr.id}"
+                                                    th:text="${igr.ingredientBatchCode}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-12 col-form-label" th:text="#{sieveDrying.label.machine}"></label> <select name="machineId" class="form-control col-md-8 col-sm-12" id="default-machine">
+                                                <option th:each="machine : ${machines}" th:value="${machine.id}"
+                                                    th:text="${machine.machineCode + ' - ' + machine.machineName}">
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <h6 class="card-description" th:text="#{sieveDrying.text.processParam}"></h6>
+                                <!-- ROW 1 -->
+                                <div class="row">
+                                    <!-- ROW 2 - COL 1 -->
+                                    <!-- ROW 1 - COL 1 -->
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-12 col-form-label" th:text="#{sieveDrying.label.moisture}"></label> <input name="moisture" type="number" class="form-control col-md-8 col-sm-12" id="default-moisture">
+                                        </div>
+                                    </div>
+                                    <!-- ROW 1 - COL 2 -->
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-12 col-form-label" th:text="#{sieveDrying.label.pressure}"></label> <input name="pressure" type="number" class="form-control col-md-8 col-sm-12" id="default-pressure">
+                                        </div>
+                                    </div>
+                                    <!-- ROW 1 - COL 3 -->
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-12 col-form-label" th:text="#{sieveDrying.label.inputTemp}"></label> <input name="inputTemp" type="number" class="form-control col-md-8 col-sm-12" id="default-inputTemp">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- ROW 2 - COL 1 -->
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-12 col-form-label">pH</label>
+                                            <input name="pH" type="number" class="form-control col-md-8 col-sm-12" id="default-pH">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <div class="row form-group">
+                                            <label class="col-md-4 col-sm-12 col-form-label" th:text="#{sieveDrying.label.outputTemp}">
+                                            </label> <input name="outputTemp" type="number" class="form-control col-md-8 col-sm-12" id="default-outputTemp">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <!-- COL 1 -->
+                                    <div class="col-md-2 col-6">
+                                        <div class="row">
+                                            <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.impurities}"></label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" id="default-impurities-true"
+                                                        name="impurities" value="true"
+                                                        th:text="#{sieveDrying.label.ok}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" id="default-impurities-false"
+                                                        name="impurities" value="false"
+                                                        th:text="#{sieveDrying.label.ng}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- COL 2 -->
+                                    <div class="col-md-2 col-6">
+                                        <div class="row">
+                                            <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.size}"></label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" name="size" id="default-size-true"
+                                                        value="true" th:text="#{sieveDrying.label.ok}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" name="size" id="default-size-false"
+                                                        value="false" th:text="#{sieveDrying.label.ng}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- COL 3 -->
+                                    <div class="col-md-2 col-6">
+                                        <div class="row">
+                                            <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.color}"></label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" name="color" id="default-color-true"
+                                                        value="true" th:text="#{sieveDrying.label.ok}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" id="default-color-false" name="color"
+                                                        value="false" th:text="#{sieveDrying.label.ng}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- COL 4 -->
+                                    <div class="col-md-2 col-6">
+                                        <div class="row">
+                                            <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.odor}"></label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" name="odor" id="default-odor-true"
+                                                        value="true" th:text="#{sieveDrying.label.ok}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" name="odor" id="default-odor-false"
+                                                        value="false" th:text="#{sieveDrying.label.ng}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- COL 5 -->
+                                    <div class="col-md-2 col-6">
+                                        <div class="row">
+                                            <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.taste}"></label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" name="taste" id="default-taste-true"
+                                                        value="true" th:text="#{sieveDrying.label.ok}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" id="default-taste-false" name="taste"
+                                                        value="false" th:text="#{sieveDrying.label.ng}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- COL 6 -->
+                                    <div class="col-md-2 col-6">
+                                        <div class="row">
+                                            <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.netStat}"></label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" id="default-netStat-true"
+                                                        name="netStat" value="true" th:text="#{sieveDrying.label.ok}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label"> <input type="radio"
+                                                        class="form-check-input" id="default-netStat-false"
+                                                        name="netStat" value="false" th:text="#{sieveDrying.label.ng}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input class="btn btn-primary" type="submit" th:value="#{sieveDrying.btn.save}">
+                                <button type="button" class="btn btn-light" data-dismiss="modal" th:text="#{sieveDrying.btn.cancel}"></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- config-modal END: modal for default value configuration -->
+            <!-- record-delete-modal BEGIN: modal for remove record confirmation -->
+            <div class="modal" tabindex="-1" role="dialog" id="modal-remove">
+                <div class="modal-dialog" role="document">
+
+                    <form th:action="@{/sieve-drying/delete}" method="post">
+                        <div class="modal-content bg-white">
+                            <div class="modal-body">
+                                <p class="h4" th:text="#{sieveDrying.text.deleteConfirm}"></p>
+                                <input type="hidden" name="id" class="deleteId">
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row justify-content-center">
+                                    <button type="submit" class="btn btn-danger" th:text="#{sieveDrying.btn.yes}"></button>
+                                    <button type="button" class="btn btn-light" data-dismiss="modal" th:text="#{sieveDrying.btn.no}"></button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- record-delete-modal END: modal for remove record confirmation -->
+            <!-- pick-default-modal BEGIN: modal for pick default record confirmation -->
+            <div class="modal" tabindex="-1" role="dialog" id="modal-set-default">
+                <div class="modal-dialog" role="document">
+
+                    <form th:action="@{/sieve-drying/set-default}" method="post">
+                        <div class="modal-content bg-white">
+                            <div class="modal-body">
+                                <p class="h4" th:text="#{sieveDrying.text.setConfirm}"></p>
+                                <input type="hidden" name="id" class="setDefaultId">
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row justify-content-center">
+                                    <button type="submit" class="btn btn-danger" th:text="#{sieveDrying.btn.yes}"></button>
+                                    <button type="button" class="btn btn-light" data-dismiss="modal" th:text="#{sieveDrying.btn.no}"></button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- pick-default-modal END: modal for pick default record confirmation -->
+            <!-- MODAL SECTION Ends -->
+
+            <!-- Main form start -->
+            <div class="container-fluid page-body-wrapper">
+                <div class="main-panel">
+                    <div class="content-wrapper">
+                        <div class="row">
+                            <div class="col-12 grid-margin">
+                                <div class="card">
+                                    <div class="card-header bg-white pt-4">
+
+                                        <p class="h3 text-center offset-md-1" th:text="#{sieveDrying.title}"></p>
+                                        <p class="h6 text-center offset-md-1" style="color: red;" th:text="#{sieveDrying.text.frequency}"></p>
+                                    </div>
+                                    <!-- FORM BODY -->
+                                    <form th:action="@{/sieve-drying/get-list}" method="post" id="filterForm">
+                                        <input type="hidden" id="pageId" class="updateId" name="pageId">
+                                        <input type="hidden" id="pageSize" class="updateId" name="pageSize">
+                                    </form>
+                                    <form th:action="@{/sieve-drying/create}" method="post" id="saveRecord" class="form-need-validate">
+                                        <div class="card-body">
+                                            <div class="participants">
+                                                <fieldset class="border p-2">
+                                                    <legend class="w-auto h6 text-muted" th:text="#{sieveDrying.text.personelInfo}"></legend>
+                                                    <div class="row justify-content-between">
+                                                        <div class="col-md-4 col-sm-12">
+                                                            <div class="form-group  row">
+                                                                <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.inputBy}"></label>
+                                                                <select name="workerId" class="form-control col-md-8 col-sm-8" id="form-worker">
+                                                                    <option th:each="worker : ${workers}"
+                                                                        th:value="${worker.id}"
+                                                                        th:text="${worker.employeeName}"></option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-sm-12 ">
+                                                            <div class="form-group  row">
+                                                                <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.QCcheck}"></label>
+                                                                <select class="form-control col-md-7 col-sm-8" name="QCId" id="form-QC">
+                                                                    <option th:each="qc : ${QCs}" th:value="${qc.id}"
+                                                                        th:text="${qc.employeeName}"></option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-sm-12 ">
+                                                            <div class="form-group  row">
+                                                                <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.verifiedBy}"></label>
+                                                                <select class="form-control col-md-7 col-sm-8" name="verifierId" id="form-verifier">
+                                                                    <option th:each="vrf : ${verifiers}"
+                                                                        th:value="${vrf.id}"
+                                                                        th:text="${vrf.employeeName}">
+                                                                    </option>
+
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="info mt-4">
+                                                <div class="row justify-content-between">
+                                                    <div class="col-md-12">
+                                                        <!-- Start of FIELDSET 3-->
+                                                        <fieldset class="border p-2">
+                                                            <legend class="w-auto h6 text-muted p-2" th:text="#{sieveDrying.text.ProdInfo}"> </legend>
+                                                            <!-- ROW 1 -->
+                                                            <div class="form-group  row">
+                                                                <!-- ROW 1 - COL 1 -->
+                                                                <div class="col-md-5 col-sm-12">
+                                                                    <div class="row">
+                                                                        <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.productType}"></label>
+                                                                        <select class="form-control col-md-8 col-sm-8" name="typeProductId" id="form-productType">
+                                                                            <option th:each="product : ${prdType}"
+                                                                                th:value="${product.id}"
+                                                                                th:text="${product.typeProductName}">
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- ROW 1 - COL 2 -->
+                                                                <div class="col-md-2 col-sm-12"></div>
+                                                                <!-- ROW 1 - COL 3 -->
+                                                                <div class="col-md-5 col-sm-12">
+                                                                    <div class="row">
+                                                                        <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.inputDate}"></label>
+                                                                        <input name="inputDate" type="date" class="form-control col-md-8 col-sm-8 myCalendar" id="form-inputDate" onclick="calendarUpdate()">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- ROW 2 -->
+                                                            <div class="form-group  row">
+                                                                <!-- ROW 2 - COL 1 -->
+                                                                <div class="col-md-5 col-sm-12">
+                                                                    <div class="row">
+
+                                                                        <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.inputTime}"></label>
+                                                                        <input name="inputTime" type="time" class="form-control col-md-8 col-sm-8 myTime" id="form-inputTime" onclick="clockUpdate()">
+
+
+                                                                    </div>
+                                                                </div>
+                                                                <!-- ROW 2 - COL 2 -->
+                                                                <div class="col-md-2 col-sm-12"></div>
+                                                                <!-- ROW 2 - COL 3 -->
+                                                                <div class="col-md-5 col-sm-12">
+                                                                    <div class="row">
+                                                                        <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.lotCode}"></label>
+                                                                        <select name="lotId" class="form-control col-md-8 col-sm-8" id="form-lotCode">
+                                                                            <option th:each="lot : ${lots}"
+                                                                                th:value="${lot.id}"
+                                                                                th:text="${lot.lotCode}">
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <div class="col-md-5 col-sm-12">
+                                                                    <div class="row">
+                                                                        <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.ingrCode}"></label>
+                                                                        <select name="ingredientBatchCode" class="form-control col-md-8 col-sm-8" id="form-ingredientBatch">
+                                                                            <option th:each="ingr : ${igrBatch}"
+                                                                                th:value="${ingr.id}"
+                                                                                th:text="${ingr.ingredientBatchCode}">
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2"></div>
+                                                                <div class="col-md-5 col-sm-12">
+                                                                    <div class="row">
+                                                                        <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.machine}"></label>
+                                                                        <select class="form-control col-md-8 col-sm-8" name="machineId" id="form-machine">
+                                                                            <option th:each="machine : ${machines}"
+                                                                                th:text="${machine.machineCode + ' - ' + machine.machineName}"
+                                                                                th:value="${machine.id}"></option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </fieldset>
+                                                        <!-- End of FIELDSET 3-->
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <fieldset class="border p-2">
+                                                            <legend class="w-auto h6 text-muted p-2" th:text="#{sieveDrying.text.processParam}"></legend>
+                                                            <!-- ROW 1 -->
+                                                            <div class="form-group  row">
+                                                                <!-- ROW 1 - COL 1 -->
+                                                                <div class="col-md-5 col-sm-12">
+                                                                    <div class="row">
+                                                                        <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.moisture}"></label>
+                                                                        <input name="moisture" type="number" class="form-control col-md-8 col-sm-8" id="form-moisture">
+                                                                    </div>
+                                                                </div>
+                                                                <!-- ROW 1 - COL 2 -->
+                                                                <div class="col-md-2 col-sm-12"></div>
+                                                                <!-- ROW 1 - COL 3 -->
+                                                                <div class="col-md-5 col-sm-12">
+                                                                    <div class="row">
+                                                                        <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.pressure}"></label>
+                                                                        <input type="number" name="pressure" class="form-control col-md-8 col-sm-8" id="form-pressure">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- ROW 2 -->
+                                                            <div class="form-group row">
+                                                                <!-- ROW 2 - COL 1 -->
+                                                                <div class="col-md-5 col-sm-12">
+                                                                    <div class="row">
+                                                                        <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.inputTemp}"></label>
+                                                                        <input type="number" name="inputTemp" class="form-control col-md-8 col-sm-8" id="form-inputTemp">
+                                                                    </div>
+                                                                </div>
+                                                                <!-- ROW 2 - COL 2 -->
+                                                                <div class="col-md-2 col-sm-12"></div>
+                                                                <!-- ROW 2 - COL 3 -->
+                                                                <div class="col-md-5 col-sm-12">
+                                                                    <div class="row">
+                                                                        <label class="col-md-4 col-sm-4 col-form-label">pH</label>
+                                                                        <input type="number" name="pH" class="form-control col-md-8 col-sm-8" id="form-pH">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group row">
+                                                                <div class="col-md-5 col-sm-12">
+                                                                    <div class="row">
+                                                                        <label class="col-md-4 col-sm-4 col-form-label" th:text="#{sieveDrying.label.outputTemp}"></label>
+                                                                        <input type="number" name="outputTemp" class="form-control col-md-8 col-sm-8" id="form-outputTemp">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row form-group">
+                                                                <!-- COL 1 -->
+                                                                <div class="col-md-2 col-6">
+                                                                    <div class="row">
+                                                                        <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.impurities}"></label>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label"> <input
+                                                                                    type="radio" value="true"
+                                                                                    name="impurities"
+                                                                                    class="form-check-input"
+                                                                                    th:text="#{sieveDrying.label.ok}"
+                                                                                    id="form-impurities-true">
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label"> <input
+                                                                                    type="radio" value="false"
+                                                                                    name="impurities"
+                                                                                    class="form-check-input"
+                                                                                    th:text="#{sieveDrying.label.ng}"
+                                                                                    id="form-impurities-false"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- COL 2 -->
+                                                                <div class="col-md-2 col-6">
+                                                                    <div class="row">
+                                                                        <label for="size" class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.size}"></label>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label"> <input
+                                                                                    type="radio" value="true"
+                                                                                    name="size" class="form-check-input"
+                                                                                    th:text="#{sieveDrying.label.ok}"
+                                                                                    id="form-size-true"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label"> <input
+                                                                                    type="radio" value="false"
+                                                                                    name="size" class="form-check-input"
+                                                                                    th:text="#{sieveDrying.label.ng}"
+                                                                                    id="form-size-false"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- COL 3 -->
+                                                                <div class="col-md-2 col-6">
+                                                                    <div class="row">
+                                                                        <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.color}"></label>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label"> <input
+                                                                                    type="radio" value="true"
+                                                                                    name="color"
+                                                                                    class="form-check-input"
+                                                                                    th:text="#{sieveDrying.label.ok}"
+                                                                                    id="form-color-true">
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label"> <input
+                                                                                    type="radio" value="false"
+                                                                                    name="color"
+                                                                                    class="form-check-input"
+                                                                                    th:text="#{sieveDrying.label.ng}"
+                                                                                    id="form-color-false"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- COL 4 -->
+                                                                <div class="col-md-2 col-6">
+                                                                    <div class="row">
+                                                                        <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.odor}"></label>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label"> <input
+                                                                                    type="radio" value="true"
+                                                                                    name="odor" class="form-check-input"
+                                                                                    th:text="#{sieveDrying.label.ok}"
+                                                                                    id="form-odor-true"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label"> <input
+                                                                                    type="radio" value="false"
+                                                                                    name="odor" class="form-check-input"
+                                                                                    th:text="#{sieveDrying.label.ng}"
+                                                                                    id="form-odor-false"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- COL 5 -->
+                                                                <div class="col-md-2 col-6">
+                                                                    <div class="row">
+                                                                        <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.taste}"></label>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label"> <input
+                                                                                    type="radio" value="true"
+                                                                                    name="taste"
+                                                                                    class="form-check-input"
+                                                                                    th:text="#{sieveDrying.label.ok}"
+                                                                                    id="form-taste-true"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label"> <input
+                                                                                    type="radio" value="false"
+                                                                                    name="taste"
+                                                                                    class="form-check-input"
+                                                                                    th:text="#{sieveDrying.label.ng}"
+                                                                                    id="form-taste-false"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- COL 6 -->
+                                                                <div class="col-md-2 col-6">
+                                                                    <div class="row">
+                                                                        <label class="col-sm-12 col-form-label" th:text="#{sieveDrying.label.netStat}"></label>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label"> <input
+                                                                                    type="radio" value="true"
+                                                                                    name="netStat"
+                                                                                    class="form-check-input"
+                                                                                    th:text="#{sieveDrying.label.ok}"
+                                                                                    id="form-netStat-true"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="form-check">
+                                                                            <label class="form-check-label"> <input
+                                                                                    type="radio" value="false"
+                                                                                    name="netStat"
+                                                                                    class="form-check-input"
+                                                                                    th:text="#{sieveDrying.label.ng}"
+                                                                                    id="form-netStat-false"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </fieldset>
+
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <fieldset class="border p-2">
+                                                            <legend class="w-auto h6 text-muted p-2" th:text="#{sieveDrying.text.correctiveAction}"></legend>
+                                                            <textarea name="correctiveAction" rows="3" class="form-control"></textarea>
+                                                        </fieldset>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="control-button mt-4">
+                                                <div class="row justify-content-end">
+                                                    <button class="btn btn-sm col-md-2 mr-2" data-toggle="modal" data-target="#config-modal" th:text="#{sieveDrying.btn.setDefault}">
+                                                        <i class="fas fa-eye"></i></button>
+                                                    <button class="btn btn-sm col-md-2 mr-2" th:text="#{sieveDrying.btn.refresh}"></button>
+                                                    <button class="btn btn-sm btn-primary col-md-2 mr-2" id="btnSaveRecord" type="submit" th:text="#{sieveDrying.btn.save}"></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="card mt-5 result-after-created">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-2 col-sm-12">
+                                                    <select class="form-control col-md-12 col-sm-12" id="select-pageSize">
+                                                        <option value="5" th:text="#{sieveDrying.text.5pages}"></option>
+                                                        <option value="10" th:text="#{sieveDrying.text.10pages}">
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-8 col-sm-12"></div>
+
+                                                <div class="col-md-2 col-sm-12">
+                                                    <ul class="pagination rounded float-right" th:if="${(!listSieveDrying.isEmpty())&&(totalPages>7)}">
+                                                        <li class="" th:attr="class = ${pageId >= 3} ? 'page-item' : 'page-item disabled'">
+                                                            <button class="page-link" th:attr="onclick=|setPageId(${pageId}-3)|" type="submit" form="filterForm">
+                                                                <i class="icon-arrow-left"></i>
+                                                            </button>
+                                                        </li>
+                                                        <li class="" th:style="${pageId >=2} ? 'display:inline' : 'display:none'">
+                                                            <button class="page-link" th:text="${1}" th:attr="onclick=|setPageId(0)|" type="submit" form="filterForm"></button>
+                                                        </li>
+                                                        <li class="" th:style="${pageId >=3} ? 'display:inline' : 'display:none'">
+                                                            <button class="page-link">...
+                                                                
+                                                            </button>
+                                                        </li>
+                                                        <li class="" th:attr="class = ${pageId == 0} ? 'page-item active' : 'page-item'">
+                                                            <button class="page-link" th:text="${pageId == 0} ? ${pageId+1}:(${pageId == (totalPages-1)} ? ${totalPages-2}: ${pageId})" th:onclick="setPageId([[${pageId == 0} ? 0 : (${pageId == (totalPages-1)} ? ${totalPages-3}: ${pageId-1})]])" type="submit" form="filterForm"></button>
+                                                        </li>
+                                                        <li class="" th:attr="class = ${(pageId > 0)&&(pageId<(totalPages-1))} ? 'page-item active' : 'page-item'">
+                                                            <button class="page-link" th:text="${pageId == 0} ? ${pageId+2}:(${pageId == (totalPages-1)} ? ${totalPages-1}: ${pageId+1})" th:onclick="setPageId([[${pageId == 0} ? 1 : (${pageId == (totalPages-1)} ? ${totalPages-2}: ${pageId})]])" type="submit" form="filterForm"></button>
+                                                        </li>
+                                                        <li class="" th:attr="class = ${pageId == (totalPages-1)} ? 'page-item active' : 'page-item'">
+                                                            <button class="page-link" th:text="${pageId == 0} ? ${pageId+3}:(${pageId == (totalPages-1)} ? ${totalPages}: ${pageId+2})" th:onclick="setPageId([[${pageId == 0} ? 2 : (${pageId == (totalPages-1)} ? ${totalPages-1}: ${pageId+1})]])" type="submit" form="filterForm"></button>
+                                                        </li>
+                                                        <li class="" th:style="${pageId <= (totalPages-4)} ? 'display:inline' : 'display:none'">
+                                                            <button class="page-link">...
+                                                                
+                                                            </button>
+                                                        </li>
+                                                        <li class="" th:style="${pageId <= (totalPages-3)} ? 'display:inline' : 'display:none'">
+                                                            <button class="page-link" th:text="${totalPages}" th:attr="onclick=|setPageId(${totalPages-1})|" type="submit" form="filterForm"></button>
+                                                        </li>
+                                                        <li class="" th:attr="class = ${pageId <= (totalPages-3)} ? 'page-item' : 'page-item disabled'">
+                                                            <button class="page-link" th:attr="onclick=|setPageId(${pageId}+3)|" type="submit" form="filterForm">
+                                                                <i class="icon-arrow-right"></i>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="pagination rounded float-right" th:if="${(!listSieveDrying.isEmpty())&&(totalPages<=7)}">
+                                                        <li class="" th:attr="class = ${listSieveDrying.hasPrevious()} ? 'page-item' : 'page-item disabled'">
+                                                            <button class="page-link" th:href="@{/sieve-drying/sieve-drying-report(pageId=${pageId-1})}" th:attr="onclick=|setPageId(${pageId-1})|" type="submit" form="filterForm">
+                                                                <i class="icon-arrow-left"></i>
+                                                            </button>
+                                                        </li>
+                                                        <th:block th:each="i: ${#numbers.sequence(0, totalPages - 1)}">
+                                                            <li class="" th:attr="class = ${pageId == i} ? 'page-item active' : 'page-item' ">
+                                                                <button class="page-link" th:href="@{/sieve-drying/sieve-drying-report(pageId=${i})}" th:text="${i + 1}" th:attr="onclick=|setPageId(${i})|" type="submit" form="filterForm"></button>
+                                                            </li>
+                                                        </th:block>
+                                                        <li class="" th:attr="class = ${listSieveDrying.hasNext()} ? 'page-item' : 'page-item disabled'">
+                                                            <button class="page-link" th:href="@{/sieve-drying/sieve-drying-report(pageId=${pageId+1})}" th:attr="onclick=|setPageId(${pageId+1})|" type="submit" form="filterForm">
+                                                                <i class="icon-arrow-right"></i>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="table-responsive ">
+                                                    <table class="table table-bordered table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col" class="text-center">#</th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.text.date}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.text.time}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.ingrCode}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.moisture}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.inputTemp}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.pressure}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.outputTemp}"></th>
+                                                                <th scope="col" class="text-center">pH</th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.impurities}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.size}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.color}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.odor}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.taste}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.netStat}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.lotCode}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.text.correctiveAction}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.status}"></th>
+                                                                <th scope="col" class="text-center"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <div th:switch="${#lists.isEmpty(listSieveDrying)}">
+                                                            <div th:case="false">
+                                                                <tr th:each="record, i : ${listSieveDrying}">
+                                                                    <th th:utext=${i.index+1} scope="row" class="text-center"></th>
+                                                                    <td th:utext=${record.inputDate} class="text-center"></td>
+                                                                    <td th:utext=${record.inputTime} class="text-center"></td>
+                                                                    <td th:utext=${record.ingredientBatch.ingredientBatchCode} class="text-center"></td>
+                                                                    <td th:utext=${record.moisture} class="text-center">
+                                                                    </td>
+                                                                    <td th:utext=${record.inputTemp} class="text-center"></td>
+                                                                    <td th:utext=${record.pressure} class="text-center">
+                                                                    </td>
+                                                                    <td th:utext=${record.outputTemp} class="text-center"></td>
+                                                                    <td th:utext=${record.pH} class="text-center"></td>
+                                                                    <td th:utext="${record.impurities}? #{sieveDrying.label.ok}:#{sieveDrying.label.ng}" th:style="${record.impurities}?'':'color:red;'" class="text-center"></td>
+                                                                    <td th:utext="${record.size}? #{sieveDrying.label.ok}:#{sieveDrying.label.ng}" th:style="${record.size}?'':'color:red;'" class="text-center"></td>
+                                                                    <td th:utext="${record.color}? #{sieveDrying.label.ok}:#{sieveDrying.label.ng}" th:style="${record.color}?'':'color:red;'" class="text-center"></td>
+                                                                    <td th:utext="${record.odor}? #{sieveDrying.label.ok}:#{sieveDrying.label.ng}" th:style="${record.odor}?'':'color:red;'" class="text-center"></td>
+                                                                    <td th:utext="${record.taste}? #{sieveDrying.label.ok}:#{sieveDrying.label.ng}" th:style="${record.taste}?'':'color:red;'" class="text-center"></td>
+                                                                    <td th:utext="${record.netStat}? #{sieveDrying.label.ok}:#{sieveDrying.label.ng}" th:style="${record.netStat}?'':'color:red;'" class="text-center"></td>
+                                                                    <td th:utext=${record.lotCode.lotCode} class="text-center"></td>
+                                                                    <td th:utext=${record.correctiveAction} class="text-center"></td>
+                                                                    <td class="text-center">
+                                                                        <div th:switch="${(record.status)}">
+                                                                            <div th:case="Pending">
+                                                                                <i class="fas fa-eye-slash icon-md text-warning" title="Chờ duyệt"></i>
+                                                                            </div>
+                                                                            <div th:case="Rejected">
+                                                                                <i class="fa fa-times-circle icon-md text-danger" title="Không duyệt"></i>
+                                                                            </div>
+                                                                            <div th:case="Approved">
+                                                                                <i class="fas fa-eye icon-md text-primary" title="Đã duyệt"></i>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        <div th:switch="${(record.status == 'Pending')||(record.status == 'Rejected') }">
+                                                                            <div th:case="true">
+                                                                                <script th:inline="javascript">
+                                                                                    /*<![CDATA[*/
+
+                                                                                    var message = /*[[${record.id}]]*/ 'default';
+                                                                                    console
+                                                                                        .log(message);
+
+                                                                                    /*]]>*/
+                                                                                </script>
+                                                                                <!-- status == pending -->
+                                                                                <div class="btn-group">
+                                                                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                        <i class="fas fa-sliders-h"></i>
+                                                                                    </button>
+                                                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                                                        <a href="#" class="dropdown-item update-record" data-toggle="modal" data-target="#update-modal" th:data-update="${record.id}" th:text="#{sieveDrying.btn.edit}"></a>
+                                                                                        <a href="#" class="dropdown-item remove-record" data-toggle="modal" data-target="#modal-remove" th:data-remove="${record.id}" th:text="#{sieveDrying.btn.remove}"></a>
+                                                                                        <a href="#" class="dropdown-item set-record-as-default" data-toggle="modal" data-target="#modal-set-default" th:data-set-default="${record.id}" th:text="#{sieveDrying.btn.setAsDefault}"></a>
+                                                                                    </div>
+                                                                                </div>
+
+
+                                                                            </div>
+                                                                            <div th:case="false">
+                                                                                <Script>
+                                                                                    console
+                                                                                        .log("False");
+                                                                                </Script>
+                                                                                <!-- status != pending -->
+                                                                                <!-- does not show anything  -->
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </div>
+                                                            <div th:case="true">
+                                                                <tfoot>
+                                                                    <td th:text="#{sieveDrying.text.noRecord}" colspan="19" style="text-align:center"></td>
+                                                                </tfoot>
+                                                            </div>
+                                                        </div>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main form end -->
+                <!-- content-wrapper ends -->
+                <!-- partial:partials/_footer.html -->
+
+                <!-- partial -->
+            </div>
+            <!-- main-panel ends -->
+            <!-- Copy from here to end-->
+        </th:block>
+    </div>
+
+    <!-- partial:layouts/footer.html -->
+    <th:block id="footer" th:replace="layouts/footer">
+    </th:block>
+
+    <!-- Custom JavaScript for this page in here -->
+    <th:block id="custom-js">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.js}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+        <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+        <script th:src="@{/js/select2.js}"></script>
+        <script th:src="@{/js/sieve-drying-input.js}"></script>
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            $(document).ready(function() {
+                    let today = new Date();
+                    let data = /*[[${defaultSieveDrying}]]*/ 'null'
+                    $("#defaultRecordId").val(data.id);
+                    $("#form-worker").val(data.worker.id);
+                    $("#default-worker").val(data.worker.id);
+                    $("#form-QC").val(data.qc.id);
+                    $("#default-QC").val(data.qc.id);
+                    $("#form-verifier").val(data.verifier.id);
+                    $("#default-verifier").val(data.verifier.id);
+                    $("#form-productType").val(data.typeProduct.id);
+                    $("#default-productType").val(data.typeProduct.id);
+                    $("#form-lotCode").val(data.lotCode.id);
+                    $("#default-lotCode").val(data.lotCode.id);
+                    $("#form-ingredientBatch").val(data.ingredientBatch.id);
+                    $("#default-ingredientBatch").val(data.ingredientBatch.id);
+                    $("#form-machine").val(data.machine.id);
+                    $("#default-machine").val(data.machine.id);
+                    $("#form-inputDate").val(data.inputDate);
+                    $("#default-inputDate").val(data.inputDate);
+                    if (data.moisture != -1) {
+                        $("#form-moisture").val(data.moisture);
+                        $("#default-moisture").val(data.moisture);
+                    }
+                    if (data.pressure != -1) {
+                        $("#form-pressure").val(data.pressure);
+                        $("#default-pressure").val(data.pressure);
+                    }
+                    if (data.inputTemp != -1) {
+                        $("#form-inputTemp").val(data.inputTemp);
+                        $("#default-inputTemp").val(data.inputTemp);
+                    }
+                    if (data.pH != -1) {
+                        $("#form-pH").val(data.pH);
+                        $("#default-pH").val(data.pH);
+                    }
+                    if (data.outputTemp != -1) {
+                        $("#form-outputTemp").val(data.outputTemp);
+                        $("#default-outputTemp").val(data.outputTemp);
+                    }
+
+                    if (data.impurities == true) {
+                        $("#default-impurities-true").attr('checked', true)
+                        $("#form-impurities-true").attr('checked', true)
+                    } else {
+                        $("#default-impurities-false").attr('checked', true)
+                        $("#form-impurities-false").attr('checked', true)
+                    }
+                    if (data.size == true) {
+                        $("#default-size-true").attr('checked', true)
+                        $("#form-size-true").attr('checked', true)
+                    } else {
+                        $("#default-size-false").attr('checked', true)
+                        $("#form-size-false").attr('checked', true)
+                    }
+                    if (data.color == true) {
+                        $("#default-color-true").attr('checked', true)
+                        $("#form-color-true").attr('checked', true)
+                    } else {
+                        $("#default-color-false").attr('checked', true)
+                        $("#form-color-false").attr('checked', true)
+                    }
+                    if (data.odor == true) {
+                        $("#default-odor-true").attr('checked', true)
+                        $("#form-odor-true").attr('checked', true)
+                    } else {
+                        $("#default-odor-false").attr('checked', true)
+                        $("#form-odor-false").attr('checked', true)
+                    }
+                    if (data.taste == true) {
+                        $("#default-taste-true").attr('checked', true)
+                        $("#form-taste-true").attr('checked', true)
+                    } else {
+                        $("#default-taste-false").attr('checked', true)
+                        $("#form-taste-false").attr('checked', true)
+                    }
+                    if (data.netStat == true) {
+                        $("#default-netStat-true").attr('checked', true)
+                        $("#form-netStat-true").attr('checked', true)
+                    } else {
+                        $("#default-netStat-false").attr('checked', true)
+                        $("#form-netStat-false").attr('checked', true)
+                    }
+                })
+                /*]]>*/
+                /*<![CDATA[*/
+            $(document).ready(function() {
+                    $("#select-pageSize").val( /*[[${pageSize}]]*/ )
+                })
+                /*]]>*/
+                // FUNCTION TO SHOW TOAST
+                /*<![CDATA[*/
+            $(document).ready(() => {
+                    let state = /*[[${state}]]*/ 'null'
+                    if (state != null) {
+                        switch (state) {
+                            case 'CREATE_SUCCESS':
+                                {
+                                    showToastDialog("CREATE SUCCESS", "Create record success", "success");
+                                    break;
+                                }
+
+                            case 'CREATE_FAILED':
+                                {
+                                    showToastDialog("CREATE FAILED", "Create record failed", "error");
+                                    break;
+                                }
+
+                            case 'UPDATE_SUCCESS':
+                                {
+                                    showToastDialog("UPDATE SUCCESS", "Update record success", "success");
+                                    break;
+                                }
+
+                            case 'UPDATE_FAILED':
+                                {
+                                    showToastDialog("UPDATE FAILED", "Update record failed", "error");
+                                    break;
+                                }
+
+                            case 'DELETE_SUCCESS':
+                                {
+                                    showToastDialog("DELETE SUCCESS", "Delete record success", "success");
+                                    break;
+                                }
+
+                            case 'DELETE_FAILED':
+                                {
+                                    showToastDialog("DELETE FAILED", "Delete record failed", "error");
+                                    break;
+                                }
+
+                            case 'UPDATE_DEFAULT_VALUE_SUCCESS':
+                                {
+                                    showToastDialog("CONFIG SUCCESS", "Set default value record success", "success");
+                                    break;
+                                }
+
+                            case 'UPDATE_DEFAULT_VALUE_FAILED':
+                                {
+                                    showToastDialog("CONFIG FAILED", "Set default value record failed", "error");
+                                    break;
+                                }
+                        }
+                    }
+                })
+                /*]]>*/
+        </script>
+
+
+    </th:block>
+    <!-- End Custom JavaScript  -->
+
+</body>
+
+</html>

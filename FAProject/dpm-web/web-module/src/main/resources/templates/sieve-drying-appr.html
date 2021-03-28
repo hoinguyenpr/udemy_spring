@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="
+    ~{layouts/main-layout :: main-fragment(
+                                          ~{:: title},
+                                          ~{:: #css-page},
+                                          ~{:: #custom-css-page},
+                                          ~{:: #navbar},
+                                          ~{:: #main-content},  
+                                          ~{:: #footer},
+                                          ~{:: #custom-js}
+                                         )}">
+
+<head>
+
+    <title>Duyệt dữ liệu sấy sàng</title>
+
+    <!-- partial:layouts/otherStaticResources.html -->
+    <th:block id="css-page" th:replace="~{layouts/mainCss}"></th:block>
+
+    <!-- Custom CSS for this page in here -->
+    <th:block id="custom-css-page">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+
+
+
+    </th:block>
+    <!-- End Custom CSS  -->
+
+</head>
+
+<body>
+    <div class="container-scroller">
+
+        <!-- partial:layouts/navbar.html -->
+        <th:block id="navbar" th:replace="layouts/navbar"> </th:block>
+
+        <th:block id="main-content">
+            <!-- Copy From start to here-->
+            <!-- MODAL SECTION Begin -->
+            <!-- record-approve-modal BEGIN: modal for approve record confirmation -->
+            <div class="modal" tabindex="-1" role="dialog" id="modal-approve">
+                <div class="modal-dialog" role="document">
+
+                    <form th:action="@{/sieve-drying/approve}" method="post">
+                        <div class="modal-content bg-white">
+                            <div class="modal-body">
+                                <p class="h4" th:text="#{sieveDrying.text.approveConfirm}"></p>
+                                <input type="hidden" name="id" class="dataId">
+                                <input type="hidden" class="updateId-pageId" name="pageId">
+                                <input type="hidden" class="updateId-pageSize" name="pageSize">
+                                <input type="hidden" class="updateId-status" name="status">
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row justify-content-center">
+                                    <button type="submit" class="btn btn-danger" th:text="#{sieveDrying.btn.yes}"></button>
+                                    <button type="button" class="btn btn-light" data-dismiss="modal" th:text="#{sieveDrying.btn.no}"></button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- record-approve-modal END: modal for approve record confirmation -->
+            <!-- record-approve-selected-modal BEGIN: modal for approve selected records confirmation -->
+            <div class="modal" tabindex="-1" role="dialog" id="modal-approve-selected">
+                <div class="modal-dialog" role="document">
+
+                    <form th:action="@{/sieve-drying/approve-selected}" method="post">
+                        <div class="modal-content bg-white">
+                            <div class="modal-body">
+                                <p class="h4" th:text="#{sieveDrying.text.approveConfirm}"></p>
+                                <input type="hidden" name="idList" class="dataId">
+                                <input type="hidden" class="updateId-pageId" name="pageId">
+                                <input type="hidden" class="updateId-pageSize" name="pageSize">
+                                <input type="hidden" class="updateId-status" name="status">
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row justify-content-center">
+                                    <button type="submit" class="btn btn-danger" th:text="#{sieveDrying.btn.yes}"></button>
+                                    <button type="button" class="btn btn-light" data-dismiss="modal" th:text="#{sieveDrying.btn.no}"></button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- record-approve-selected-modal END: modal for approve record confirmation -->
+            <!-- record-reject-modal BEGIN: modal for reject record confirmation -->
+            <div class="modal" tabindex="-1" role="dialog" id="modal-reject">
+                <div class="modal-dialog" role="document">
+
+                    <form th:action="@{/sieve-drying/reject}" method="post">
+                        <div class="modal-content bg-white">
+                            <div class="modal-body">
+                                <p class="h4" th:text="#{sieveDrying.text.rejectConfirm}"></p>
+                                <input type="hidden" name="id" class="dataId">
+                                <input type="hidden" class="updateId-pageId" name="pageId">
+                                <input type="hidden" class="updateId-pageSize" name="pageSize">
+                                <input type="hidden" class="updateId-status" name="status">
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row justify-content-center">
+                                    <button type="submit" class="btn btn-danger" th:text="#{sieveDrying.btn.yes}"></button>
+                                    <button type="button" class="btn btn-light" data-dismiss="modal" th:text="#{sieveDrying.btn.no}"></button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- record-reject-modal END: modal for reject record confirmation -->
+            <!-- record-reject-selected-modal BEGIN: modal for reject record confirmation -->
+            <div class="modal" tabindex="-1" role="dialog" id="modal-reject-selected">
+                <div class="modal-dialog" role="document">
+
+                    <form th:action="@{/sieve-drying/reject-selected}" method="post">
+                        <div class="modal-content bg-white">
+                            <div class="modal-body">
+                                <p class="h4" th:text="#{sieveDrying.text.rejectConfirm}"></p>
+                                <input type="hidden" name="idList" class="dataId">
+                                <input type="hidden" class="updateId-pageId" name="pageId">
+                                <input type="hidden" class="updateId-pageSize" name="pageSize">
+                                <input type="hidden" class="updateId-status" name="status">
+                            </div>
+                            <div class="modal-footer">
+                                <div class="row justify-content-center">
+                                    <button type="submit" class="btn btn-danger" th:text="#{sieveDrying.btn.yes}"></button>
+                                    <button type="button" class="btn btn-light" data-dismiss="modal" th:text="#{sieveDrying.btn.no}"></button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- record-reject-selected-modal END: modal for reject record confirmation -->
+            <!-- MODAL SECTION Ends -->
+            <!-- Main form start -->
+            <div class="container-fluid page-body-wrapper">
+                <div class="main-panel">
+                    <div class="content-wrapper">
+                        <div class="row">
+                            <div class="col-12 grid-margin">
+                                <div class="card mt-5 result-after-created">
+                                    <div class="card">
+                                        <div class="card-header bg-white pt-4">
+                                            <p class="h3 text-center offset-md-1">DUYỆT DỮ LIỆU QUÁ TRÌNH SẤY SÀNG</p>
+                                        </div>
+                                        <form th:action="@{/sieve-drying/get-appr-list}" method="post" id="filterForm">
+                                            <input type="hidden" id="pageId" class="updateId-pageId" name="pageId">
+                                            <input type="hidden" class="updateId-pageSize" name="pageSize">
+                                            <input type="hidden" class="updateId-status" name="status">
+                                        </form>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-2 col-sm-12">
+                                                    <select class="form-control col-md-12 col-sm-12" id="select-pageSize">
+                                                        <option value="5" th:text="#{sieveDrying.text.5pages}"></option>
+                                                        <option value="10" th:text="#{sieveDrying.text.10pages}"></option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2 col-sm-12">
+                                                    <select class="form-control col-md-12 col-sm-12" id="select-status">
+                                                        <option value="0" th:text="#{sieveDrying.text.pending}"></option>
+                                                        <option value="1" th:text="#{sieveDrying.text.approved}"></option>
+                                                        <option value="2" th:text="#{sieveDrying.text.all}"></option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6 col-sm-12"></div>
+                                                <div class="col-md-2 col-sm-12">
+                                                    <ul class="pagination rounded float-right" th:if="${(!listSieveDrying.isEmpty())&&(totalPages>7)}">
+                                                        <li class="" th:attr="class = ${pageId >= 3} ? 'page-item' : 'page-item disabled'">
+                                                            <button class="page-link" th:attr="onclick=|setPageId(${pageId}-3)|" type="submit" form="filterForm">
+                                                                <i class="icon-arrow-left"></i>
+                                                            </button>
+                                                        </li>
+                                                        <li class="" th:style="${pageId >=2} ? 'display:inline' : 'display:none'">
+                                                            <button class="page-link" th:text="${1}" th:attr="onclick=|setPageId(0)|" type="submit" form="filterForm"></button>
+                                                        </li>
+                                                        <li class="" th:style="${pageId >=3} ? 'display:inline' : 'display:none'">
+                                                            <button class="page-link">...
+                                                                
+                                                            </button>
+                                                        </li>
+                                                        <li class="" th:attr="class = ${pageId == 0} ? 'page-item active' : 'page-item'">
+                                                            <button class="page-link" th:text="${pageId == 0} ? ${pageId+1}:(${pageId == (totalPages-1)} ? ${totalPages-2}: ${pageId})" th:onclick="setPageId([[${pageId == 0} ? 0 : (${pageId == (totalPages-1)} ? ${totalPages-3}: ${pageId-1})]])" type="submit" form="filterForm"></button>
+                                                        </li>
+                                                        <li class="" th:attr="class = ${(pageId > 0)&&(pageId<(totalPages-1))} ? 'page-item active' : 'page-item'">
+                                                            <button class="page-link" th:text="${pageId == 0} ? ${pageId+2}:(${pageId == (totalPages-1)} ? ${totalPages-1}: ${pageId+1})" th:onclick="setPageId([[${pageId == 0} ? 1 : (${pageId == (totalPages-1)} ? ${totalPages-2}: ${pageId})]])" type="submit" form="filterForm"></button>
+                                                        </li>
+                                                        <li class="" th:attr="class = ${pageId == (totalPages-1)} ? 'page-item active' : 'page-item'">
+                                                            <button class="page-link" th:text="${pageId == 0} ? ${pageId+3}:(${pageId == (totalPages-1)} ? ${totalPages}: ${pageId+2})" th:onclick="setPageId([[${pageId == 0} ? 2 : (${pageId == (totalPages-1)} ? ${totalPages-1}: ${pageId+1})]])" type="submit" form="filterForm"></button>
+                                                        </li>
+                                                        <li class="" th:style="${pageId <= (totalPages-4)} ? 'display:inline' : 'display:none'">
+                                                            <button class="page-link">...
+                                                                
+                                                            </button>
+                                                        </li>
+                                                        <li class="" th:style="${pageId <= (totalPages-3)} ? 'display:inline' : 'display:none'">
+                                                            <button class="page-link" th:text="${totalPages}" th:attr="onclick=|setPageId(${totalPages-1})|" type="submit" form="filterForm"></button>
+                                                        </li>
+                                                        <li class="" th:attr="class = ${pageId <= (totalPages-3)} ? 'page-item' : 'page-item disabled'">
+                                                            <button class="page-link" th:attr="onclick=|setPageId(${pageId}+3)|" type="submit" form="filterForm">
+                                                                <i class="icon-arrow-right"></i>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="pagination rounded float-right" th:if="${(!listSieveDrying.isEmpty())&&(totalPages<=7)}">
+                                                        <li class="" th:attr="class = ${listSieveDrying.hasPrevious()} ? 'page-item' : 'page-item disabled'">
+                                                            <button class="page-link" th:href="@{/sieve-drying/sieve-drying-report(pageId=${pageId-1})}" th:attr="onclick=|setPageId(${pageId-1})|" type="submit" form="filterForm">
+                                                                <i class="icon-arrow-left"></i>
+                                                            </button>
+                                                        </li>
+                                                        <th:block th:each="i: ${#numbers.sequence(0, totalPages - 1)}">
+                                                            <li class="" th:attr="class = ${pageId == i} ? 'page-item active' : 'page-item' ">
+                                                                <button class="page-link" th:href="@{/sieve-drying/sieve-drying-report(pageId=${i})}" th:text="${i + 1}" th:attr="onclick=|setPageId(${i})|" type="submit" form="filterForm"></button>
+                                                            </li>
+                                                        </th:block>
+                                                        <li class="" th:attr="class = ${listSieveDrying.hasNext()} ? 'page-item' : 'page-item disabled'">
+                                                            <button class="page-link" th:href="@{/sieve-drying/sieve-drying-report(pageId=${pageId+1})}" th:attr="onclick=|setPageId(${pageId+1})|" type="submit" form="filterForm">
+                                                                <i class="icon-arrow-right"></i>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="table-responsive ">
+                                                    <table class="table table-bordered table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col" class="text-center">
+                                                                    <div class="form-check-inline">
+                                                                        <label class="form-check-label" for="master-checkbox">No.</label>
+                                                                    </div>
+                                                                </th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.text.date}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.text.time}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.ingrCode}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.moisture}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.inputTemp}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.pressure}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.outputTemp}"></th>
+                                                                <th scope="col" class="text-center">pH</th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.impurities}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.size}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.color}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.odor}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.taste}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.netStat}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.lotCode}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.text.correctiveAction}"></th>
+                                                                <th scope="col" class="text-center" th:text="#{sieveDrying.label.status}"></th>
+                                                                <th scope="col" class="text-center">
+                                                                    <div class="form-check-inline">
+                                                                        <input class="form-check-input" type="checkbox" id="master-checkbox">
+                                                                        <label class="form-check-label" for="master-checkbox">All</label>
+                                                                    </div>
+                                                                </th>
+                                                                <th scope="col" class="text-center">
+                                                                    <div class="btn-group">
+                                                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                            <i class="fas fa-bolt"></i><i class="fas fa-sliders-h"></i>
+                                                                        </button>
+                                                                        <div class="dropdown-menu dropdown-menu-right">
+                                                                            <a class="dropdown-item judgement-selected approve-selected-records" th:attr="onclick=|setPageId(${pageId})|" data-toggle="modal" data-target="#modal-approve-selected" th:text="#{sieveDrying.btn.approveSelected}">
+                                                                            </a>
+                                                                            <a class="dropdown-item judgement-selected reject-selected-records" th:attr="onclick=|setPageId(${pageId})|" data-toggle="modal" data-target="#modal-reject-selected" th:text="#{sieveDrying.btn.rejectSelected}">
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <div th:switch="${#lists.isEmpty(listSieveDrying)}">
+                                                            <div th:case="false">
+                                                                <tbody>
+                                                                    <tr th:each="record, i : ${listSieveDrying}">
+                                                                        <td th:utext=${i.index+1} class="text-center"></td>
+                                                                        <td th:utext=${record.inputDate} class="text-center">
+                                                                        </td>
+                                                                        <td th:utext=${record.inputTime} class="text-center">
+                                                                        </td>
+                                                                        <td th:utext=${record.ingredientBatch.ingredientBatchCode} class="text-center"></td>
+                                                                        <td th:utext=${record.moisture} class="text-center">
+                                                                        </td>
+                                                                        <td th:utext=${record.inputTemp} class="text-center">
+                                                                        </td>
+                                                                        <td th:utext=${record.pressure} class="text-center">
+                                                                        </td>
+                                                                        <td th:utext=${record.outputTemp} class="text-center">
+                                                                        </td>
+                                                                        <td th:utext=${record.pH} class="text-center"></td>
+                                                                        <td th:utext="${record.impurities}? #{sieveDrying.label.ok}:#{sieveDrying.label.ng}" th:style="${record.impurities}?'':'color:red;'" class="text-center"></td>
+                                                                        <td th:utext="${record.size}? #{sieveDrying.label.ok}:#{sieveDrying.label.ng}" th:style="${record.size}?'':'color:red;'" class="text-center"></td>
+                                                                        <td th:utext="${record.color}? #{sieveDrying.label.ok}:#{sieveDrying.label.ng}" th:style="${record.color}?'':'color:red;'" class="text-center"></td>
+                                                                        <td th:utext="${record.odor}? #{sieveDrying.label.ok}:#{sieveDrying.label.ng}" th:style="${record.odor}?'':'color:red;'" class="text-center"></td>
+                                                                        <td th:utext="${record.taste}? #{sieveDrying.label.ok}:#{sieveDrying.label.ng}" th:style="${record.taste}?'':'color:red;'" class="text-center"></td>
+                                                                        <td th:utext="${record.netStat}? #{sieveDrying.label.ok}:#{sieveDrying.label.ng}" th:style="${record.netStat}?'':'color:red;'" class="text-center"></td>
+                                                                        <td th:utext=${record.lotCode.lotCode} class="text-center">
+                                                                        </td>
+                                                                        <td th:utext=${record.correctiveAction} class="text-center">
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <div th:switch="${(record.status)}">
+                                                                                <div th:case="Pending">
+                                                                                    <i class="fas fa-eye-slash icon-md text-warning" title="Chờ duyệt"></i>
+                                                                                </div>
+                                                                                <div th:case="Rejected">
+                                                                                    <i class="fa fa-times-circle icon-md text-danger" title="Không duyệt"></i>
+                                                                                </div>
+                                                                                <div th:case="Approved">
+                                                                                    <i class="fas fa-eye icon-md text-primary" title="Đã duyệt"></i>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td scope="row" class="text-center">
+                                                                            <div class="form-check-inline">
+                                                                                <input class="form-check-input position-static id-checkbox inlin" type="checkbox" th:value="${record.id}" th:id="'checkbox-'+${record.id}">
+                                                                                <label class="form-check-label" th:for="'checkbox-'+${i.index+1}" th:utext=${i.index+1}></label>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <div class="btn-group">
+                                                                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                        <i class="fas fa-sliders-h"></i>
+                                                                                    </button>
+                                                                                <div class="dropdown-menu dropdown-menu-right">
+                                                                                    <a class="dropdown-item judgement approve-record" th:attr="onclick=|setPageId(${pageId})|" data-toggle="modal" data-target="#modal-approve" th:data="${record.id}" th:text="#{sieveDrying.btn.approve}">
+                                                                                    </a>
+                                                                                    <a class="dropdown-item judgement reject-record" th:attr="onclick=|setPageId(${pageId})|" data-toggle="modal" data-target="#modal-reject" th:data="${record.id}" th:text="#{sieveDrying.btn.reject}">
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </div>
+                                                            <div th:case="true">
+                                                                <tfoot>
+                                                                    <td th:text="#{sieveDrying.text.noRecord}" colspan="19" style="text-align:center"></td>
+                                                                </tfoot>
+                                                            </div>
+                                                        </div>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Main form end -->
+                <!-- content-wrapper ends -->
+                <!-- partial:partials/_footer.html -->
+
+                <!-- partial -->
+            </div>
+
+
+
+
+
+            <!-- Copy from here to end-->
+        </th:block>
+    </div>
+
+    <!-- partial:layouts/footer.html -->
+    <th:block id="footer" th:replace="layouts/footer"> </th:block>
+
+    <!-- Custom JavaScript for this page in here -->
+    <th:block id="custom-js">
+        <script>
+            $(".judgement").click(function() {
+                var id = $(this).attr("data");
+                $(".dataId").attr("value", id);
+                console.log(id);
+            })
+
+            $(".judgement-selected").click(function() {
+
+                let idList = [];
+                $.each($("input[type='checkbox']:checked"), function() {
+                    let id = $(this).val();
+                    if (!isNaN(id)) {
+                        idList.push(id);
+                        console.log(id)
+                    }
+                });
+                $(".dataId").attr("value", idList);
+                console.log(idList)
+            })
+
+            $("#master-checkbox").change(function() {
+                console.log("Master checkbox clicked...")
+                if ($("#master-checkbox").is(":checked")) {
+                    $(".id-checkbox").prop("checked", true)
+                } else {
+                    $(".id-checkbox").prop("checked", false)
+                }
+            })
+
+            function setPageId(page_Id) {
+                let pageId = page_Id
+                $(".updateId-pageId").val(pageId)
+                $(".updateId-pageSize").val($("#select-pageSize").val())
+                $(".updateId-status").val($("#select-status").val())
+            }
+
+            $('#select-pageSize').change(function() {
+                $("#pageId").val(0)
+                $(".updateId-pageSize").val($(this).val())
+                $(".updateId-status").val($("#select-status").val())
+                $("#filterForm").submit();
+            });
+
+            $('#select-status').change(function() {
+                $("#pageId").val(0)
+                $(".updateId-pageSize").val($("#select-pageSize").val())
+                $(".updateId-status").val($(this).val())
+                $("#filterForm").submit();
+            });
+        </script>
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            $(document).ready(function() {
+                    $("#select-pageSize").val( /*[[${pageSize}]]*/ )
+                    $("#select-status").val( /*[[${status}]]*/ )
+                })
+                /*]]>*/
+        </script>
+
+
+
+    </th:block>
+    <!-- End Custom JavaScript  -->
+
+</body>
+
+</html>

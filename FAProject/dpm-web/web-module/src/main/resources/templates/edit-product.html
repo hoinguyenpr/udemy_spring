@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	th:replace="
+    ~{layouts/main-layout :: main-fragment(
+                                          ~{:: title},
+                                          ~{:: #css-page},
+                                          ~{:: #custom-css-page},
+                                          ~{:: #navbar},
+                                          ~{:: #main-content},  
+                                          ~{:: #footer},
+                                          ~{:: #custom-js}
+                                         )}">
+
+<head>
+
+<title>Sản phẩm</title>
+
+<!-- partial:layouts/otherStaticResources.html -->
+<th:block id="css-page" th:replace="~{layouts/mainCss}"></th:block>
+
+<!-- Custom CSS for this page in here -->
+<th:block id="custom-css-page">
+
+
+
+</th:block>
+<!-- End Custom CSS  -->
+
+</head>
+
+<body>
+	<div class="container-scroller">
+
+		<!-- partial:layouts/navbar.html -->
+		<th:block id="navbar" th:replace="layouts/navbar">
+		</th:block>
+
+		<th:block id="main-content">
+
+			<!-- Copy From start to here-->
+
+			<div class="container">
+				<div class="content-container clearfix">
+					<form th:object="${produc1t}" th:action="@{/product/save}" class="" novalidate
+						id="formCreate" method="post">
+						<div class="modal-body">
+
+
+							<input type="text" class="form-control" id="id" name="id" hidden>
+
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group row">
+										<input type="hidden" th:field="*{productId}"
+											readonly="readonly" />
+										<label for="type-of-product" class="col-sm-3 col-form-label">Product
+											Code *</label>
+										<div class="col-sm-9">
+											<input id="productCode" th:field="*{productCode}" type="text"
+												readonly class="form-control" required="required"
+												placeholder="code" />
+										</div>
+									</div>
+								</div>
+
+								<tr>
+
+
+
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label for="date" class="col-sm-3 col-form-label">Product
+												Name *</label>
+											
+											<div class="col-sm-9">
+											<input th:field="*{productName}" class="form-control"
+												name="productName" required="required"
+												placeholder="productName" id="productName" />
+												<div class="invalid-feedback">Product Name must not be null</div>
+										</div>
+										</div>
+									</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label for="type-of-product" class="col-sm-3 col-form-label">Type
+											Of Product *</label>
+										<div class="col-sm-9">
+											<select th:field="*{typeProduct.id}" class="form-control">
+												<option class="form-control"
+													th:each="typeProduct: ${listTypeProducts}"
+													th:text="${typeProduct.typeProductName}"
+													th:value="${typeProduct.id}"></option>
+											</select>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label for="date" class="col-sm-3 col-form-label">[[#{reporpProduct.title.date}]]</label>
+										<div class="col-sm-9">
+											<input th:field="*{productEntryDate}" type="date"
+												id="dateInput" class="form-control myCalendar"
+												required="required" />
+											<div class="invalid-feedback" id="dateInputFeedBack">
+												Incorrect Date Format
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Machine No *</label>
+										<div class="col-sm-9">
+											<select th:field="*{machine.id}" class="form-control"
+												id="machineNo">
+												<option class="form-control"
+													th:each="machine: ${listMachines}"
+													th:text="${machine.machineName}" th:value="${machine.id}">
+												</option>
+											</select>
+
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label for="total_weight_of_material"
+											class="col-sm-3 col-form-label">Total Weight *</label>
+
+										<div class="col-sm-9">
+											<input th:field="*{totalWeightInput}" class="form-control"
+												name="totalWeightInput" min="0" type="number"
+												placeholder="totalWeightInput" id="totalWeightInput" />
+												<div class="invalid-feedback">Total weight input must not be negative</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label for="residue" class="col-sm-3 col-form-label">Residue
+											*</label>
+										<div class="col-sm-9">
+											<input th:field="*{residue}" class="form-control"
+												name="residue" min="0" type="number"
+												placeholder="residue" id="residueInput" />
+												<div class="invalid-feedback">Residue must not be negative</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label for="coconut-milk" class="col-sm-3 col-form-label">Coconut
+											Milk *</label>
+										<div class="col-sm-9">
+											<input th:field="*{coconutMilk}" class="form-control" min="0"
+												name="coconutMilk" type="number"
+												placeholder="coconutMilk" id="coconutMilkInput" />
+												<div class="invalid-feedback">Coconut Milk must not be nagative</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+							<!-- <p class="card-description">
+                                <b>Product</b>
+                            </p> -->
+
+							<fieldset class="row">
+								<legend>Product</legend>
+
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Finished
+											product *</label>
+
+										<div class="col-sm-9">
+											<input th:field="*{finishedProductDetail}"
+												class="form-control" name="finishedProduct"
+												min="0" type="number"
+												placeholder="finishedProduct" id="finishedProduct" />
+											<div class="invalid-feedback">Finished Product must not be negative</div>
+												
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Unsatisfied
+											product *</label>
+										<div class="col-sm-9">
+											<input th:field="*{unsatisfiedProduct}"
+												class="form-control" name="unsatisfiedProduct"
+												min="0" type="number"
+												placeholder="unsatisfiedProduct" id="unsatisfiedProduct" />
+												<div class="invalid-feedback">Unsatisfied Product must not be negative</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Water extract *</label>
+										<div class="col-sm-9">
+											<input th:field="*{waterExtract}"
+												class="form-control" name="waterExtract" min="0"
+												type="number" placeholder="waterExtract" id="waterExtract" />
+												<div class="invalid-feedback">Water Extract must not be negative</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Black point *</label>
+										<div class="col-sm-9">
+											<input th:field="*{coconutSilk}"
+												class="form-control" name="coconutSilk" min="0"
+												type="number" placeholder="coconutSilk" id="coconutSilk" />
+												<div class="invalid-feedback">Black point must not be negative</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Low pH </label>
+										<div class="col-sm-9">
+											<input th:field="*{lowPh}"
+												class="form-control" name="lowPh" min="0"
+												type="number" placeholder="lowPh" id="lowPh" />
+											<div class="invalid-feedback">pH must not be negative</div>
+										</div>
+
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Clotted *</label>
+										<div class="col-sm-9">
+											<input th:field="*{clotted}"
+												class="form-control" name="clotted" min="0"
+												type="number" placeholder="clotted" id="clotted" />
+												<div class="invalid-feedback">Clotted must not be negative</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Xylon *</label>
+										<div class="col-sm-9">
+											<input th:field="*{xylon}"
+												class="form-control" name="xylon" min="0"
+												type="number" placeholder="xylon" id="xylon" />
+												<div class="invalid-feedback">Xylon must not be negative</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Scrap *</label>
+										<div class="col-sm-9">
+											<input th:field="*{scrap}"
+												class="form-control" name="scrap" min="0"
+												type="number" placeholder="scrap" id="scrap" />
+												<div class="invalid-feedback">Scrap must not be negative</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Crusted *</label>
+										<div class="col-sm-9">
+											<input th:field="*{crusted}"
+												class="form-control" name="crusted" min="0"
+												type="number" placeholder="crusted" id="crusted" />
+												<div class="invalid-feedback">Crusted must not be negative</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">Residue *</label>
+										<div class="col-sm-9">
+											<input th:field="*{residueDetail}"
+												class="form-control" name="residue" min="0"
+												type="number" placeholder="residue" id="residue" />
+												<div class="invalid-feedback">Residue must not be negative</div>
+										</div>
+									</div>
+								</div>
+
+
+
+							</fieldset>
+
+							<div class="row">
+								<div class="col-md-12 mt-5">
+									<div class="form-group row">
+										<label class="col-sm-3 col-form-label">The arising
+											issue *</label>
+										<div class="col-sm-9">
+											<textarea th:field="*{note}"
+												class="form-control" rows="4" name="note"
+											 	placeholder="note" id="note">
+											 </textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div>
+							<input class="btn btn-primary" type="submit" value="Submit">
+						</div>
+					</form>
+					<span class="help-block"></span>
+				</div>
+			</div>
+			<!-- partial:layouts/footer.html -->
+			<th:block id="footer" th:replace="layouts/footer">
+			</th:block>
+
+			<!-- Custom JavaScript for this page in here -->
+			<th:block id="custom-js">
+				<script th:inline="javascript">
+					$('#formCreate').submit(
+							function(e) {
+
+								e.preventDefault();
+
+								$('#formCreate').addClass('was-validated');
+
+								let form = document
+										.getElementById('formCreate');
+
+								if (form.checkValidity()) {
+									
+									
+
+									$('#formCreate').removeClass(
+											'was-validated');
+									
+									$.get(`../check-date?strDate=${$('#dateInput').val()}`, function(date) {
+										console.log(date);
+												if (!date) {
+													$(
+															'#dateInput')
+															.addClass(
+																	"is-invalid");
+													showToastDialog(
+															"CREATE FAIL",
+															"Create prdocuct fail",
+															"fail");
+												} else {
+													$(
+															'#formCreate')
+															.unbind();
+													$(
+															'#formCreate')
+															.submit();
+												}
+											});
+								} else {
+									showToastDialog("UPDATE FAIL",
+											"Update prdocuct fail", "fail");
+
+								}
+							});
+
+					showToastDialog = function(heading, text, icon) {
+						'use strict';
+						$.toast({
+							heading : heading,
+							text : text,
+							showHideTransition : 'slide',
+							icon : icon,
+							loaderBg : '#57c7d4',
+							position : 'top-right'
+						})
+					};
+				</script>
+
+			</th:block>
+			<!-- End Custom JavaScript  -->
+</body>
+
+</html>

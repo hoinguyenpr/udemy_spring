@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="
+        ~{layouts/main-layout :: main-fragment(
+                                              ~{:: title},
+                                              ~{:: #css-page},
+                                              ~{:: #custom-css-page},
+                                              ~{:: #navbar},
+                                              ~{:: #main-content},  
+                                              ~{:: #footer},
+                                              ~{:: #custom-js}
+                                             )}">
+
+<head>
+    <title>Report biểu mẫu máy dò kim loại</title>
+    <!-- partial:layouts/otherStaticResources.html -->
+    <th:block id="css-page" th:replace="~{layouts/mainCss}"></th:block>
+    <!-- Custom CSS for this page in here -->
+    <th:block id="custom-css-page">
+        <link rel="stylesheet" th:href="@{/vendors/iconfonts/font-awesome/css/font-awesome.min.css}">
+    </th:block>
+    <!-- End Custom CSS  -->
+</head>
+
+<body>
+    <div class="container-scroller">
+
+        <!-- partial:layouts/navbar.html -->
+        <th:block id="navbar" th:replace="layouts/navbar">
+        </th:block>
+
+        <th:block id="main-content">
+            <!-- Copy From start to here-->
+
+            <!-- Modal starts -->
+            <div class="modal fade" id="configModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel" th:text="#{sieveDrying.text.viewConfig}"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">X</span>
+                            </button>
+                        </div>
+                        <div>
+                            <div class="modal-body p-3 ml-5">
+                                <div class="form-group row mb-0">
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name="checkBox-custom-table" class="form-check-input" onclick="showHideColumnTable(0)" checked> #
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name="checkBox-custom-table" class="form-check-input" onclick="showHideColumnTable(1)" checked th:utext="#{metalDetector.table.header.1}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name="checkBox-custom-table" class="form-check-input" onclick="showHideColumnTable(2)" checked th:utext="#{metalDetector.table.header.2}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name="checkBox-custom-table" class="form-check-input" onclick="showHideColumnTable(3)" checked> Loại sản phẩm
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name="checkBox-custom-table" class="form-check-input" onclick="showHideColumnTable(4)" checked th:utext="#{metalDetector.table.header.3}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name="checkBox-custom-table" class="form-check-input" onclick="showHideColumnTable(5)" checked th:utext="#{metalDetector.table.header.4}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name="checkBox-custom-table" class="form-check-input" onclick="showHideColumnTable(6)" checked th:utext="#{metalDetector.table.header.5}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name="checkBox-custom-table" class="form-check-input" onclick="showHideColumnTable(7)" checked th:utext="#{metalDetector.table.header.6}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name="checkBox-custom-table" class="form-check-input" onclick="showHideColumnTable(8)" checked th:utext="#{metalDetector.table.header.7}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name="checkBox-custom-table" class="form-check-input" onclick="showHideColumnTable(9)" checked> Check all
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="row">
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" name="checkBox-custom-table" class="form-check-input" onclick="showHideColumnTable(10)" checked th:utext="#{metalDetector.table.header.8}">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="toggle-state-ShowAll" type="button" class="btn btn-primary">Chọn tất cả</button>
+
+                                <button id="toggle-state-hidden" type="button" class="btn btn-primary">Bỏ chọn tất cả</button>
+
+                                <button type="button" class="btn btn-primary" data-dismiss="modal"> Thoát </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Ends -->
+
+            <!-- Content of page -->
+            <div class="container-fluid page-body-wrapper">
+                <div class="main-panel">
+                    <div class="content-wrapper">
+                        <div class="row grid-margin">
+                            <div class="col-12">
+
+                                <div class="card mt-5">
+                                    <div class="card-body">
+                                        <!-- group button -->
+                                        <div class=" row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="p-2">
+                                                        <select id="element_size" name="element_size" class="btn btn-outline-info ">
+                                                            <option class="dropdown-item" th:value="#{metalDetector.select.10Item.value}" th:text="#{metalDetector.select.10Item.text}" th:attr="selected=${(size >= 10) ? true : false}"></option>
+                                                            <option class="dropdown-item" th:value="#{metalDetector.select.20Item.value}" th:text="#{metalDetector.select.20Item.text}" th:attr="selected=${(size >= 20) ? true : false}"></option>
+                                                            <option class="dropdown-item" th:value="#{metalDetector.select.50Item.value}" th:text="#{metalDetector.select.50Item.text}" th:attr="selected=${(size >= 50) ? true : false}"></option>
+                                                            <option class="dropdown-item" th:value="#{metalDetector.select.100Item.value}" th:text="#{metalDetector.select.100Item.text}" th:attr="selected=${(size >= 100) ? true : false}"></option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="p-2">
+                                                        <button class="btn btn-sm btn-primary " data-toggle="modal" data-target="#configModal" th:text="#{sieveDrying.text.viewConfig}"></button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row justify-content-end">
+                                                    <div class="p-2">
+                                                        <button class="btn btn-sm btn-primary" id="approve-button" hidden> Duyệt </button>
+                                                    </div>
+                                                    <div class="p-2">
+                                                        <button class="btn btn-sm btn-primary " id="reject-button" hidden> Hủy </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <!-- view list-->
+                                        <div class="table-responsive">
+                                            <table id="metalDetectorTable" class="table table-hover table-bordered text-center">
+                                                <thead>
+                                                    <tr>
+                                                        <th rowspan="2" colspan="1" class="text-break ">#</th>
+                                                        <th rowspan="2" colspan="1" class="text-break " th:text="#{metalDetector.table.header.1}"></th>
+                                                        <th rowspan="2" class="text-break " th:text="#{metalDetector.table.header.2}"></th>
+                                                        <th rowspan="2" class="text-break ">Loại sản phẩm</th>
+                                                        <th rowspan="2" class="text-break " th:text="#{metalDetector.table.header.3}"></th>
+                                                        <th colspan="3" th:text="#{metalDetector.table.header.4}"></th>
+                                                        <th rowspan="2" th:text="#{metalDetector.table.header.5}"></th>
+                                                        <th rowspan="2" th:text="#{metalDetector.table.header.6}"></th>
+                                                        <th rowspan="2" th:text="#{metalDetector.table.header.7}"></th>
+                                                        <th rowspan="2"> <input type="checkbox" id="select-all-checkBox"> </th>
+                                                        <th rowspan="2" th:text="#{metalDetector.table.header.8}"></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>
+                                                            <p>Fe</p>
+                                                            <p>(3.0mm)</p>
+                                                        </th>
+                                                        <th>
+                                                            <p>Non-Fe</p>
+                                                            <p>(3.5mm)</p>
+                                                        </th>
+                                                        <th>
+                                                            <p>Sus</p>
+                                                            <p>(3.5mm)</p>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="body-table-metal-detector">
+
+                                                    <!-- code generate by js -->
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- End view list-->
+                                        <!-- pagination -->
+                                        <nav class="pt-sm-2">
+                                            <ul class="pagination d-flex justify-content-end" id="body-nav-paging">
+
+                                                <!-- code generate by js -->
+
+                                            </ul>
+                                        </nav>
+                                        <!-- End pagination -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- content-wrapper ends -->
+
+                </div>
+                <!-- main-panel ends -->
+            </div>
+            <!-- Main form end -->
+
+        </th:block>
+    </div>
+
+    <!-- partial:layouts/footer.html -->
+    <th:block id="footer" th:replace="layouts/footer">
+    </th:block>
+
+    <!-- Custom JavaScript for this page in here -->
+
+    <th:block id="custom-js">
+        <!-- define variable message I18n for all function javascript -->
+        <script>
+            var message_listEmpty = '[[#{ metalDetector.table.listEmpty }]]';
+        </script>
+
+        <script th:src="@{/js/form-metal-detector-approve-page.js}"></script>
+        <script th:src="@{/js/formpickers.js}"></script>
+
+
+
+    </th:block>
+    <!-- End Custom JavaScript  -->
+
+</body>
+
+</html>

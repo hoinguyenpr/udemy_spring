@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	th:replace="
+    ~{layouts/main-layout :: main-fragment(
+                                          ~{:: title},
+                                          ~{:: #css-page},
+                                          ~{:: #custom-css-page},
+                                          ~{:: #navbar},
+                                          ~{:: #main-content},  
+                                          ~{:: #footer},
+                                          ~{:: #custom-js}
+                                         )}">
+
+<head>
+
+<title>Trang chủ</title>
+
+<!-- partial:layouts/otherStaticResources.html -->
+<th:block id="css-page" th:replace="~{layouts/mainCss}"></th:block>
+
+<!-- Custom CSS for this page in here -->
+<th:block id="custom-css-page">
+
+
+
+</th:block>
+<!-- End Custom CSS  -->
+
+</head>
+
+<body>
+	<div class="container-scroller">
+
+		<!-- partial:layouts/navbar.html -->
+		<th:block id="navbar" th:replace="layouts/navbar">
+		</th:block>
+
+		<th:block id="main-content">
+			<!-- Copy From start to here-->
+
+
+
+
+
+			<!-- Don't copy this area-->
+			<!-- This is content of each page-->
+			<div class="container-fluid page-body-wrapper">
+				<div class="main-panel">
+					<div class="content-wrapper">
+						<div class="row grid-margin">
+							<div class="col-12">
+								<div class="card">
+									<div class="card-body">
+  										
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Don't copy this area-->
+
+
+
+
+
+
+			<!-- Copy from here to end-->
+		</th:block>
+	</div>
+
+	<!-- partial:layouts/footer.html -->
+	<th:block id="footer" th:replace="layouts/footer">
+	</th:block>
+
+	<!-- Custom JavaScript for this page in here -->
+	<th:block id="custom-js">
+
+		<script th:inline="javascript">
+			$('#typeProduct').select2({
+				theme : "bootstrap"
+			});
+
+			/*<![CDATA[*/
+
+			let state= /*[[${#httpServletRequest.getUserPrincipal().getAuthorities()}]]*/
+		
+		    /*]]>*/
+		</script>
+
+	</th:block>
+	<!-- End Custom JavaScript  -->
+
+</body>
+
+</html>

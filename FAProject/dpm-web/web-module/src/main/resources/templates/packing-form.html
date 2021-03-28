@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	th:replace="
+    ~{layouts/main-layout :: main-fragment(
+                                          ~{:: title},
+                                          ~{:: #css-page},
+                                          ~{:: #custom-css-page},
+                                          ~{:: #navbar},
+                                          ~{:: #main-content},  
+                                          ~{:: #footer},
+                                          ~{:: #custom-js}
+                                         )}">
+
+<head>
+
+<title>Đóng gói</title>
+
+<!-- partial:layouts/otherStaticResources.html -->
+<th:block id="css-page" th:replace="~{layouts/mainCss}"></th:block>
+
+
+
+<!-- Custom CSS for this page in here -->
+<th:block id="custom-css-page">
+
+
+</th:block>
+<!-- End Custom CSS  -->
+
+</head>
+
+<body>
+	<div class="container-scroller">
+
+		<!-- partial:layouts/navbar.html -->
+		<th:block id="navbar" th:replace="layouts/navbar">
+		</th:block>
+
+		<th:block id="main-content">
+			<!-- Copy From start to here-->
+
+			<!-- aaaaaaaaaaaaaaaaaaaaa -->
+
+			<!-- Modal starts -->
+
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalLabel" aria-hidden="true"
+				style="display: none;">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Thêm Đóng Gói</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
+						<form class="cmxform" id="packingForm" name="packingForm"th:object="${packingFormDTO}" th:action="@{save}" method="POST">
+							<div class="modal-body">
+								<h2 id="metalpackingitemFormTitle" class="text-center pb-4">Tạo
+									mới yêu cầu đóng gói</h2>
+
+								<input type="text" class="form-control" id="id" name="id" hidden>
+
+								<div class="row">
+
+									<!-- Type of product -->
+									<div class="col-sm">
+										<div class="form-group row">
+											<label for="typeProductID" class="col-sm-3 col-form-label">Loại
+												sản phẩm</label>
+											<div class="col-sm-9">
+												<input class="form-control" id="typeProductID"
+													name="typeProductID" list="listTypeOfProduct" />
+												<datalist id="listTypeOfProduct">
+													<option th:each="itemTypeOfProduct : ${listTypeProduct}"
+														th:value="${itemTypeOfProduct.id}"
+														th:text="${itemTypeOfProduct.typeProductName}"></option>
+												</datalist>
+											</div>
+										</div>
+									</div>
+
+
+									<!-- Machine -->
+									<div class="col-sm">
+										<div class="form-group row">
+											<label for="machineID" class="col-sm-3 col-form-label">
+												Máy SP(<span class="error mt-2 text-danger">*</span>) :
+											</label>
+											<div class="col-sm-9">
+												<input class="form-control" id="machineID" name="machineID"
+													list="listMachine" />
+
+												<datalist id="listMachine">
+													<option th:each="itemMachine : ${listMachine}"
+														th:value="${itemMachine.id}"
+														th:text="${itemMachine.machineName}"></option>
+												</datalist>
+
+											</div>
+										</div>
+									</div>
+
+
+									<!-- Person who create -->
+									<div class="col-sm">
+										<div class="form-group row">
+											<label for="createManID" class="col-sm-3 col-form-label">Người
+												nhập</label>
+											<div class="col-sm-9">
+												<input class="form-control" id="createManID"
+													name="createManID" list="listPersonCreate" />
+												<datalist id="listPersonCreate">
+													<option th:each="itemPersonCreate : ${listEmployee}"
+														th:value="${itemPersonCreate.id}"
+														th:text="${itemPersonCreate.employeeName}"></option>
+												</datalist>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+								<!-- Packing Date -->
+								<div class="row">
+									<!-- Date of package -->
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Ngày đóng gói</label>
+											<div id="datepicker-popup"
+												class="input-group date datepicker col-sm-9">
+												<input type="text" class="form-control"
+													placeholder="VD: 31/12/2020" id="packingDate"
+													name="packingDate"> <span
+													class="input-group-addon input-group-append border-left">
+													<span class="icon-calendar input-group-text"></span>
+												</span>
+											</div>
+										</div>
+									</div>
+
+									<!-- Semi-product no -->
+
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Mã lô bán
+												thành phẩm</label>
+											<div class="col-sm-9">
+												<input class="form-control" id="semi_Product_Lot"
+													name="semi_Product_Lot" list="listSemiProduct" />
+												<datalist id="listSemiProduct">
+													<option th:each="itemSemiProduct : ${listSemiProduct}"
+														th:value="${itemSemiProduct.lotCode.lotCode}"
+														th:text="${itemSemiProduct.lotCode.lotCode}"></option>
+												</datalist>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+
+								<div class="row">
+									<!-- Time of package -->
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Thời gian</label>
+											<div class="col-sm-9">
+												<input type="time" class="form-control" id="timePacking"
+													name="timePacking">
+											</div>
+										</div>
+									</div>
+
+									<!-- Finished Product -->
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Mã lô thành
+												phẩm</label>
+											<div class="col-sm-9">
+												<input class="form-control" id="finished_Product_Lot"
+													name="finished_Product_Lot" list="listFinishedProduct" />
+												<datalist id="listFinishedProduct">
+													<option
+														th:each="itemFinishProduct : ${listFinishedProduct}"
+														th:value="${itemFinishProduct.lotCode.lotCode}"
+														th:text="${itemFinishProduct.lotCode.lotCode}"></option>
+												</datalist>
+											</div>
+										</div>
+									</div>
+								</div>
+
+
+								<div class="row">
+
+									<!-- Quanity -->
+
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Số lượng</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="quanity"
+													name="quanity">
+											</div>
+										</div>
+									</div>
+
+									<!-- Shift -->
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Ca sản xuất</label>
+											<div class="col-sm-9">
+
+
+												<div class="form-group row">
+													<div class="col-sm-4">
+														<div class="form-check">
+															<label class="form-check-label"> <input
+																type="radio" class="form-check-input" name="shift"
+																id="shift1" value="1" checked=""> Ca 1 <i
+																class="input-helper"></i></label>
+														</div>
+													</div>
+													<div class="col-sm-5">
+														<div class="form-check">
+															<label class="form-check-label"> <input
+																type="radio" class="form-check-input" name="shift"
+																id="shift3" value="3"> Ca 3 <i
+																class="input-helper"></i></label>
+														</div>
+													</div>
+												</div>
+
+											</div>
+										</div>
+
+									</div>
+
+								</div>
+
+
+								<div class="row">
+									<!-- Packing -->
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Quy cách</label>
+											<div class="col-sm-9">
+												<input class="form-control" id="packingID"
+													name="packingID" list="listPacking" />
+												<datalist id="listPacking">
+													<option th:each="itemPacking : ${listPacking}"
+														th:value="${itemPacking.id}"
+														th:text="${itemPacking.packingName}"></option>
+												</datalist>
+											</div>
+										</div>
+									</div>
+
+									<!-- Foreman -->
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Quản đốc</label>
+											<div class="col-sm-9">
+												<input class="form-control" id="foremanID"
+													name="foreManID" list="listForeman" />
+												<datalist id="listForeman">
+													<option th:each="itemForeman : ${listEmployee}"
+														th:value="${itemForeman.id}"
+														th:text="${itemForeman.employeeName}"></option>
+												</datalist>
+											</div>
+										</div>
+
+									</div>
+
+								</div>
+
+
+								<div class="row">
+									<!-- Type of Packing -->
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Loại bao bì</label>
+											<div class="col-sm-9">
+												<input class="form-control" id="typeOfPackingID"
+													name="typeOfPackingID" list="listPackingType" />
+												<datalist id="listPackingType">
+													<option th:each="itemPackingType : ${listPackingType}"
+														th:value="${itemPackingType.id}"
+														th:text="${itemPackingType.typePackingName}"></option>
+												</datalist>
+											</div>
+										</div>
+									</div>
+
+									<!-- Person in Charge -->
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Người đóng gói</label>
+											<div class="col-sm-9">
+												<input class="form-control" id="inChargeManID"
+													name="inChargeManID" list="listPersonInCharge" />
+												<datalist id="listPersonInCharge">
+													<option th:each="itemPersonInCharge : ${listEmployee}"
+														th:value="${itemPersonInCharge.id}"
+														th:text="${itemPersonInCharge.employeeName}"></option>
+												</datalist>
+											</div>
+										</div>
+
+									</div>
+
+								</div>
+
+
+								<div class="row">
+									<!-- Packing Quanity -->
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Số lượng bao
+												bì</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="packingQuanity"
+													name="packingQuanity">
+											</div>
+										</div>
+									</div>
+
+									<!-- STT No. -->
+									<div class="col-md-6">
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">STT No.</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" id="sttNo"
+													name="sttNo">
+											</div>
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+							<div class="modal-footer">
+								<input class="btn btn-primary" type="submit"
+									value="Lưu biểu mẫu">
+								<button type="button" class="btn btn-light" data-dismiss="modal">Hủy</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- Modal Ends -->
+
+			<div class="container-fluid page-body-wrapper">
+				<div class="main-panel">
+					<div class="content-wrapper">
+						<div class="row grid-margin">
+							<div class="col-12">
+								<div class="card">
+									<div class="card-body">
+										<h4 class="card-title text-center">ĐÓNG GÓI SẢN PHẨM</h4>
+
+
+										<div class="template-demo">
+
+											<button type="button" class="btn btn-primary btn-fw"
+												data-toggle="modal" data-target="#exampleModal">Tạo
+												mới</button>
+
+											<select id="element" class="btn btn-outline-info ">
+												<option class="dropdown-item" value="10" selected>10
+													sản phẩm</option>
+												<option class="dropdown-item" value="20">20 sản
+													phẩm</option>
+												<option class="dropdown-item" value="50">50 sản
+													phẩm</option>
+												<option class="dropdown-item" value="100">100 sản
+													phẩm</option>
+											</select>
+
+											<form class="form-inline form-inline-search">
+
+												<input type="text" class="form-control mb-2 mr-sm-2"
+													placeholder="Tìm kiếm" aria-label="Recipient's username">
+
+												<button type="submit" class="btn btn-primary mb-2">Tìm
+													kiếm</button>
+											</form>
+
+										</div>
+
+										<!-- view list-->
+										<div class="table-responsive">
+											<table class="table table-hover table-bordered text-center">
+												<thead>
+													<tr>
+														<th>STT</th>
+														<th>Loại sản phẩm</th>
+														<th>Ngày đóng gói</th>
+														<th>Thời gian</th>
+														<th>Mã lô bán thành phẩm</th>
+														<th>Mã lô thành phẩm</th>
+														<th>Số lượng</th>
+														<th>Quy cách</th>
+														<th>Loại bao bì</th>
+														<th>Số lượng bao bì</th>
+														<th>Ca</th>
+														<th>Quản đốc</th>
+														<th>Người đóng gói</th>
+														<th>STT No.</th>
+														<th>Trạng thái</th>
+														<th style="width: 40px;">Tùy chọn</th>
+													</tr>
+												</thead>
+												<tbody>
+													<!-- Check if list metal packingitem empty then print out message -->
+													<!-- <tr th:if="${pagePackingForms.isEmpty()}" class="btn-default text-center">
+                                                        <td colspan="11"><span th:text="Không tồn tại dữ liệu"></span> </td>
+                                                    </tr> -->
+													<!-- If list metal packingitem not empty then print it  -->
+													<tr th:each="packingitem , itemStat : ${listPackingForms}">
+														<td th:text="${packingitem.id}"></td>
+														<td th:text="${packingitem.typeProduct.typeProductName}"></td>
+														<td th:text="${packingitem.packingDate}"></td>
+														<td th:text="${packingitem.time}"></td>
+														<td th:text="${packingitem.semiProduct.lotCode.lotCode}"></td>
+														<td
+															th:text="${packingitem.finishedProduct.lotCode.lotCode}"></td>
+														<td th:text="${packingitem.quantity}"></td>
+														<td th:text="${packingitem.packing.packingName}"></td>
+														<td th:text="${packingitem.typeofpacking.typePackingName}"></td>
+														<td th:text="${packingitem.packingQuanity}"></td>
+														<td th:text="${packingitem.shift}"></td>
+														<td th:text="${packingitem.foreman.employeeName}"></td>
+														<td th:text="${packingitem.personInCharge.employeeName}"></td>
+														<td th:text="${packingitem.sttNo}"></td>
+														<td>
+															<div th:switch="${packingitem.status}">
+																<p th:case="${T(com.dpm.utility.Status).Pending}"
+																	class="badge bg-danger text-white"
+																	th:text="#{checklist.view.status.item.pending }"></p>
+																<p th:case="${T(com.dpm.utility.Status).Approved}"
+																	class="badge bg-primary text-white"
+																	th:text="#{checklist.view.status.item.approved}"></p>
+																<p th:case="${T(com.dpm.utility.Status).Rejected}"
+																	class="badge bg-dark text-white"
+																	th:text="#{checklist.view.status.item.reject}"></p>
+															</div>
+														</td>
+
+														<td>
+															<button type="button"
+																th:onclick="|updatePackingFormByID(${packingitem.id})|"
+																class="btn btn-outline-info btn-fw" data-toggle="modal"
+																data-target="#exampleModal">
+																<i class="icon-pencil"></i>Cập nhật
+															</button>
+															<button type="button"
+																th:onclick="|deletePackingFormById(${packingitem.id})|"
+																class="btn btn-outline-danger btn-fw">
+																<i class="icon-trash"></i>Xóa
+															</button>
+														</td>
+													</tr>
+
+												</tbody>
+											</table>
+										</div>
+										<!-- End view list-->
+
+										<!-- pagination -->
+										<nav class="pt-sm-2">
+											<ul class="pagination d-flex justify-content-end ">
+												<li class="page-item"><a class="page-link" href="#"><i
+														class="icon-arrow-left"></i></a></li>
+												<li class="page-item active"><a class="page-link"
+													href="#">1</a></li>
+												<li class="page-item"><a class="page-link" href="#"><i
+														class="icon-arrow-right"></i></a></li>
+											</ul>
+										</nav>
+										<!-- End pagination -->
+
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+
+					</div>
+					<!-- content-wrapper ends -->
+
+					<!-- 
+
+                    <footer class="footer">
+                        <div class="w-100 clearfix">
+                            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright ©
+                                2020.
+                                All rights reserved.</span>
+                            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted &amp;
+                                made
+                                with <i class="icon-heart text-danger"></i></span>
+                        </div>
+                    </footer> -->
+					<!-- partial -->
+				</div>
+				<!-- main-panel ends -->
+			</div>
+
+
+			<!-- Copy from here to end-->
+		</th:block>
+	</div>
+
+	<!-- partial:layouts/footer.html -->
+	<th:block id="footer" th:replace="layouts/footer">
+	</th:block>
+
+	<!-- Custom JavaScript for this page in here -->
+	<th:block id="custom-js">
+		<script>
+			$(document)
+					.ready(
+							function() {
+								loadData();
+
+								//Set default data for May SP
+								$("#machineID").val(
+										$('#listMachine option').first().val());
+
+								$("#machineID").click(function() {
+									$("#machineID").val('');
+								})
+
+								//Set default data for Quan doc
+								$("#foremanID").val(
+										$('#listForeman option').first().val());
+
+								$("#foremanID").click(function() {
+									$("#foremanID").val('');
+								})
+
+								//Set default data for Nguoi dong goi
+
+								$("#inChargeManID").val(
+										$('#listPersonInCharge option').first()
+												.val());
+
+								$("#inChargeManID").click(function() {
+									$("#inChargeManID").val('');
+								})
+
+								//Set default data for loai san pha
+								$("#typeProductID").val(
+										$('#listTypeOfProduct option').first()
+												.val());
+
+								$("#typeProductID").click(function() {
+									$("#typeProductID").val('');
+								})
+
+								//Set default data for Ma lo ban thanh pham
+								$("#semi_Product_Lot").val(
+										$('#listSemiProduct option').first()
+												.val());
+
+								$("#semi_Product_Lot").click(function() {
+									$("#semi_Product_Lot").val('');
+								})
+
+								//Set default data for Ma lo thanh pham
+								$("#finished_Product_Lot").val(
+										$('#listFinishedProduct option')
+												.first().val());
+
+								$("#finished_Product_Lot").click(function() {
+									$("#finished_Product_Lot").val('');
+								})
+
+								//Set default data for Quy cach
+								$("#packingID").val(
+										$('#listPacking option').first().val());
+
+								$("#packingID").click(function() {
+									$("#packingID").val('');
+								})
+
+								//Set default data for Loai bao bi
+								$("#typeOfPackingID").val(
+										$('#listPackingType option').first()
+												.val());
+
+								$("#typeOfPackingID").click(function() {
+									$("#typeOfPackingID").val('');
+								})
+
+								//Set default data for Nguoi tao
+								$("#createManID").val(
+										$('#listPersonCreate option').first()
+												.val());
+
+								$("#createManID").click(function() {
+									$("#createManID").val('');
+								})
+
+							});
+
+			function loadData() {
+
+				urlString = "[[@{'/packing-form/api/get-all'}]]";
+				$.ajax({
+					method : "GET",
+					url : urlString
+				}).done(
+						function(responseJson) {
+
+							console.log(responseJson);
+							/*$("#my-data-table").find('tbody').empty();*/
+							$.each(responseJson, function(index, object) {
+								console.log("Index " + index + ": " + object.id
+										+ " " + object.shift);
+							})
+						}).fail(function() {
+					console.log("There is error calling REST API...");
+				}).always(function() {
+					/* alert("always exeuted..."); */
+				})
+
+			}
+		</script>
+		<script th:src="@{/js/packing-form.js}"></script>
+        <script th:src="@{/js/formpickers.js}"></script>
+	</th:block>
+	<!-- End Custom JavaScript  -->
+</body>
+
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" th:replace="
+    ~{layouts/main-layout :: main-fragment(
+                                          ~{:: title},
+                                          ~{:: #css-page},
+                                          ~{:: #custom-css-page},
+                                          ~{:: #navbar},
+                                          ~{:: #main-content},  
+                                          ~{:: #footer},
+                                          ~{:: #custom-js}
+                                         )}">
+
+<head>
+
+    <title>Trang chủ</title>
+
+    <!-- partial:layouts/otherStaticResources.html -->
+    <th:block id="css-page" th:replace="~{layouts/mainCss}"></th:block>
+
+    <!-- Custom CSS for this page in here -->
+    <th:block id="custom-css-page">
+
+
+
+    </th:block>
+    <!-- End Custom CSS  -->
+
+</head>
+
+<body>
+    <div class="container-scroller">
+
+        <!-- partial:layouts/navbar.html -->
+        <th:block id="navbar" th:replace="layouts/navbar"> </th:block>
+
+        <th:block id="main-content">
+            <!-- Copy From start to here-->
+
+
+
+			<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+			<!-- DuongNM - 291220 - Start -->
+			<!-- Create new additive button / Edit row -->
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalLabel" aria-hidden="true"
+				style="display: none;">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<!-- Header -->
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Tạo mới loại
+								phụ gia</h5>
+							<!-- X: Close button -->
+							<button type="button" class="close unvalidate"
+								data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
+
+						<!-- Form: Enter link here -->
+						<form class="cmxform" id="signupForm" th:object="${additive}"
+							onsubmit="return false;">
+							<!-- th:action="@{/additive/save}" -->
+							<div class="modal-body">
+
+								<input type="hidden" class="form-control" id="id" name="id">
+								<h4 class="card-title text-center">NHẬP THÔNG TIN CHẤT PHỤ
+									GIA</h4>
+
+								<!-- Additive Id (from DB), hiden field -->
+								<input type="hidden" id="id" th:field="*{id}" />
+
+								<!-- Additive name field-->
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group row">
+											<div class="col-sm-1"></div>
+											<label for="additiveName" class="col-sm-3 col-form-label">Loại
+												Phụ Gia:</label>
+											<div class="col-sm-7">
+												<input type="text" autofocus class="form-control"
+													id="additiveName" name="additiveName"
+													th:field="*{additiveName}" />
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Additive code field-->
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group row">
+											<div class="col-sm-1"></div>
+											<label for="additiveCode" class="col-sm-3 col-form-label">Mã
+												Phụ Gia:</label>
+											<div class="col-sm-7">
+												<input type="text" class="form-control" id="additiveCode"
+													name="additiveCode" th:field="*{additiveCode}" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Save, cancel button-->
+							<div class="modal-footer">
+								<input style="width: 7rem;" class="btn btn-primary"
+									type="submit" value="Lưu" id="submit">
+
+								<!-- Another submit button for ajax -->
+								<!-- <button style="width: 7rem;" type="button" class="btn btn-primary" id="submit" >Lưu</button> -->
+								<button style="width: 7rem;" type="button"
+									class="btn btn-light unvalidate" data-dismiss="modal">Hủy</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- End create new additive button / Edit row -->
+
+
+			<!-- Form popup when delete -->
+			<div class="modal fade" id="exampleModal1" tabindex="-1"
+				role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+				style="display: none;">
+				<div class="modal-dialog modal-sm" role="document">
+					<div class="modal-content">
+						<form id="deleteForm" th:action="@{/additive/delete}"
+							method="POST" class="" onsubmit="return false;">
+							<input type="hidden" id="deleteId" th:name="deleteId" value="" />
+							<div class="modal-body">
+								<h4 style="text-align: center;">Bạn có muốn xóa loại phụ
+									gia này?</h4>
+							</div>
+
+							<!-- Delete, cancel button-->
+							<div class="modal-footer">
+								<input style="width: 7rem;" class="btn btn-danger" type="submit"
+									value="Xóa" id="delete-submit">
+								<button style="width: 7rem;" type="button" class="btn btn-light"
+									data-dismiss="modal">Hủy</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- End form popup when delete -->
+
+
+			<div class="container-fluid page-body-wrapper">
+				<div class="main-panel">
+					<div class="content-wrapper">
+						<div class="row grid-margin">
+							<div class="col-12">
+								<div class="card">
+									<div class="card-body">
+										<h2 class="card-title text-center">QUẢN LÝ CHẤT PHỤ GIA</h2>
+
+										<div class="template-demo">
+											<!-- Create new additive button -->
+											<button type="button" class="btn btn-primary btn-fw"
+												data-toggle="modal" data-target="#exampleModal"
+												id="create-button">Tạo mới loại phụ gia</button>
+
+											<!-- Information for website -->
+											<select id="pageSize" class="btn btn-outline-info"
+												th:name="pageSize" onchange="this.form.submit();"
+												form="inforForm" th:value="${pageSize}">
+												<option id="size1" class="dropdown-item" value="10">Hiện
+													10 chất phụ gia</option>
+												<option id="size2" class="dropdown-item" value="20">Hiện
+													20 chất phụ gia</option>
+												<option id="size3" class="dropdown-item" value="50">Hiện
+													50 chất phụ gia</option>
+												<option id="size4" class="dropdown-item" value="100">Hiện
+													100 chất phụ gia</option>
+											</select>
+
+
+											<!-- Search input -->
+
+											<form class="form-inline form-inline-search"
+												th:action="@{/additive/all/{pageSize}/1(pageSize=${pageSize})}"
+												method="GET">
+												<input type="text" class="form-control mb-2 mr-sm-2"
+													placeholder="Nhập..." aria-label="Recipient's username"
+													id="keyword" th:name="keyword">
+
+
+												<!-- Search button-->
+												<button type="submit" class="btn btn-primary mb-2">Tìm
+													kiếm</button>
+											</form>
+
+										</div>
+
+										<!-- View list additive -->
+										<div class="table-responsive">
+											<table class="table table-hover table-bordered text-center">
+												<!-- Fields view -->
+												<thead>
+													<tr>
+														<th colspan="2" rowspan="2" class="text-break "
+															style="width: 3rem;">STT</th>
+														<th colspan="4" rowspan="2" class="text-break "
+															style="width: 10rem;">Loại Phụ Gia</th>
+														<th colspan="4" rowspan="2" class="text-break "
+															style="width: 10rem;">Mã Phụ Gia</th>
+														<th colspan="2" rowspan="2" class="text-break "
+															style="width: 5rem;">Tùy Chọn</th>
+													</tr>
+												</thead>
+												<!-- Data view -->
+												<tbody>
+													<tr th:each="additive,additiveStat : ${listAdditives}"
+														th:id="${additiveStat.count}">
+														<td colspan="2" style="width: 3rem;" class="additiveId"
+															th:value="${additive.id}" th:text="${additiveStat.count}" />
+														<td colspan="4" style="width: 10rem;" class="additiveName"
+															th:text="${additive.additiveName}" />
+														<td colspan="4" style="width: 10rem;" class="additiveCode"
+															th:text="${additive.additiveCode}" />
+														<td colspan="2" style="width: 5rem;">
+															<!-- Edit button -->
+															<button style="width: 7rem;" type="button"
+																class="btn btn-outline-info btn-md edit-button"
+																data-toggle="modal" data-target="#exampleModal">
+																<i class="icon-pencil"></i>Sửa
+															</button> <!-- Delete button -->
+															<button style="width: 7rem;" type="button"
+																class="btn btn-outline-danger btn-md delete-button"
+																data-toggle="modal" data-target="#exampleModal1">
+																<i class="icon-trash"></i>Xóa
+															</button>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<!-- End view list additive -->
+
+										<!-- Pagination -->
+										<nav class="pt-sm-2">
+											<ul class="pagination d-flex justify-content-end ">
+
+												<!-- Previous link -->
+												<li class="page-item"><span th:if="${pageNumber > 1}">
+														<a class="page-link"
+														th:href="@{/additive/all/{pageSize}/{pageNumber}?keyword={keyword}(pageSize=${pageSize},pageNumber=${pageNumber} - 1,keyword=${keyword})}">
+															<i class="icon-arrow-left"></i>
+													</a>
+												</span> <span th:unless="${pageNumber > 1}"> <a
+														class="page-link"
+														th:href="@{/additive/all/{pageSize}/{pageNumber}?keyword={keyword}(pageSize=${pageSize},pageNumber=${pageNumber},keyword=${keyword})}">
+															<i class="icon-arrow-left"></i>
+													</a>
+												</span></li>
+
+												<!-- Link 1 -->
+												<li id="li1" class="page-item"><a class="page-link"
+													th:href="@{/additive/all/{pageSize}/{pageNumber}?keyword={keyword}(pageSize=${pageSize},pageNumber=${pageNumber},keyword=${keyword})}"
+													id="link1"></a></li>
+
+												<!-- Link 2 -->
+												<li id="li2" class="page-item"><a class="page-link"
+													th:href="@{/additive/all/{pageSize}/{pageNumber}?keyword={keyword}(pageSize=${pageSize},pageNumber=${pageNumber} + 1,keyword=${keyword})}"
+													id="link2"></a></li>
+
+												<!-- Link 3 -->
+												<li id="li3" class="page-item"><a class="page-link"
+													th:href="@{/additive/all/{pageSize}/{pageNumber}?keyword={keyword}(pageSize=${pageSize},pageNumber=${pageNumber} + 2,keyword=${keyword})}"
+													id="link3"></a></li>
+
+												<!-- Link 4 -->
+												<li id="li4" class="page-item"><a class="page-link"
+													th:href="@{/additive/all/{pageSize}/{pageNumber}?keyword={keyword}(pageSize=${pageSize},pageNumber=${pageNumber} + 3,keyword=${keyword})}"
+													id="link4"></a></li>
+
+												<!-- Next link-->
+												<li class="page-item"><span
+													th:if="${pageNumber} < ${pageTotal}"> <a
+														class="page-link"
+														th:href="@{/additive/all/{pageSize}/{pageNumber}?keyword={keyword}(pageSize=${pageSize},pageNumber=${pageNumber} + 1,keyword=${keyword})}">
+															<i class="icon-arrow-right"></i>
+													</a>
+												</span> <span th:unless="${pageNumber} < ${pageTotal}"> <a
+														class="page-link"
+														th:href="@{/additive/all/{pageSize}/{pageNumber}?keyword={keyword}(pageSize=${pageSize},pageNumber=${pageNumber},keyword=${keyword})}">
+															<i class="icon-arrow-right"></i>
+													</a>
+												</span></li>
+											</ul>
+										</nav>
+										<!-- End pagination -->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Hidden field to hold pagination information from server-->
+			<div style="display: none;">
+				<span id="pageSizeHidden" th:text="${pageSize}"> </span> <span
+					id="pageNumberHidden" th:text="${pageNumber}"> </span> <span
+					id="pageTotalHidden" th:text="${pageTotal}"> </span> <span
+					id="keywordHidden" th:text="${keyword}"></span>
+			</div>
+
+			<!-- Hidden form that sent to server to pagination -->
+			<div style="display: none;">
+				<form id="inforForm" method="POST" th:action="@{/additive/all}"></form>
+			</div>
+			<!-- DuongNM - 291220 - End -->
+
+	
+
+			
+			<!-- page-body-wrapper ends -->
+		</div>
+	</div>
+
+	<div id="footer" th:replace="layouts/footer"></div>
+
+
+            <!-- Copy from here to end-->
+        </th:block>
+    </div>
+
+    <!-- partial:layouts/footer.html -->
+    <th:block id="footer" th:replace="layouts/footer"> </th:block>
+
+    <!-- Custom JavaScript for this page in here -->
+    <th:block id="custom-js">
+
+
+    </th:block>
+    <!-- End Custom JavaScript  -->
+
+</body>
+
+</html>
